@@ -15,8 +15,8 @@ type PageData struct {
 func main() {
 	r := httprouter.New()
 	
-	r.GET("/homeserver/LANNetFlix", homeHandler)
-	r.GET("/LANNetFlix", homeHandler2)
+	r.GET("/", home)
+	r.GET("/LANNetFlix", LANNetFlix)
 	//r.GET("/LANMusic", homeHandler)
 	//r.GET("/LANGames", homeHandler)
 	
@@ -32,14 +32,14 @@ func main() {
 	}
 }
 
-func homeHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
 	data := PageData{
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite!",
 	}
-	tmpl, err := template.ParseFiles("template.html")
+	tmpl, err := template.ParseFiles("home.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -51,14 +51,14 @@ func homeHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 }
 
-func homeHandler2(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func LANNetFlix(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
 	data := PageData{
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite2!",
 	}
-	tmpl, err := template.ParseFiles("template2.html")
+	tmpl, err := template.ParseFiles("LANNetFlix.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
