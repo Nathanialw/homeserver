@@ -58,7 +58,7 @@ func homeHandler2(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite2!",
 	}
-	tmpl, err := template.ParseFiles("template.html")
+	tmpl, err := template.ParseFiles("template2.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
