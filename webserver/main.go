@@ -14,7 +14,7 @@ type PageData struct {
 
 func main() {
 	r := httprouter.New()
-	r.GET("/LANNetflix", homeHandler)
+	r.GET("/homeserver/LANNetflix", homeHandler)
 	server := http.Server{
 		Addr:    "localhost:9002",
 		Handler: r,
