@@ -16,6 +16,7 @@ func main() {
 	r := httprouter.New()
 	
 	r.GET("/homeserver/LANNetFlix", homeHandler)
+	r.GET("/LANNetFlix", homeHandler2)
 	//r.GET("/LANMusic", homeHandler)
 	//r.GET("/LANGames", homeHandler)
 	
@@ -37,6 +38,25 @@ func homeHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	data := PageData{
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite!",
+	}
+	tmpl, err := template.ParseFiles("template.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func homeHandler2(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	data := PageData{
+		Title: "My Page Title",
+		Body:  "Welcome to my dwebsite2!",
 	}
 	tmpl, err := template.ParseFiles("template.html")
 	if err != nil {
