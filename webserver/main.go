@@ -17,8 +17,11 @@ func main() {
 	
 	r.GET("/", home)
 	r.GET("/LANNetFlix", LANNetFlix)
-	//r.GET("/LANMusic", homeHandler)
-	//r.GET("/LANGames", homeHandler)
+	r.GET("/LANMusic", LANMusic)
+	r.GET("/LANPics", LANPics)
+	r.GET("/LANGames", LANGames)
+	r.GET("/LANBooks", LANBooks)
+	r.GET("/LANDocs", LANDocs)
 	
 	
 	server := http.Server{
@@ -39,7 +42,7 @@ func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite!",
 	}
-	tmpl, err := template.ParseFiles("home.html")
+	tmpl, err := template.ParseFiles("..templates/home.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -58,7 +61,7 @@ func LANNetFlix(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite2!",
 	}
-	tmpl, err := template.ParseFiles("LANNetFlix.html")
+	tmpl, err := template.ParseFiles("..templates/LANNetFlix.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -70,10 +73,97 @@ func LANNetFlix(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 }
 
-func productHandler(w http.ResponseWriter, r *http.Request) {
-	// Handle requests for individual products here
+func LANMusic(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	data := PageData{
+		Title: "My Page Title",
+		Body:  "Welcome to my dwebsite2!",
+	}
+	tmpl, err := template.ParseFiles("..templates/LANMusic.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
-func usersHandler(w http.ResponseWriter, r *http.Request) {
-	// Handle requests for the user API here
+func LANPics(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	data := PageData{
+		Title: "My Page Title",
+		Body:  "Welcome to my dwebsite2!",
+	}
+	tmpl, err := template.ParseFiles("..templates/LANPics.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func LANGames(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	data := PageData{
+		Title: "My Page Title",
+		Body:  "Welcome to my dwebsite2!",
+	}
+	tmpl, err := template.ParseFiles("..templates/LANGames.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func LANBooks(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	data := PageData{
+		Title: "My Page Title",
+		Body:  "Welcome to my dwebsite2!",
+	}
+	tmpl, err := template.ParseFiles("..templates/LANBooks.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func LANDocs(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	data := PageData{
+		Title: "My Page Title",
+		Body:  "Welcome to my dwebsite2!",
+	}
+	tmpl, err := template.ParseFiles("..templates/LANNetFlix.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
