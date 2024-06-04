@@ -16,7 +16,7 @@ func main() {
 	r := httprouter.New()
 	r.GET("/homeserver/LANNetflix", homeHandler)
 	server := http.Server{
-		Addr:    "localhost:9002",
+		Addr:    "localhost:10002",
 		Handler: r,
 	}
 
