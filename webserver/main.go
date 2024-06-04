@@ -42,7 +42,7 @@ func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite!",
 	}
-	tmpl, err := template.ParseFiles("..templates/home.html")
+	tmpl, err := template.ParseFiles("../templates/home.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -61,7 +61,7 @@ func LANNetFlix(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite2!",
 	}
-	tmpl, err := template.ParseFiles("..templates/LANNetFlix.html")
+	tmpl, err := template.ParseFiles("../templates/LANNetFlix.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -80,7 +80,7 @@ func LANMusic(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite2!",
 	}
-	tmpl, err := template.ParseFiles("..templates/LANMusic.html")
+	tmpl, err := template.ParseFiles("../templates/LANMusic.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -99,7 +99,7 @@ func LANPics(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite2!",
 	}
-	tmpl, err := template.ParseFiles("..templates/LANPics.html")
+	tmpl, err := template.ParseFiles("../templates/LANPics.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -118,7 +118,7 @@ func LANGames(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite2!",
 	}
-	tmpl, err := template.ParseFiles("..templates/LANGames.html")
+	tmpl, err := template.ParseFiles("../templates/LANGames.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -137,7 +137,7 @@ func LANBooks(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite2!",
 	}
-	tmpl, err := template.ParseFiles("..templates/LANBooks.html")
+	tmpl, err := template.ParseFiles("../templates/LANBooks.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -156,7 +156,7 @@ func LANDocs(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "My Page Title",
 		Body:  "Welcome to my dwebsite2!",
 	}
-	tmpl, err := template.ParseFiles("..templates/LANNetFlix.html")
+	tmpl, err := template.ParseFiles("../templates/LANNetFlix.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
