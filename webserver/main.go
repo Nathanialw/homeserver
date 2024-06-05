@@ -5,6 +5,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"html/template"
 	"net/http"
+	"LANTV"
 )
 
 type PageData struct {
@@ -16,7 +17,8 @@ func main() {
 	r := httprouter.New()
 	
 	r.GET("/", home)
-	r.GET("/LANNetFlix", LANNetFlix)
+	r.GET("/LANNetFlix", LANMovies)
+	r.GET("/LANNetFlix", LANTV)
 	r.GET("/LANMusic", LANMusic)
 	r.GET("/LANPics", LANPics)
 	r.GET("/LANGames", LANGames)
@@ -54,7 +56,7 @@ func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 }
 
-func LANNetFlix(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func LANMovies(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
 	data := PageData{
