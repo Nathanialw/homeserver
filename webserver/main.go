@@ -5,7 +5,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"html/template"
 	"net/http"
-	"LANTV"
+	lantv "webserver/modules/LANTV"
 )
 
 type PageData struct {
@@ -18,7 +18,7 @@ func main() {
 	
 	r.GET("/", home)
 	r.GET("/LANNetFlix", LANMovies)
-	r.GET("/LANNetFlix", LANTV)
+	r.GET("/LANNetFlix", lantv.TVhome)
 	r.GET("/LANMusic", LANMusic)
 	r.GET("/LANPics", LANPics)
 	r.GET("/LANGames", LANGames)
