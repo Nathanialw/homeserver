@@ -5,6 +5,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"html/template"
 	"net/http"
+	lanbooks "webserver/modules/LANBooks"
+	landocs "webserver/modules/LANDocs"
+	langames "webserver/modules/LANGames"
+	lanmovies "webserver/modules/LANMovies"
+	lanmusic "webserver/modules/LANMusic"
+	lanpics "webserver/modules/LANPics"
 	lantv "webserver/modules/LANTV"
 )
 
@@ -17,17 +23,16 @@ func main() {
 	r := httprouter.New()
 	
 	r.GET("/", home)
-	r.GET("/LANNetFlix", LANMovies)
-	r.GET("/LANNetFlix", lantv.TVhome)
-	r.GET("/LANMusic", LANMusic)
-	r.GET("/LANPics", LANPics)
-	r.GET("/LANGames", LANGames)
-	r.GET("/LANBooks", LANBooks)
-	r.GET("/LANDocs", LANDocs)
-	
+	r.GET("/books", lanbooks.Home)
+	r.GET("/docs", landocs.Home)
+	r.GET("/games", langames.Home)
+	r.GET("/movies", lanmovies.Home)
+	r.GET("/music", lanmusic.Home)
+	r.GET("/pics", lanpics.Home)
+	r.GET("/tv", lantv.Home)
 	
 	server := http.Server{
-		Addr:    "localhost:10002",
+		Addr:    "127.0.0.1:10002",
 		Handler: r,
 	}
 
@@ -45,120 +50,6 @@ func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Body:  "Welcome to my dwebsite!",
 	}
 	tmpl, err := template.ParseFiles("../templates/home.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func LANMovies(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-
-	data := PageData{
-		Title: "My Page Title",
-		Body:  "Welcome to my dwebsite2!",
-	}
-	tmpl, err := template.ParseFiles("../templates/LANNetFlix.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func LANMusic(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-
-	data := PageData{
-		Title: "My Page Title",
-		Body:  "Welcome to my dwebsite2!",
-	}
-	tmpl, err := template.ParseFiles("../templates/LANMusic.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func LANPics(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-
-	data := PageData{
-		Title: "My Page Title",
-		Body:  "Welcome to my dwebsite2!",
-	}
-	tmpl, err := template.ParseFiles("../templates/LANPics.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func LANGames(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-
-	data := PageData{
-		Title: "My Page Title",
-		Body:  "Welcome to my dwebsite2!",
-	}
-	tmpl, err := template.ParseFiles("../templates/LANGames.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func LANBooks(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-
-	data := PageData{
-		Title: "My Page Title",
-		Body:  "Welcome to my dwebsite2!",
-	}
-	tmpl, err := template.ParseFiles("../templates/LANBooks.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func LANDocs(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-
-	data := PageData{
-		Title: "My Page Title",
-		Body:  "Welcome to my dwebsite2!",
-	}
-	tmpl, err := template.ParseFiles("../templates/LANNetFlix.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

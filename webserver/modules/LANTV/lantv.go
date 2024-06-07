@@ -12,7 +12,7 @@ type PageData struct {
 	Body  string
 }
 
-func TVhome (w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func Home (w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
 	data := PageData{
