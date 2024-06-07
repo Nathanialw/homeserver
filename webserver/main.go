@@ -46,8 +46,8 @@ func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
 	data := PageData{
-		Title: "My Page Title",
-		Body:  "Welcome to my dwebsite!",
+		Title: "Landing Page",
+		Body:  "Welcome to the home server landing page",
 	}
 	tmpl, err := template.ParseFiles("../templates/home.html")
 	if err != nil {

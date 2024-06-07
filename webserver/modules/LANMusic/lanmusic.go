@@ -16,10 +16,10 @@ func Home (w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
 	data := PageData{
-		Title: "LAN TV",
-		Body:  "Welcome to LAN TV",
+		Title: "LAN Music",
+		Body:  "Welcome to LAN Music",
 	}
-	tmpl, err := template.ParseFiles("../templates/LANMusic.html")
+	tmpl, err := template.ParseFiles("templates/LANMusic.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
