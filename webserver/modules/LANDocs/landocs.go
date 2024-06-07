@@ -19,7 +19,7 @@ func Home (w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "LAN Docs",
 		Body:  "Welcome to LAN Docs",
 	}
-	tmpl, err := template.ParseFiles("templates/LANDocs.html")
+	tmpl, err := template.ParseFiles("../modules/LANBooks/templates/LANDocs.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
