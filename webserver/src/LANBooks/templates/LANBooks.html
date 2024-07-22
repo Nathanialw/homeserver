@@ -1,0 +1,44 @@
+{{ define "LANBooks" }}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create a Reading List</title>
+    <!-- icons -->
+    <link rel="icon" href="/assets/icons/css/all.css" title="icons" />
+    <link rel="stylesheet" href="/assets/icons/css/all.css" />
+    <!-- index styles -->
+    <link rel="stylesheet" href="/js/nav/style.css" />
+    <link rel="stylesheet" href="/js/footer/style.css" />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/css/chart.css" />
+    
+  </head>
+
+    <body>
+        <header class="nav-center" id="nav-bar">
+            {{template "navbar" . }}
+        </header>
+        
+        <article>
+            <!--title-->
+            <h1>LANBooks</h1>
+            
+            <!--content-->
+            <ul>
+                <li>
+                </li>				
+            </ul>
+        </article>
+        
+        <footer id="footer">
+            {{ template "footer" . }}
+        </footer>
+    </body>
+
+</html>
+
+{{ end }}
