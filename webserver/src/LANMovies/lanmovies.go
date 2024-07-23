@@ -18,10 +18,12 @@ type Movie struct {
 	Subtitle string
 	Director string
 	Image    string
-	Year     int
-	Length   int
+	Year     string
+	Length   string
 	Genre    string
+	Series   string
 	Synopsis string
+	Path     string
 }
 
 type MoviesList struct {
@@ -164,31 +166,45 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 // content.GenerateHTML(w, data, "LANMovies")
 // }
 
-func AuthenticateMovie(w http.ResponseWriter, r *http.Request) bool {
-	title := r.FormValue("title")
-	subtitle := r.FormValue("subtitle")
-	director := r.FormValue("director")
-	year := r.FormValue("year")
-	series := r.FormValue("series")
-	length := r.FormValue("length")
-	synopsis := r.FormValue("synopsis")
+func insertIntoDB(movie Movie) {
+	_, err := db.Database.Exec("insert into movies (title, subtitle, director, year, series, length, image, genre, synopsis, path) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", movie.Title, movie.Subtitle, movie.Director, movie.Year, movie.Series, movie.Length, movie.Image, movie.Genre, movie.Synopsis, movie.Path)
+	if err != nil {
+		fmt.Printf("error adding book: %s\n", err)
+	}
+}
+
+func AuthenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
+	var movie Movie
+	var success bool = false
+
+	movie.Title = r.FormValue("title")
+	movie.Subtitle = r.FormValue("subtitle")
+	movie.Director = r.FormValue("director")
+	movie.Year = r.FormValue("year")
+	movie.Series = r.FormValue("series")
+	movie.Length = r.FormValue("length")
+	movie.Synopsis = r.FormValue("synopsis")
 
 	imageFile, imageFilename := authenticate.FormVideo("image", r)
 	videoFile, videoFilename := authenticate.FormVideo("media", r)
 
 	imageFile.Close()
 	videoFile.Close()
-	fmt.Printf("%s, %s, %s, %s, %s, %s, %s, %s, %s\n", title, subtitle, director, imageFilename, videoFilename, year, series, length, synopsis)
+	fmt.Printf("%s, %s\n", imageFilename, videoFilename)
 
-	return authenticate.ValidText(title) ||
-		authenticate.ValidText(subtitle) ||
-		authenticate.ValidText(director) ||
-		authenticate.ValidYear(year) ||
-		authenticate.ValidLength(length) ||
-		authenticate.ValidText(series) ||
-		authenticate.ValidText(synopsis)
+	if authenticate.ValidText(movie.Title) &&
+		authenticate.ValidText(movie.Subtitle) &&
+		authenticate.ValidText(movie.Director) &&
+		authenticate.ValidYear(movie.Year) &&
+		authenticate.ValidLength(movie.Length) &&
+		authenticate.ValidText(movie.Series) &&
+		authenticate.ValidText(movie.Synopsis) {
+		success = true
+	}
 	// authenticate.ValidImage()
 	// authenticate.ValidVideo()
+
+	return success, movie
 }
 
 func AddMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -217,7 +233,13 @@ func SubmitMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// }
 
 	// VerifyAndInsertBook(w, r, contentDB)
-	AuthenticateMovie(w, r)
-	fmt.Print("added\n")
+	success, movie := AuthenticateMovie(w, r)
+	if success {
+		insertIntoDB(movie)
+		fmt.Print("added\n")
+	} else {
+		fmt.Print("not added\n")
+	}
+
 	http.Redirect(w, r, "/addmovie", http.StatusSeeOther)
 }

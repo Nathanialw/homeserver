@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/nfnt/resize"
@@ -53,8 +54,13 @@ func ValidLength(length string) bool {
 		fmt.Println("length of 0 is irrational")
 		return false
 	}
-	if length > "1000" {
-		fmt.Println("The length is not longer than 1000 minutes")
+	num, err := strconv.ParseInt(length, 10, 64)
+	if err != nil {
+		fmt.Printf("error converting string to int in authenticate.ValidLength(): %s\n", err)
+		return false
+	}
+	if num > 1000 {
+		fmt.Printf("The length is longer than the max of 1000 minutes: %s\n", length)
 		return false
 	}
 	return true
