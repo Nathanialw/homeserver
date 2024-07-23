@@ -6,6 +6,7 @@ import (
 	"net/http"
 	content "webserver/src/Content"
 	db "webserver/src/DB"
+	user "webserver/src/User"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -20,18 +21,6 @@ type Movie struct {
 	Length   int
 	Genre    string
 	Synopsis string
-}
-
-type PageData struct {
-	Title string
-	Body  string
-}
-
-type UserSession struct {
-	Movies []Movie
-
-	//post history
-	//post history json
 }
 
 func createMoviesDB() {
@@ -106,4 +95,33 @@ func unused_movied(w http.ResponseWriter, r *http.Request, p httprouter.Params) 
 	// }
 
 	// content.GenerateHTML(w, data, "LANMovies")
+}
+
+func AddMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	var data user.Session
+	// user.Session.LoggedIn = LoginStatus(r)
+	// user.Session.Admin = AdminStatus(r)
+	content.GenerateHTML(w, data, "addbook", "navbar", "footer", "addbook")
+}
+
+func SubmitMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	//check on the browser side first and give feedback to the user
+	//then check on the server side
+	//if this fails it should redirect to the addbook page
+
+	// var data user.Session
+	// user.Session.LoggedIn = LoginStatus(r)
+
+	// if !data.LoggedIn {
+	// 	fmt.Println("not logged in")
+	// 	notfound(w, r, p)
+	// 	return
+	// }
+
+	// VerifyAndInsertBook(w, r, contentDB)
+	http.Redirect(w, r, "/addbook", http.StatusSeeOther)
 }

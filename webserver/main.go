@@ -13,6 +13,7 @@ import (
 	lanmusic "webserver/src/LANMusic"
 	lanpics "webserver/src/LANPics"
 	lantv "webserver/src/LANTV"
+	user "webserver/src/User"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -20,12 +21,6 @@ import (
 type PageData struct {
 	Title string
 	Body  string
-}
-
-type UserSession struct {
-	Username string
-	Admin    bool
-	LoggedIn bool
 }
 
 func main() {
@@ -39,7 +34,11 @@ func main() {
 	r.GET("/books", lanbooks.Home)
 	r.GET("/docs", landocs.Home)
 	r.GET("/games", langames.Home)
+
 	r.GET("/movies", lanmovies.Home)
+	r.GET("/addmovie", lanmovies.AddMovie)
+	r.POST("/submitmovie", lanmovies.SubmitMovie)
+
 	r.GET("/music", lanmusic.Home)
 	r.GET("/pics", lanpics.Home)
 	r.GET("/tv", lantv.Home)
@@ -94,7 +93,7 @@ func fileServerWith404(h http.Handler) http.HandlerFunc {
 func notfound(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
-	var data UserSession
+	var data user.Session
 	//data.LoggedIn = LoginStatus(r)
 	tmpl, err := template.ParseFiles("../templates/notfound.html")
 	if err != nil {
