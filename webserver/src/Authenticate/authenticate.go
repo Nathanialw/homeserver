@@ -2,20 +2,11 @@ package authenticate
 
 import (
 	"fmt"
-	"image/jpeg"
-	"image/png"
-	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
-
-	"github.com/nfnt/resize"
-
-	db "webserver/src/DB"
-	serverdb "webserver/src/DB"
 )
 
 func TextNotEmpty(title string) bool {
@@ -193,110 +184,4 @@ func FormVideo(media string, r *http.Request) (multipart.File, string, *multipar
 	}
 
 	return file, filename, handler
-}
-
-func UploadImage(file multipart.File, filename string, handler *multipart.FileHeader) bool {
-	//verify image
-	var imagePath string
-	// var imagePath100 string
-	// var imagePath400 string
-	if !TextNotEmpty(filename) {
-		fmt.Print("image field empty\n")
-		if db.Database == serverdb.Database {
-			fmt.Print("failed to add movie to content\n")
-			return false
-		} else {
-
-			//need to get the UID of the book somehow
-			rows, err := db.Database.Query("select title from imagePath, where uid = ?")
-			if err != nil {
-				fmt.Printf("error image does not exist in contentDB exists: %s\n", err)
-				return false
-			}
-			for rows.Next() {
-				rows.Scan(&imagePath)
-				fmt.Print("add movie image to submit book\n")
-			}
-		}
-	} else {
-		// if either fb handler is not empty
-		// if !VerifyImage(handler) {
-		// 	return false
-		// }
-		// Create the file in the file system
-		systemPath := "/mnt/media/movies/" + handler.Filename
-		dst, err := os.Create(systemPath)
-		if err != nil {
-			fmt.Printf("error creating the file: %s\n", err)
-			return false
-		}
-		defer dst.Close()
-		// Copy the uploaded file to the filesystem at the specified destination
-		_, err = io.Copy(dst, file)
-		if err != nil {
-			fmt.Printf("error copying the file: %s\n", err)
-			return false
-		}
-
-		OSFile, _ := os.Open(systemPath)
-		defer file.Close()
-
-		//resize the image
-		// img, _, _ := image.Decode(OSFile)
-		if err != nil {
-			fmt.Printf("error decoding the image: %s, %s\n", err, systemPath)
-			return false
-		}
-
-		extension := filepath.Ext(systemPath)
-		switch extension {
-		case ".jpg", ".jpeg":
-			fmt.Printf("jpeg\n")
-			OSFile.Seek(0, 0) // Reset the reader to the start of the file
-			img, _ := jpeg.Decode(OSFile)
-			//resize the image to 400x400
-			m := resize.Resize(400, 0, img, resize.Lanczos3)
-			systemPath = "/mnt/media/movies/" + handler.Filename
-			out, _ := os.Create(systemPath)
-			defer out.Close()
-			// Write the new image to the new file
-			jpeg.Encode(out, m, nil)
-		case ".png":
-			fmt.Printf("png\n")
-			OSFile.Seek(0, 0) // Reset the reader to the start of the file
-			img, _ := png.Decode(OSFile)
-			//resize the image to 400x400
-			m := resize.Resize(400, 0, img, resize.Lanczos3)
-			systemPath = "/mnt/media/movies/" + handler.Filename
-			out, _ := os.Create(systemPath)
-			defer out.Close()
-			//write the new image to the new file
-			png.Encode(out, m)
-		case ".gif":
-			fmt.Printf("unsupported image format: %s\n", extension)
-			return false
-			//OSFile.Seek(0, 0) // Reset the reader to the start of the file
-			//img, err = gif.Decode(OSFile)
-			////resize the image to 400x400
-			//m := resize.Resize(400, 0, img, resize.Lanczos3)
-			//systemPath = "../../public/assets/images/book_covers/400_" + handler.Filename
-			//out, _ := os.Create(systemPath)
-			//defer out.Close()
-			//// Write the new image to the new file
-			//gif.Encode(out, m, nil)
-			//
-			//m = resize.Resize(100, 0, img, resize.Lanczos3)
-			//systemPath = "../../public/assets/images/book_covers/100_" + handler.Filename
-			//out, _ = os.Create(systemPath)
-			//gif.Encode(out, m, nil)
-		default:
-			fmt.Printf("unsupported image format: %s\n", extension)
-			return false
-		}
-
-		//add book to database
-		imagePath = "/assets/images/book_covers/" + handler.Filename
-	}
-
-	return true
 }
