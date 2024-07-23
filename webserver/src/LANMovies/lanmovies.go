@@ -197,7 +197,7 @@ func AuthenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	if !validDBEntry(movie) {
 		return false, movie
 	}
-	var folderName string = movie.Title + "-" + movie.Subtitle + "," + movie.Director
+	var folderName string = "movies/" + movie.Title + "-" + movie.Subtitle + "," + movie.Director
 
 	movie.Year = r.FormValue("year")
 	movie.Series = r.FormValue("series")
@@ -205,7 +205,7 @@ func AuthenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	movie.Synopsis = r.FormValue("synopsis")
 
 	imageFile, imageFilename, imageHandler := authenticate.FormVideo("image", r)
-	// videoFile, videoFilename, videoHandler := authenticate.FormVideo("media", r)
+	videoFile, videoFilename, videoHandler := authenticate.FormVideo("media", r)
 
 	imageFile.Close()
 	// videoFile.Close()
@@ -226,7 +226,13 @@ func AuthenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	if !authenticate.ValidImage(folderName, imageHandler) {
 		return false, movie
 	}
-	if !upload.UploadImage(imageFile, imageFilename, folderName, imageHandler) {
+	if !upload.UploadMedia(imageFile, imageFilename, folderName, imageHandler) {
+		return false, movie
+	}
+	if !authenticate.ValidVideo(folderName, videoHandler) {
+		return false, movie
+	}
+	if !upload.UploadMedia(videoFile, videoFilename, folderName, videoHandler) {
 		return false, movie
 	}
 

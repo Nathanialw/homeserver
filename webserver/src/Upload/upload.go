@@ -9,10 +9,10 @@ import (
 	"os"
 )
 
-func UploadImage(file multipart.File, filename string, folderName string, handler *multipart.FileHeader) bool {
+func UploadMedia(file multipart.File, filename string, folderName string, handler *multipart.FileHeader) bool {
 
 	// Create the folder and subfolders
-	path := "/mnt/media/movies/" + folderName
+	path := "/mnt/media/" + folderName
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
 		err = os.MkdirAll(path, os.ModePerm)
 		if err != nil {
