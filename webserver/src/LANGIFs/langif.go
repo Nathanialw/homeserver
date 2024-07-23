@@ -21,5 +21,5 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Body:  "Welcome to LAN GIF",
 	}
 
-	content.GenerateHTML(w, data, "LANGIF", "LANGIF")
+	content.GenerateHTML(w, data, "LANGIFs", "LANGIFs")
 }
