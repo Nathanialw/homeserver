@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	authenticate "webserver/src/Authenticate"
 	content "webserver/src/Content"
 	db "webserver/src/DB"
 	user "webserver/src/User"
@@ -16,7 +17,7 @@ type Movie struct {
 	Title    string
 	Subtitle string
 	Director string
-	Cover    string
+	Image    string
 	Year     int
 	Length   int
 	Genre    string
@@ -24,12 +25,13 @@ type Movie struct {
 }
 
 type MoviesList struct {
+	User     user.Session
 	NotEmpty bool
 	Movies   []Movie
 }
 
 func createMoviesDB() {
-	stmt, err := db.Database.Prepare("CREATE TABLE IF NOT EXISTS movies (uid INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, subtitle TEXT, director TEXT, cover TEXT, year INTEGER, length INTEGER, genre TEXT, synopsis TEXT, series TEXT, path TEXT)")
+	stmt, err := db.Database.Prepare("CREATE TABLE IF NOT EXISTS movies (uid INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, subtitle TEXT, director TEXT, image TEXT, year INTEGER, length INTEGER, genre TEXT, synopsis TEXT, series TEXT, path TEXT)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,10 +40,10 @@ func createMoviesDB() {
 
 // func getAll() (threads []Movie, err error) {
 func getAll() (threads []Movie, err error) {
-	rows, err := db.Database.Query("select title, director, cover, synopsis from movies")
+	rows, err := db.Database.Query("select title, director, image, synopsis from movies")
 	for rows.Next() {
 		th := Movie{}
-		if err = rows.Scan(&th.Title, &th.Director, &th.Cover, &th.Synopsis); err != nil {
+		if err = rows.Scan(&th.Title, &th.Director, &th.Image, &th.Synopsis); err != nil {
 			fmt.Printf("%s", err)
 			return
 		}
@@ -56,14 +58,14 @@ func getAll() (threads []Movie, err error) {
 }
 
 func getByGenre(filter string) (threads []Movie, err error) {
-	rows, err := db.Database.Query("select title, director, cover, synopsis from movies where genre = ?", filter)
+	rows, err := db.Database.Query("select title, director, image, synopsis from movies where genre = ?", filter)
 	if err != nil {
 		fmt.Printf("query failed: %s\n", err)
 	}
 
 	for rows.Next() {
 		th := Movie{}
-		if err = rows.Scan(&th.Title, &th.Director, &th.Cover, &th.Synopsis); err != nil {
+		if err = rows.Scan(&th.Title, &th.Director, &th.Image, &th.Synopsis); err != nil {
 			fmt.Printf("%s", err)
 			return
 		}
@@ -78,14 +80,14 @@ func getByGenre(filter string) (threads []Movie, err error) {
 }
 
 func getByDirector(filter string) (threads []Movie, err error) {
-	rows, err := db.Database.Query("select title, director, cover, synopsis from movies where director = ?", filter)
+	rows, err := db.Database.Query("select title, director, image, synopsis from movies where director = ?", filter)
 	if err != nil {
 		fmt.Printf("query failed: %s\n", err)
 	}
 
 	for rows.Next() {
 		th := Movie{}
-		if err = rows.Scan(&th.Title, &th.Director, &th.Cover, &th.Synopsis); err != nil {
+		if err = rows.Scan(&th.Title, &th.Director, &th.Image, &th.Synopsis); err != nil {
 			fmt.Printf("%s", err)
 			return
 		}
@@ -100,14 +102,14 @@ func getByDirector(filter string) (threads []Movie, err error) {
 }
 
 func getBySeries(filter string) (threads []Movie, err error) {
-	rows, err := db.Database.Query("select title, director, cover, synopsis from movies where series = ?", filter)
+	rows, err := db.Database.Query("select title, director, image, synopsis from movies where series = ?", filter)
 	if err != nil {
 		fmt.Printf("query failed: %s\n", err)
 	}
 
 	for rows.Next() {
 		th := Movie{}
-		if err = rows.Scan(&th.Title, &th.Director, &th.Cover, &th.Synopsis); err != nil {
+		if err = rows.Scan(&th.Title, &th.Director, &th.Image, &th.Synopsis); err != nil {
 			fmt.Printf("%s", err)
 			return
 		}
@@ -162,10 +164,37 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 // content.GenerateHTML(w, data, "LANMovies")
 // }
 
+func AuthenticateMovie(w http.ResponseWriter, r *http.Request) bool {
+	title := r.FormValue("title")
+	subtitle := r.FormValue("subtitle")
+	director := r.FormValue("director")
+	year := r.FormValue("year")
+	series := r.FormValue("series")
+	length := r.FormValue("length")
+	synopsis := r.FormValue("synopsis")
+
+	imageFile, imageFilename := authenticate.FormVideo("image", r)
+	videoFile, videoFilename := authenticate.FormVideo("media", r)
+
+	imageFile.Close()
+	videoFile.Close()
+	fmt.Printf("%s, %s, %s, %s, %s, %s, %s, %s, %s\n", title, subtitle, director, imageFilename, videoFilename, year, series, length, synopsis)
+
+	return authenticate.ValidText(title) ||
+		authenticate.ValidText(subtitle) ||
+		authenticate.ValidText(director) ||
+		authenticate.ValidYear(year) ||
+		authenticate.ValidLength(length) ||
+		authenticate.ValidText(series) ||
+		authenticate.ValidText(synopsis)
+	// authenticate.ValidImage()
+	// authenticate.ValidVideo()
+}
+
 func AddMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
-	var data user.Session
+	var data MoviesList
 	// user.Session.LoggedIn = LoginStatus(r)
 	// user.Session.Admin = AdminStatus(r)
 	content.GenerateHTML(w, data, "LANMovies", "addmovie")
@@ -188,5 +217,7 @@ func SubmitMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// }
 
 	// VerifyAndInsertBook(w, r, contentDB)
-	http.Redirect(w, r, "/addbook", http.StatusSeeOther)
+	AuthenticateMovie(w, r)
+	fmt.Print("added\n")
+	http.Redirect(w, r, "/addmovie", http.StatusSeeOther)
 }

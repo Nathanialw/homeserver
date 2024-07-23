@@ -25,54 +25,55 @@
 
     <main class="main-container-nobackground">
       <article>
-        <h3 class="title">Add a book</h3>
+        <h3 class="title">Add a Movie</h3>
         <div class="title-underline"></div>
         
-        <form class="form" action="/submitbook" method="post" enctype="multipart/form-data">
+        <form class="form" action="/submitmovie" method="post" enctype="multipart/form-data">
+          <label class="form-label" for="media">Drop a Movie:</label>
+          <input class="form-input form-row" type="file" id="media" name="media" required>
+          <br>
           <label class="form-label" for="title">Title:</label>
           <input class="form-input form-row" type="text" id="title" name="title" required>
           <br>
           <label class="form-label" for="subtitle">Subtitle:</label>
           <input class="form-input form-row" type="text" id="subtitle" name="subtitle">
           <br>
-          <label class="form-label" for="author">Author:</label>
-          <input class="form-input form-row" type="text" id="author" name="author" required>
+          <label class="form-label" for="author">Director:</label>
+          <input class="form-input form-row" type="text" id="director" name="director" required>
           <br>
           <span class="form-adjacent">
-            <label class="form-label form-label-adjacent" for="publish_year">Publish Year:</label>
+            <label class="form-label form-label-adjacent" for="year">Release Year:</label>
             <span class="form-adjacent">
-              <input class="form-input form-row form-adjacent" type="number" min="1" max="6000" step="1" id="publish_year" name="publish_year" placeholder="2024" required>
-              <select class="form-input form-row form-adjacent" id="publish_era" name="publish_era" required>
-              <option value="AD">AD</option>
-              <option value="BC">BC</option>
-              </select>
+              <input class="form-input form-row form-adjacent" type="number" min="1" max="6000" step="1" id="year" name="year" placeholder="2024" required>
             </span>
           </span>
           <br>
-          <label class="form-label" for="image">Book Cover:</label>
+          <label class="form-label" for="image">Movie Cover:</label>
           <input class="form-input form-row" type="file" id="image" name="image" required>
+          <label class="form-label" for="length">Length(minutes):</label>
+          <input class="form-input form-row" type="number" min="1" max="600" step="1" id="length" name="length" required>
           <br>
-          <label class="form-label" for="synopsis">Synopsis:</label>
-          <textarea class="form-input form-row form-textarea" id="synopsis" name="synopsis" required></textarea>
+          <label class="form-label" for="image">Series:</label>
+          <span class="form-adjacent">
+            <select class="form-input form-row form-adjacent" id="series" name="series" required>
+              <option value="input"></option>
+              <option value="AD">AD</option>
+              <option value="BC">BC</option>
+            </select>
+            <input class="form-input form-row form-adjacent" type="text" id="series" name="series" placeholder="none" required>
+          </span>
           <br>
-          <label class="form-label" for="link_amazon">Amazon Link:</label>
-          <input class="form-input form-row" type="text" id="link_amazon" name="link_amazon">
+          <label class="form-label" for="genre">Genre:</label>
+          <span class="form-adjacent">
+            <select class="form-input form-row form-adjacent" id="genre" name="genre" required>
+              <option value="input"></option>
+              <option value="horror">horror</option>
+              <option value="fantasy">fantasy</option>
+            </select>
+            <input class="form-input form-row form-adjacent" type="text" id="series" name="series" placeholder="horror" required>
+          </span>
           <br>
-          <label class="form-label" for="link_indigo">Indigo Link:</label>
-          <input class="form-input form-row" type="text" id="link_indigo" name="link_indigo">
-          <br>  
-          <label class="form-label" for="link_pdf">PDF Link:</label>
-          <input class="form-input form-row" type="text" id="link_pdf" name="link_pdf">
-          <br>
-          <label class="form-label" for="link_epub">EPUB Link:</label>
-          <input class="form-input form-row" type="text" id="link_epub" name="link_epub">
-          <br>
-          <label class="form-label" for="link_handmade">Handmade Link:</label>
-          <input class="form-input form-row" type="text" id="link_handmade" name="link_handmade">
-          <br>
-          <label class="form-label" for="link_text">Link Text:</label>
-          <input class="form-input form-row" type="text" id="link_text" name="link_text">
-          <br>
+
           <input class="btn btn-center" type="submit" value="Submit">
         </form>
       </article>  
