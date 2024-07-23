@@ -24,7 +24,8 @@ type Movie struct {
 }
 
 type MoviesList struct {
-	Movies []Movie
+	NotEmpty bool
+	Movies   []Movie
 }
 
 func createMoviesDB() {
@@ -130,8 +131,10 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// data.Movies, err = getAll()
 	data.Movies, err = getAll()
 	if len(data.Movies) > 0 {
+		data.NotEmpty = true
 		fmt.Printf("The director is %s.\n", data.Movies[0].Director)
 	} else {
+		data.NotEmpty = false
 		fmt.Printf("none found\n")
 	}
 	content.GenerateHTML(w, data, "LANMovies", "LANMovies")

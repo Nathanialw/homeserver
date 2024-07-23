@@ -31,7 +31,8 @@
           </h3>
           <!--content-->
           <
-            <ul class="main-links">      
+            <ul class="main-links">
+              {{ if .NotEmpty}}
               {{ range .Movies }}
               <li>
                 <a href="movie" class="main-card">
@@ -49,6 +50,7 @@
                 </a>
               </li>			
               {{ end }}
+              {{ end}}
             </ul>
         
         </article>
