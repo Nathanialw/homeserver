@@ -2,8 +2,8 @@ package lantv
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
+	content "webserver/src/Content"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -20,14 +20,6 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "LAN TV",
 		Body:  "Welcome to LAN TV",
 	}
-	tmpl, err := template.ParseFiles("../src/LANTV/templates/LANTV.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	content.GenerateHTML(w, data, "LANTV", "LANTV")
 }

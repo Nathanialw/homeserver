@@ -2,19 +2,18 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"net/http"
 	"os"
 	content "webserver/src/Content"
 	db "webserver/src/DB"
 	lanbooks "webserver/src/LANBooks"
 	landocs "webserver/src/LANDocs"
+	langif "webserver/src/LANGIFs"
 	langames "webserver/src/LANGames"
 	lanmovies "webserver/src/LANMovies"
 	lanmusic "webserver/src/LANMusic"
 	lanpics "webserver/src/LANPics"
 	lantv "webserver/src/LANTV"
-	user "webserver/src/User"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -43,6 +42,7 @@ func main() {
 	r.GET("/music", lanmusic.Home)
 	r.GET("/pics", lanpics.Home)
 	r.GET("/tv", lantv.Home)
+	r.GET("/gifs", langif.Home)
 
 	server := http.Server{
 		Addr:    "127.0.0.1:10002",
@@ -86,16 +86,10 @@ func fileServerWith404(h http.Handler) http.HandlerFunc {
 func notfound(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
-	var data user.Session
-	//data.LoggedIn = LoginStatus(r)
-	tmpl, err := template.ParseFiles("../templates/notfound.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+	data := PageData{
+		Title: "404",
+		Body:  "404",
 	}
 
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	content.GenerateHTML(w, data, "Content", "notfound")
 }
