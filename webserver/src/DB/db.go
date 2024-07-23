@@ -3,36 +3,35 @@ package db
 import (
 	"database/sql"
 	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type Movie struct {
-	Uid         int
-	Title       string
-	Subtitle    string
-	Director    string
-	Cover       string
-	ReleaseDate int
-	genre       string
-	Synopsis    string
+	Uid      string
+	Title    string
+	Subtitle string
+	Director string
+	Cover    string
+	Year     int
+	Genre    string
+	Synopsis string
 }
 
-var contentDB *sql.DB
+var Database *sql.DB
 
 func Init() {
 	var err error
-	contentDB, err = sql.Open("sqlite3", "../database/contentDB.sqlite3")
+	//if the db doesn't exist, create it in the correct place
+
+	Database, err = sql.Open("sqlite3", "../db/homeserver.sqlite3")
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func Movies(list string) (threads []Movie, err error) {
-	var movies []Movie
-	var movie Movie
-
-	movies = append(movies, movie)
-
-	return
+func close() {
+	Database.Close()
 }
 
 // func Movies(list string) (threads []Movie, err error) {

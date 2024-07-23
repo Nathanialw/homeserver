@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	db "webserver/src/DB"
 	lanbooks "webserver/src/LANBooks"
 	landocs "webserver/src/LANDocs"
 	langames "webserver/src/LANGames"
@@ -21,6 +22,8 @@ type PageData struct {
 }
 
 func main() {
+	db.Init()
+
 	r := httprouter.New()
 
 	r.GET("/", home)
