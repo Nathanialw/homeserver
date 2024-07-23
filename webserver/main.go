@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"os"
+	content "webserver/src/Content"
 	db "webserver/src/DB"
 	lanbooks "webserver/src/LANBooks"
 	landocs "webserver/src/LANDocs"
@@ -61,16 +62,18 @@ func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Title: "Landing Page",
 		Body:  "Welcome to the home server landing page",
 	}
-	tmpl, err := template.ParseFiles("../templates/home.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	// tmpl, err := template.ParseFiles("../templates/home.html")
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
 
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	// err = tmpl.Execute(w, data)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// }
+
+	content.Home(w, data, "home")
 }
 
 func fileServerWith404(h http.Handler) http.HandlerFunc {

@@ -1,16 +1,35 @@
+{{ define "home" }}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
-
-    </head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Add a book</title>
+        <!-- icons -->
+        <link rel="icon" href="/assets/icons/css/all.css" title="icons" />
+        <link rel="stylesheet" href="/assets/icons/css/all.css" />
+        <!-- index styles -->
+        <link rel="stylesheet" href="/js/nav/style.css" />
+        <link rel="stylesheet" href="/js/footer/style.css" />
+        <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="/css/chart.css" />
+      </head>
 
     <body>
-                <article>
+        <header class="nav-center" id="nav-bar">
+            {{ template "navbar" . }}
+        </header>
+        <article class="main-container">
             <!--title-->
-            <h1>Home server Landing Page</h1>
-            
+            <header>
+                <h1 class="title title-header">Home server</h1>
+                <div class="title-underline"></div>
+              </header>
+
             <!--content-->
-            <ul>
+            <ul class="chart-links">
                 <li>
                     <a href="/movies"><img src="" alt="">Movies</a>                    
                 </li>				
@@ -35,18 +54,11 @@
             </ul>
         </article>
 
-        <footer>
-            <!--attach to bottom of page-->
-            <ul>
-                <li>
-                    <a href="https://github.com/nathanialw/homeserver.git"><img src="" alt="">Github</a>
-                </li>
-                <li>
-                    <a href="https://twitter.com"><img src="" alt="">Twitter</a>
-                </li>
-            </ul>
+        <footer id="footer">
+            {{ template "footer" . }}
         </footer>
     </body>
 
 </html>
 
+{{ end }}
