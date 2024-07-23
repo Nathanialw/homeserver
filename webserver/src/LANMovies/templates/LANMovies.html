@@ -22,33 +22,34 @@
         <header class="nav-center" id="nav-bar">
             {{template "navbar" . }}
         </header>
-        
         <article>
-            <!--title-->
-            <h1>LANMovies</h1>
-            
-            <!--content-->
-            <ul class="main-links">
-                {{ range .Movie . }}
-                <li>
-                    <a href="/readinglist/{{ .Name }}" class="main-card">
-                      <img
-                        src="{{ .Image }}"
-                        class="img card-img"
-                      />
-                      <section class="card-info">
-                        <h3>{{ .Name }}</h3>
-                        <div class="title-underline"></div>
-                        <p>
-                          {{ .Description }}
-                        </p>
-                      </section>
-                    </a>
-                  </li>			
-                {{ end }}
+          <!--title-->
+          <h1 class="title title-header">LANMovies</h1>
+          
+          <!--content-->
+          <
+            <ul class="main-links">      
+
+              <li>
+                <a href="movies/title" class="main-card">
+                  <img
+                    src="movies/title/cover.png"
+                    class="img card-img"
+                  />
+                  <section class="card-info">
+                    <h3>title</h3>
+                    <div class="title-underline"></div>
+                    <p>
+                      synopsis...
+                    </p>
+                  </section>
+                </a>
+              </li>			
+                
             </ul>
-        </article>
         
+        </article>
+
         <footer id="footer">
             {{ template "footer" . }}
         </footer>

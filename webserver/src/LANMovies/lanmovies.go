@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 	content "webserver/src/Content"
 	db "webserver/src/DB"
 
@@ -43,10 +42,8 @@ func createMoviesDB() {
 	stmt.Exec()
 }
 
-func Movies(uid string) (threads []Movie, err error) {
-	// var movies []Movie
-	// var movie Movie
-	rows, err := db.Database.Query("select title, director, cover, synopsis from movies where uid = ?", uid)
+func getAll() (threads []Movie, err error) {
+	rows, err := db.Database.Query("select title, director, cover, synopsis from movies")
 	for rows.Next() {
 		th := Movie{}
 		if err = rows.Scan(&th.Title, &th.Director, &th.Cover, &th.Synopsis); err != nil {
@@ -59,20 +56,47 @@ func Movies(uid string) (threads []Movie, err error) {
 	if rows != nil {
 		rows.Close()
 	}
-	fmt.Printf("running movies")
-
-	// movies = append(movies, movie)
+	fmt.Printf("retrieving all")
 	return
 }
 
-func movied(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func getGenre(genre string) (threads []Movie, err error) {
+	rows, err := db.Database.Query("select title, director, cover, synopsis from movies where genre = ?", genre)
+	for rows.Next() {
+		th := Movie{}
+		if err = rows.Scan(&th.Title, &th.Director, &th.Cover, &th.Synopsis); err != nil {
+			fmt.Printf("%s", err)
+			return
+		}
+		threads = append(threads, th)
+		fmt.Printf("name: %s, category: %s\n", th.Title, th.Genre)
+	}
+	if rows != nil {
+		rows.Close()
+	}
+	fmt.Printf("retrieving genre %s", genre)
+	return
+}
+
+func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+	createMoviesDB()
+
+	data, err := getAll()
+	content.GenerateHTML(w, data, "LANMovies")
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func unused_movied(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// currentPage = r.URL.Path
 
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+	// fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 	//strip off the end of the url
-	list := strings.TrimPrefix(p.ByName("categoryPath"), "/")
 	// fmt.Printf("category: %s\n", list)
-	var data UserSession
 	// data.LoggedIn = LoginStatus(r)
 	// data.Admin = AdminStatus(r)
 	// data.Category, _ = GetCategory(list)
@@ -81,30 +105,5 @@ func movied(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// 	return
 	// }
 
-	data.Movies, _ = Movies(list)
-
-	content.GenerateHTML(w, data, "LANMovies")
-}
-
-func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-	createMoviesDB()
-
-	data := PageData{
-		Title: "LAN Movies",
-		Body:  "Welcome to LAN movies",
-	}
-
-	// movied("2")
-	content.GenerateHTML(w, data, "LANMovies")
-
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-
-	// err = tmpl.Execute(w, data)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// }
+	// content.GenerateHTML(w, data, "LANMovies")
 }

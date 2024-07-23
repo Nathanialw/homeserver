@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 	db "webserver/src/DB"
 	lanbooks "webserver/src/LANBooks"
 	landocs "webserver/src/LANDocs"
@@ -21,10 +22,18 @@ type PageData struct {
 	Body  string
 }
 
+type UserSession struct {
+	Username string
+	Admin    bool
+	LoggedIn bool
+}
+
 func main() {
 	db.Init()
-
 	r := httprouter.New()
+
+	fs := http.FileServer(http.Dir("../../public/"))
+	r.NotFound = http.StripPrefix("/", fileServerWith404(fs))
 
 	r.GET("/", home)
 	r.GET("/books", lanbooks.Home)
@@ -54,6 +63,40 @@ func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Body:  "Welcome to the home server landing page",
 	}
 	tmpl, err := template.ParseFiles("../templates/home.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func fileServerWith404(h http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		_, err := os.Stat("../../public/" + r.URL.Path)
+
+		if os.IsNotExist(err) {
+			fmt.Printf("file does not exist: %s\n", r.URL.Path)
+			// If the file does not exist, serve your 404 page
+			notfound(w, r, httprouter.Params{})
+			return
+		}
+
+		fmt.Printf("file exists: %s\n", r.URL.Path)
+		// If the file exists, serve it
+		h.ServeHTTP(w, r)
+	}
+}
+
+func notfound(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	var data UserSession
+	//data.LoggedIn = LoginStatus(r)
+	tmpl, err := template.ParseFiles("../templates/notfound.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
