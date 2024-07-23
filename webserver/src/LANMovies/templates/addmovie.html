@@ -1,0 +1,88 @@
+{{ define "addmovie" }}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add a book</title>
+    <!-- icons -->
+    <link rel="icon" href="/assets/icons/css/all.css" title="icons" />
+    <link rel="stylesheet" href="/assets/icons/css/all.css" />
+    <!-- index styles -->
+    <link rel="stylesheet" href="/js/nav/style.css" />
+    <link rel="stylesheet" href="/js/footer/style.css" />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/css/chart.css" />
+  </head>
+  
+  <body>
+    <!-- navigation bar at the top -->
+    <header class="nav-center" id="nav-bar">
+      {{template "navbar" . }}
+    </header>
+
+    <main class="main-container-nobackground">
+      <article>
+        <h3 class="title">Add a book</h3>
+        <div class="title-underline"></div>
+        
+        <form class="form" action="/submitbook" method="post" enctype="multipart/form-data">
+          <label class="form-label" for="title">Title:</label>
+          <input class="form-input form-row" type="text" id="title" name="title" required>
+          <br>
+          <label class="form-label" for="subtitle">Subtitle:</label>
+          <input class="form-input form-row" type="text" id="subtitle" name="subtitle">
+          <br>
+          <label class="form-label" for="author">Author:</label>
+          <input class="form-input form-row" type="text" id="author" name="author" required>
+          <br>
+          <span class="form-adjacent">
+            <label class="form-label form-label-adjacent" for="publish_year">Publish Year:</label>
+            <span class="form-adjacent">
+              <input class="form-input form-row form-adjacent" type="number" min="1" max="6000" step="1" id="publish_year" name="publish_year" placeholder="2024" required>
+              <select class="form-input form-row form-adjacent" id="publish_era" name="publish_era" required>
+              <option value="AD">AD</option>
+              <option value="BC">BC</option>
+              </select>
+            </span>
+          </span>
+          <br>
+          <label class="form-label" for="image">Book Cover:</label>
+          <input class="form-input form-row" type="file" id="image" name="image" required>
+          <br>
+          <label class="form-label" for="synopsis">Synopsis:</label>
+          <textarea class="form-input form-row form-textarea" id="synopsis" name="synopsis" required></textarea>
+          <br>
+          <label class="form-label" for="link_amazon">Amazon Link:</label>
+          <input class="form-input form-row" type="text" id="link_amazon" name="link_amazon">
+          <br>
+          <label class="form-label" for="link_indigo">Indigo Link:</label>
+          <input class="form-input form-row" type="text" id="link_indigo" name="link_indigo">
+          <br>  
+          <label class="form-label" for="link_pdf">PDF Link:</label>
+          <input class="form-input form-row" type="text" id="link_pdf" name="link_pdf">
+          <br>
+          <label class="form-label" for="link_epub">EPUB Link:</label>
+          <input class="form-input form-row" type="text" id="link_epub" name="link_epub">
+          <br>
+          <label class="form-label" for="link_handmade">Handmade Link:</label>
+          <input class="form-input form-row" type="text" id="link_handmade" name="link_handmade">
+          <br>
+          <label class="form-label" for="link_text">Link Text:</label>
+          <input class="form-input form-row" type="text" id="link_text" name="link_text">
+          <br>
+          <input class="btn btn-center" type="submit" value="Submit">
+        </form>
+      </article>  
+    </main>
+
+    <footer id="footer">
+        {{ template "footer" . }}
+      </footer>
+
+   </body>
+</html>
+
+{{ end }}

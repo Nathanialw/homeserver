@@ -72,7 +72,7 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	createMoviesDB()
 
 	data, err := getAll()
-	content.GenerateHTML(w, data, "LANMovies")
+	content.GenerateHTML(w, data, "LANMovies", "LANMovies")
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -80,22 +80,22 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 }
 
-func unused_movied(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	// currentPage = r.URL.Path
+//func unused_movied(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+// currentPage = r.URL.Path
 
-	// fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-	//strip off the end of the url
-	// fmt.Printf("category: %s\n", list)
-	// data.LoggedIn = LoginStatus(r)
-	// data.Admin = AdminStatus(r)
-	// data.Category, _ = GetCategory(list)
-	// if data.Category.Category == "" {
-	// 	notfound(w, r, p)
-	// 	return
-	// }
+// fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+//strip off the end of the url
+// fmt.Printf("category: %s\n", list)
+// data.LoggedIn = LoginStatus(r)
+// data.Admin = AdminStatus(r)
+// data.Category, _ = GetCategory(list)
+// if data.Category.Category == "" {
+// 	notfound(w, r, p)
+// 	return
+// }
 
-	// content.GenerateHTML(w, data, "LANMovies")
-}
+// content.GenerateHTML(w, data, "LANMovies")
+// }
 
 func AddMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
@@ -103,7 +103,7 @@ func AddMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	var data user.Session
 	// user.Session.LoggedIn = LoginStatus(r)
 	// user.Session.Admin = AdminStatus(r)
-	content.GenerateHTML(w, data, "addbook", "navbar", "footer", "addbook")
+	content.GenerateHTML(w, data, "LANMovies", "addmovie")
 }
 
 func SubmitMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {

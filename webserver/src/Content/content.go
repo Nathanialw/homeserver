@@ -6,14 +6,14 @@ import (
 	"text/template"
 )
 
-func GenerateHTML(w http.ResponseWriter, data interface{}, fn ...string) {
+func GenerateHTML(w http.ResponseWriter, data interface{}, module string, fn ...string) {
 	var files []string
 
 	files = append(files, "../src/Content/templates/navbar.html")
 	files = append(files, "../src/Content/templates/footer.html")
 
 	for _, file := range fn {
-		files = append(files, fmt.Sprintf("../src/%s/templates/%s.html", file, file))
+		files = append(files, fmt.Sprintf("../src/%s/templates/%s.html", module, file))
 	}
 	for _, file := range files {
 		fmt.Print(file)
