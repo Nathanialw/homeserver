@@ -1,3 +1,3 @@
 .idea
 webserver/app/winmain.exe
-webserver/db/homeserver.sqlite3
+webserver/db/*
