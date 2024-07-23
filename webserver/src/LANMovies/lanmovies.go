@@ -173,6 +173,19 @@ func insertIntoDB(movie Movie) {
 	}
 }
 
+func validDBEntry(movie Movie) bool {
+	rows, err := db.Database.Query("select title from movies where title = ? and subtitle = ? and director = ?", movie.Title, movie.Subtitle, movie.Director)
+	if err != nil {
+		fmt.Printf("error checking if movie exists: %s\n", err)
+		return false
+	}
+	for rows.Next() {
+		fmt.Printf("movie already exists: %s\n", movie.Title)
+		return false
+	}
+	return true
+}
+
 func AuthenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	var movie Movie
 	var success bool = false
@@ -180,17 +193,22 @@ func AuthenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	movie.Title = r.FormValue("title")
 	movie.Subtitle = r.FormValue("subtitle")
 	movie.Director = r.FormValue("director")
+	if !validDBEntry(movie) {
+		return false, movie
+	}
+	var folderName string = movie.Title + "-" + movie.Subtitle + "," + movie.Director
+
 	movie.Year = r.FormValue("year")
 	movie.Series = r.FormValue("series")
 	movie.Length = r.FormValue("length")
 	movie.Synopsis = r.FormValue("synopsis")
 
-	imageFile, imageFilename := authenticate.FormVideo("image", r)
-	videoFile, videoFilename := authenticate.FormVideo("media", r)
+	imageFile, imageFilename, imageHandler := authenticate.FormVideo("image", r)
+	// videoFile, videoFilename, videoHandler := authenticate.FormVideo("media", r)
 
 	imageFile.Close()
-	videoFile.Close()
-	fmt.Printf("%s, %s\n", imageFilename, videoFilename)
+	// videoFile.Close()
+	fmt.Printf("%s\n", imageFilename)
 
 	if authenticate.ValidText(movie.Title) &&
 		authenticate.ValidText(movie.Subtitle) &&
@@ -200,9 +218,14 @@ func AuthenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 		authenticate.ValidText(movie.Series) &&
 		authenticate.ValidText(movie.Synopsis) {
 		success = true
+	} else {
+		return false, movie
 	}
-	// authenticate.ValidImage()
-	// authenticate.ValidVideo()
+
+	if !authenticate.ValidImage(folderName, imageHandler) {
+		return false, movie
+	}
+	// authenticate.ValidVideo(folderName, videoHandler)
 
 	return success, movie
 }
@@ -232,10 +255,9 @@ func SubmitMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// 	return
 	// }
 
-	// VerifyAndInsertBook(w, r, contentDB)
-	success, movie := AuthenticateMovie(w, r)
+	success, movies := AuthenticateMovie(w, r)
 	if success {
-		insertIntoDB(movie)
+		insertIntoDB(movies)
 		fmt.Print("added\n")
 	} else {
 		fmt.Print("not added\n")
