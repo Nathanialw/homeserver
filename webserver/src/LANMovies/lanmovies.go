@@ -23,14 +23,19 @@ type Movie struct {
 	Synopsis string
 }
 
+type MoviesList struct {
+	Movies []Movie
+}
+
 func createMoviesDB() {
-	stmt, err := db.Database.Prepare("CREATE TABLE IF NOT EXISTS movies (uid INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, subtitle TEXT, director TEXT, cover TEXT, year INTEGER, length INTEGER, genre TEXT, synopsis TEXT)")
+	stmt, err := db.Database.Prepare("CREATE TABLE IF NOT EXISTS movies (uid INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, subtitle TEXT, director TEXT, cover TEXT, year INTEGER, length INTEGER, genre TEXT, synopsis TEXT, series TEXT, path TEXT)")
 	if err != nil {
 		log.Fatal(err)
 	}
 	stmt.Exec()
 }
 
+// func getAll() (threads []Movie, err error) {
 func getAll() (threads []Movie, err error) {
 	rows, err := db.Database.Query("select title, director, cover, synopsis from movies")
 	for rows.Next() {
@@ -49,8 +54,12 @@ func getAll() (threads []Movie, err error) {
 	return
 }
 
-func getGenre(genre string) (threads []Movie, err error) {
-	rows, err := db.Database.Query("select title, director, cover, synopsis from movies where genre = ?", genre)
+func getByGenre(filter string) (threads []Movie, err error) {
+	rows, err := db.Database.Query("select title, director, cover, synopsis from movies where genre = ?", filter)
+	if err != nil {
+		fmt.Printf("query failed: %s\n", err)
+	}
+
 	for rows.Next() {
 		th := Movie{}
 		if err = rows.Scan(&th.Title, &th.Director, &th.Cover, &th.Synopsis); err != nil {
@@ -63,7 +72,51 @@ func getGenre(genre string) (threads []Movie, err error) {
 	if rows != nil {
 		rows.Close()
 	}
-	fmt.Printf("retrieving genre %s", genre)
+
+	return
+}
+
+func getByDirector(filter string) (threads []Movie, err error) {
+	rows, err := db.Database.Query("select title, director, cover, synopsis from movies where director = ?", filter)
+	if err != nil {
+		fmt.Printf("query failed: %s\n", err)
+	}
+
+	for rows.Next() {
+		th := Movie{}
+		if err = rows.Scan(&th.Title, &th.Director, &th.Cover, &th.Synopsis); err != nil {
+			fmt.Printf("%s", err)
+			return
+		}
+		threads = append(threads, th)
+		fmt.Printf("name: %s, category: %s\n", th.Title, th.Genre)
+	}
+	if rows != nil {
+		rows.Close()
+	}
+
+	return
+}
+
+func getBySeries(filter string) (threads []Movie, err error) {
+	rows, err := db.Database.Query("select title, director, cover, synopsis from movies where series = ?", filter)
+	if err != nil {
+		fmt.Printf("query failed: %s\n", err)
+	}
+
+	for rows.Next() {
+		th := Movie{}
+		if err = rows.Scan(&th.Title, &th.Director, &th.Cover, &th.Synopsis); err != nil {
+			fmt.Printf("%s", err)
+			return
+		}
+		threads = append(threads, th)
+		fmt.Printf("name: %s, category: %s\n", th.Title, th.Genre)
+	}
+	if rows != nil {
+		rows.Close()
+	}
+
 	return
 }
 
@@ -71,7 +124,16 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 	createMoviesDB()
 
-	data, err := getAll()
+	var err error
+	var data MoviesList
+
+	// data.Movies, err = getAll()
+	data.Movies, err = getAll()
+	if len(data.Movies) > 0 {
+		fmt.Printf("The director is %s.\n", data.Movies[0].Director)
+	} else {
+		fmt.Printf("none found\n")
+	}
 	content.GenerateHTML(w, data, "LANMovies", "LANMovies")
 
 	if err != nil {

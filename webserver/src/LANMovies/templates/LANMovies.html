@@ -27,28 +27,28 @@
           <h1 class="title title-header">LAN Movies</h1>
           
           <h3 class="title">
-            <a href="/addmovie">Add book</a>
+            <a href="/addmovie">Add Movie</a>
           </h3>
           <!--content-->
           <
             <ul class="main-links">      
-
+              {{ range .Movies }}
               <li>
-                <a href="movies/title" class="main-card">
+                <a href="movie" class="main-card">
                   <img
-                    src="movies/title/cover.png"
+                    src="{{.Cover}}"
                     class="img card-img"
                   />
                   <section class="card-info">
-                    <h3>title</h3>
+                    <h3>{{.Title}}</h3>
                     <div class="title-underline"></div>
                     <p>
-                      synopsis...
+                      {{.Director}}
                     </p>
                   </section>
                 </a>
               </li>			
-                
+              {{ end }}
             </ul>
         
         </article>
