@@ -98,10 +98,10 @@ func ValidEra(era string, year string) bool {
 	return true
 }
 
-func ValidImage(folderName string, handler *multipart.FileHeader) bool {
+func ValidImage(filePath string, handler *multipart.FileHeader) bool {
 	// Check the file type
 	fileType := handler.Header.Get("Content-Type")
-	fmt.Printf("/mnt/media/movies/%s/%s\n", folderName, handler.Filename)
+	// fmt.Printf("/mnt/media/movies/%s/%s\n", folderName, handler.Filename)
 
 	switch fileType {
 	case "image/jpeg", "image/jpg", "image/png":
@@ -120,7 +120,7 @@ func ValidImage(folderName string, handler *multipart.FileHeader) bool {
 		return false
 	}
 	//check if the file already exists
-	if _, err := os.Stat("/mnt/media/movies/" + folderName + "/" + handler.Filename); err == nil {
+	if _, err := os.Stat(filePath); err == nil {
 		//maybe append a number to the filename?
 		fmt.Printf("file already exists: %s\n", handler.Filename)
 		return false
@@ -158,8 +158,7 @@ func ValidVideo(folderName string, handler *multipart.FileHeader) bool {
 	return true
 }
 
-func FormVideo(media string, r *http.Request) (multipart.File, string, *multipart.FileHeader) {
-	var filename string
+func FormMedia(media string, r *http.Request) (multipart.File, *multipart.FileHeader) {
 	var file multipart.File
 	var handler *multipart.FileHeader
 	var err error
@@ -168,20 +167,17 @@ func FormVideo(media string, r *http.Request) (multipart.File, string, *multipar
 	err = r.ParseMultipartForm(10 << 20) // 10 MB
 	if err != nil {
 		fmt.Printf("error parsing the form: %s\n", err)
-		return file, "", handler
+		return file, handler
 	}
 
 	file, handler, err = r.FormFile(media) // "image" is the name of the file input field
 	if err != nil {
 		fmt.Printf("error retrieving the file, setting empty: %s\n", err)
-		filename = ""
-	} else {
-		filename = handler.Filename
 	}
 	if err != nil {
 		fmt.Printf("error parsing the form: %s\n", err)
-		return file, "", handler
+		return file, handler
 	}
 
-	return file, filename, handler
+	return file, handler
 }

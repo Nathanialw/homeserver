@@ -11,6 +11,7 @@ func GenerateHTML(w http.ResponseWriter, data interface{}, module string, fn ...
 
 	files = append(files, "../src/Content/templates/navbar.html")
 	files = append(files, "../src/Content/templates/footer.html")
+	files = append(files, "../src/Content/templates/head.html")
 
 	for _, file := range fn {
 		files = append(files, fmt.Sprintf("../src/%s/templates/%s.html", module, file))

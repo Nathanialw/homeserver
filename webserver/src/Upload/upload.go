@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func UploadMedia(file multipart.File, filename string, folderName string, handler *multipart.FileHeader) bool {
+func UploadMedia(file multipart.File, folderName string, handler *multipart.FileHeader) bool {
 
 	// Create the folder and subfolders
 	path := folderName

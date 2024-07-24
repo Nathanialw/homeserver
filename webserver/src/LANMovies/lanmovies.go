@@ -159,7 +159,8 @@ func ShowMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	var err error
 	var data Movie
-	data, err = RetrieveMovieFromDB("c")
+	//need the folder name to feed into here
+	data, err = RetrieveMovieFromDB("ss")
 
 	content.GenerateHTML(w, data, "LANMovies", "movie")
 
@@ -236,7 +237,7 @@ func authenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	if !validDBEntry(movie) {
 		return false, movie
 	}
-	var folderName string = "movies/" + movie.Title + "-" + movie.Subtitle + "," + movie.Director
+	var folderName string = "/mnt/media/movies/" + movie.Title + "-" + movie.Subtitle + "_" + movie.Director
 
 	movie.Year = r.FormValue("year")
 	movie.Series = r.FormValue("series")
@@ -244,15 +245,11 @@ func authenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	movie.Synopsis = r.FormValue("synopsis")
 	movie.Genre = r.FormValue("genre")
 
-	imageFile, imageFilename, imageHandler := authenticate.FormVideo("image", r)
-	videoFile, videoFilename, videoHandler := authenticate.FormVideo("media", r)
+	imageFile, imageHandler := authenticate.FormMedia("image", r)
+	videoFile, videoHandler := authenticate.FormMedia("media", r)
 
-	movie.Path = "/mnt/media/" + folderName + "/" + videoHandler.Filename
-	movie.Image = "/mnt/media/" + folderName + "/" + imageHandler.Filename
-
-	imageFile.Close()
-	// videoFile.Close()
-	fmt.Printf("%s\n", imageFilename)
+	movie.Image = folderName + "/" + imageHandler.Filename
+	movie.Path = folderName + "/" + videoHandler.Filename
 
 	if authenticate.ValidText(movie.Title) &&
 		authenticate.ValidText(movie.Subtitle) &&
@@ -261,23 +258,25 @@ func authenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 		authenticate.ValidLength(movie.Length) &&
 		authenticate.ValidText(movie.Series) &&
 		authenticate.ValidText(movie.Synopsis) &&
-		authenticate.ValidImage(folderName, imageHandler) &&
-		authenticate.ValidVideo(folderName, videoHandler) {
+		authenticate.ValidImage(movie.Image, imageHandler) &&
+		authenticate.ValidVideo(movie.Path, videoHandler) {
 		success = true
 	} else {
 		return false, movie
 	}
 
 	//needs an upload bar to see progress, not sure how to do that
-	if !upload.UploadMedia(imageFile, imageFilename, folderName, imageHandler) {
+	if !upload.UploadMedia(imageFile, folderName, imageHandler) {
 		return false, movie
 	}
-	if !upload.UploadMedia(videoFile, videoFilename, folderName, videoHandler) {
+	if !upload.UploadMedia(videoFile, folderName, videoHandler) {
 		return false, movie
 	}
 
 	// authenticate.ValidVideo(folderName, videoHandler)
 
+	imageFile.Close()
+	videoFile.Close()
 	return success, movie
 }
 
