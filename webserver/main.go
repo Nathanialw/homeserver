@@ -30,9 +30,13 @@ func main() {
 
 	r.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Serve static files from /mnt/media, strip the leading part of the URL path
+		fmt.Printf("PATH: %s\n", r.URL.Path)
 		if strings.HasPrefix(r.URL.Path, "/mnt/media/") {
 			fmt.Printf("MNT file: : %s\n", r.URL.Path)
 			http.StripPrefix("/mnt/media/", http.FileServer(http.Dir("/mnt/media"))).ServeHTTP(w, r)
+		} else if strings.HasPrefix(r.URL.Path, "/movie/") {
+			http.StripPrefix("/movie/", http.FileServer(http.Dir("../../public/"))).ServeHTTP(w, r)
+			notfound(w, r, httprouter.Params{})
 		} else {
 			http.StripPrefix("/", http.FileServer(http.Dir("../../public/"))).ServeHTTP(w, r)
 			notfound(w, r, httprouter.Params{})
