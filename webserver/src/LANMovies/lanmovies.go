@@ -38,7 +38,10 @@ func createMoviesDB() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	stmt.Exec()
+	_, execErr := stmt.Exec()
+	if execErr != nil {
+		log.Fatalf("Failed to execute table creation statement: %v", execErr)
+	}
 }
 
 // func getAll() (threads []Movie, err error) {
