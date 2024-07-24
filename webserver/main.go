@@ -27,15 +27,20 @@ func main() {
 	db.Init()
 	r := httprouter.New()
 
+	// Serve 404 page for non-existent files
 	fs := http.FileServer(http.Dir("../../public/"))
 	r.NotFound = http.StripPrefix("/", fileServerWith404(fs))
+
+	// Serve static files from /mnt/external
+	vs := http.FileServer(http.Dir("/mnt/media/"))
+	http.Handle("/movies/", http.StripPrefix("/movies/", vs))
 
 	r.GET("/", home)
 	r.GET("/books", lanbooks.Home)
 	r.GET("/docs", landocs.Home)
 	r.GET("/games", langames.Home)
 
-	r.GET("/movies", lanmovies.Home)
+	r.GET("/moves", lanmovies.Home)
 	r.GET("/movie", lanmovies.ShowMovie)
 	r.GET("/addmovie", lanmovies.AddMovie)
 	r.POST("/submitmovie", lanmovies.SubmitMovie)
@@ -54,6 +59,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+
 }
 
 func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {

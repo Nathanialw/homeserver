@@ -33,12 +33,13 @@
           <!--content-->
   
           <h3>{{ .Title }}</h3>
-          <div class="title-underline"></div>
-          <img src="../../../../../mnt/media/{{ .Image }}" class="img card-img"/>
-          <video width="320" height="240" autoplay controls>
-            <source src="../../../../../mnt/media/{{ .Path }}">
-            Your browser does not support the video tag.
-          <p>{{.Synopsis}}</p>
+          <span style="display: inline-flex; ">
+            <img src="/movies/movies/c-b,c/1721607375000881.jpg" class="img card-img"/>
+            <video width="640" height="480" autoplay controls>
+              <source src="/movies/movies/c-b,c/1721654268008649.webm" type="video/webm">
+              Your browser does not support the video tag.
+          </span>
+          <p>{{ .Synopsis }}</p>
 
         </article>
 
