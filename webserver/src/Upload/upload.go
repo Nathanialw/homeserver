@@ -12,7 +12,7 @@ import (
 func UploadMedia(file multipart.File, filename string, folderName string, handler *multipart.FileHeader) bool {
 
 	// Create the folder and subfolders
-	path := "/mnt/media/" + folderName
+	path := folderName
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
 		err = os.MkdirAll(path, os.ModePerm)
 		if err != nil {

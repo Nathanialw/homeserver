@@ -247,8 +247,8 @@ func authenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	imageFile, imageFilename, imageHandler := authenticate.FormVideo("image", r)
 	videoFile, videoFilename, videoHandler := authenticate.FormVideo("media", r)
 
-	movie.Path = folderName + "/" + videoHandler.Filename
-	movie.Image = folderName + "/" + imageHandler.Filename
+	movie.Path = "/mnt/media/" + folderName + "/" + videoHandler.Filename
+	movie.Image = "/mnt/media/" + folderName + "/" + imageHandler.Filename
 
 	imageFile.Close()
 	// videoFile.Close()
