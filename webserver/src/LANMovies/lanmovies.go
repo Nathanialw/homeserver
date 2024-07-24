@@ -160,7 +160,7 @@ func ShowMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	var err error
 	var data Movie
 	//need the folder name to feed into here
-	data, err = RetrieveMovieFromDB("ss")
+	data, err = RetrieveMovieFromDB("hhhggl")
 
 	content.GenerateHTML(w, data, "LANMovies", "movie")
 
