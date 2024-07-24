@@ -150,6 +150,21 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 }
 
+func ShowMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+	createMoviesDB()
+
+	var err error
+	var data MoviesList
+
+	content.GenerateHTML(w, data, "LANMovies", "movie")
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 //func unused_movied(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 // currentPage = r.URL.Path
 
@@ -187,7 +202,7 @@ func validDBEntry(movie Movie) bool {
 	return true
 }
 
-func AuthenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
+func authenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	var movie Movie
 	var success bool = false
 
@@ -263,7 +278,7 @@ func SubmitMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// 	return
 	// }
 
-	success, movies := AuthenticateMovie(w, r)
+	success, movies := authenticateMovie(w, r)
 	if success {
 		insertIntoDB(movies)
 		fmt.Print("added\n")
