@@ -129,31 +129,31 @@ func ValidImage(folderName string, handler *multipart.FileHeader) bool {
 }
 
 func ValidVideo(folderName string, handler *multipart.FileHeader) bool {
-	// Check the file type
-	fileType := handler.Header.Get("Content-Type")
+	// // Check the file type
+	// fileType := handler.Header.Get("Content-Type")
 
-	switch fileType {
-	case "image/jpeg", "image/jpg", "image/png":
-		break
-	default:
-		fmt.Println("File is not an image")
-		return false
-	}
-	if handler.Size > 4*1024*1024 {
-		fmt.Printf("File is too large (max 4MB) %d\n", handler.Size)
-		return false
-	}
-	//check if the file is an image
-	if !strings.Contains(handler.Header.Get("Content-Type"), "image") {
-		fmt.Printf("file is not an image: %s\n", handler.Header.Get("Content-Type"))
-		return false
-	}
-	//check if the file already exists
-	if _, err := os.Stat("/mnt/media/movies/" + folderName + "/" + handler.Filename); err == nil {
-		//maybe append a number to the filename?
-		fmt.Printf("file already exists: %s\n", handler.Filename)
-		return false
-	}
+	// switch fileType {
+	// case "image/jpeg", "image/jpg", "image/png":
+	// 	break
+	// default:
+	// 	fmt.Println("File is not an image")
+	// 	return false
+	// }
+	// if handler.Size > 4*1024*1024 {
+	// 	fmt.Printf("File is too large (max 4MB) %d\n", handler.Size)
+	// 	return false
+	// }
+	// //check if the file is an image
+	// if !strings.Contains(handler.Header.Get("Content-Type"), "image") {
+	// 	fmt.Printf("file is not an image: %s\n", handler.Header.Get("Content-Type"))
+	// 	return false
+	// }
+	// //check if the file already exists
+	// if _, err := os.Stat("/mnt/media/movies/" + folderName + "/" + handler.Filename); err == nil {
+	// 	//maybe append a number to the filename?
+	// 	fmt.Printf("file already exists: %s\n", handler.Filename)
+	// 	return false
+	// }
 
 	return true
 }

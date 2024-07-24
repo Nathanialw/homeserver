@@ -217,19 +217,16 @@ func AuthenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 		authenticate.ValidYear(movie.Year) &&
 		authenticate.ValidLength(movie.Length) &&
 		authenticate.ValidText(movie.Series) &&
-		authenticate.ValidText(movie.Synopsis) {
+		authenticate.ValidText(movie.Synopsis) &&
+		authenticate.ValidImage(folderName, imageHandler) &&
+		authenticate.ValidVideo(folderName, videoHandler) {
 		success = true
 	} else {
 		return false, movie
 	}
 
-	if !authenticate.ValidImage(folderName, imageHandler) {
-		return false, movie
-	}
+	//needs an upload bar to see progress, not sure how to do that
 	if !upload.UploadMedia(imageFile, imageFilename, folderName, imageHandler) {
-		return false, movie
-	}
-	if !authenticate.ValidVideo(folderName, videoHandler) {
 		return false, movie
 	}
 	if !upload.UploadMedia(videoFile, videoFilename, folderName, videoHandler) {
