@@ -26,7 +26,7 @@ func Init() {
 	var err error
 
 	//if the db doesn't exist, create it in the correct place
-	dbPath := "webserver/db"
+	dbPath := "/var/www/homeserver/webserver/db"
 	dir := filepath.Dir(dbPath)
 	// Ensure the directory exists
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
