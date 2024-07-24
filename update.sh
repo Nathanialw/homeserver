@@ -1,7 +1,8 @@
 git checkout -- *
 git pull
-sudo chmod a+x webserver/app/main
-sudo chmod 777 webserver/db/homeserver.sqlite3
-sudo chmod 777 webserver/db
+cd /var/www
 sudo service homeserver restart
 sudo service homeserver status
+sudo chmod a+x homeserver/webserver/app/main
+sudo chmod 777 homeserver/webserver/db/homeserver.sqlite3
+sudo chmod 777 homeserver/webserver/db
