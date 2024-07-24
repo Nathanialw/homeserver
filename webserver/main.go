@@ -38,10 +38,12 @@ func main() {
 		if strings.HasPrefix(r.URL.Path, "/mnt/media/") {
 			http.StripPrefix("/mnt/media/", http.FileServer(http.Dir("/mnt/media"))).ServeHTTP(w, r)
 		} else {
+			fmt.Printf("file needs to be appended: %s\n", r.URL.Path)
 			// If the path does not match, call the notfound handler
-			// notfound(w, r, httprouter.Params{})
-			fs := http.FileServer(http.Dir("../../public/"))
-			http.StripPrefix("/", fileServerWith404(fs))
+			notfound(w, r, httprouter.Params{})
+			// fs := http.FileServer(http.Dir("../../public/"))
+			// fmt.Printf("file has been appended: %s\n", r.URL.Path)
+			// http.StripPrefix("/", fileServerWith404(fs))
 		}
 	})
 
