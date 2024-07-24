@@ -36,7 +36,7 @@ type MoviesList struct {
 func createMoviesDB() {
 	stmt, err := db.Database.Prepare("CREATE TABLE IF NOT EXISTS movies (uid INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, subtitle TEXT, director TEXT, image TEXT, year INTEGER, length INTEGER, genre TEXT, synopsis TEXT, series TEXT, path TEXT)")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to prepare statement: %v\n", err)
 	}
 	_, execErr := stmt.Exec()
 	if execErr != nil {
