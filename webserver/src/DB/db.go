@@ -3,6 +3,8 @@ package db
 import (
 	"database/sql"
 	"log"
+	"os"
+	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -22,8 +24,18 @@ var Database *sql.DB
 
 func Init() {
 	var err error
-	//if the db doesn't exist, create it in the correct place
 
+	//if the db doesn't exist, create it in the correct place
+	dbPath := "webserver/db"
+	dir := filepath.Dir(dbPath)
+	// Ensure the directory exists
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			log.Fatalf("Failed to create directory: %v", err)
+		}
+	}
+
+	// Connect to the SQLite database
 	Database, err = sql.Open("sqlite3", "../db/homeserver.sqlite3")
 	if err != nil {
 		log.Fatalf("failed initing db: %v\n", err)
