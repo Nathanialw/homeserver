@@ -26,7 +26,7 @@ func Init() {
 
 	Database, err = sql.Open("sqlite3", "../db/homeserver.sqlite3")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed initing db: %v\n", err)
 	}
 }
 
