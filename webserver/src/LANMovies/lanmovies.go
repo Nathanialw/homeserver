@@ -158,7 +158,8 @@ func ShowMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	createMoviesDB()
 
 	var err error
-	var data MoviesList
+	var data Movie
+	data, err = RetrieveMovieFromDB("c")
 
 	content.GenerateHTML(w, data, "LANMovies", "movie")
 
@@ -166,6 +167,26 @@ func ShowMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func RetrieveMovieFromDB(title string) (Movie, error) {
+	var movie Movie
+	rows, err := db.Database.Query("select * from movies where title = ?", title)
+	if err != nil {
+		fmt.Printf("error retrieving movie: %s\n", err)
+		return movie, err
+	}
+	for rows.Next() {
+		if err = rows.Scan(&movie.Uid, &movie.Title, &movie.Subtitle, &movie.Director, &movie.Image, &movie.Year, &movie.Length, &movie.Genre, &movie.Synopsis, &movie.Series, &movie.Path); err != nil {
+			fmt.Printf("error scanning movie: %s\n", err)
+			return movie, err
+		}
+	}
+	if rows != nil {
+		rows.Close()
+	}
+	fmt.Printf("image: %s, path: %s\n", movie.Image, movie.Path)
+	return movie, nil
 }
 
 //func unused_movied(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -221,9 +242,13 @@ func authenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	movie.Series = r.FormValue("series")
 	movie.Length = r.FormValue("length")
 	movie.Synopsis = r.FormValue("synopsis")
+	movie.Genre = r.FormValue("genre")
 
 	imageFile, imageFilename, imageHandler := authenticate.FormVideo("image", r)
 	videoFile, videoFilename, videoHandler := authenticate.FormVideo("media", r)
+
+	movie.Path = folderName + "/" + videoHandler.Filename
+	movie.Image = folderName + "/" + imageHandler.Filename
 
 	imageFile.Close()
 	// videoFile.Close()

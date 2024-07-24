@@ -32,7 +32,14 @@
           </h3>
           <!--content-->
   
-        
+          <h3>{{ .Title }}</h3>
+          <div class="title-underline"></div>
+          <img src="../../../../../mnt/media/{{ .Image }}" class="img card-img"/>
+          <video width="320" height="240" autoplay controls>
+            <source src="../../../../../mnt/media/{{ .Path }}">
+            Your browser does not support the video tag.
+          <p>{{.Synopsis}}</p>
+
         </article>
 
         <footer id="footer">
