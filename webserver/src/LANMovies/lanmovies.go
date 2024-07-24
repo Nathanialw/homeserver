@@ -160,7 +160,8 @@ func ShowMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	var err error
 	var data Movie
 	//need the folder name to feed into here
-	data, err = RetrieveMovieFromDB("fff")
+	//pretty sure JS is the only way to get the folder name
+	data, err = RetrieveMovieFromDB(p.ByName("movieID"))
 
 	content.GenerateHTML(w, data, "LANMovies", "movie")
 
@@ -189,23 +190,6 @@ func RetrieveMovieFromDB(title string) (Movie, error) {
 	fmt.Printf("image: %s, path: %s\n", movie.Image, movie.Path)
 	return movie, nil
 }
-
-//func unused_movied(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-// currentPage = r.URL.Path
-
-// fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-//strip off the end of the url
-// fmt.Printf("category: %s\n", list)
-// data.LoggedIn = LoginStatus(r)
-// data.Admin = AdminStatus(r)
-// data.Category, _ = GetCategory(list)
-// if data.Category.Category == "" {
-// 	notfound(w, r, p)
-// 	return
-// }
-
-// content.GenerateHTML(w, data, "LANMovies")
-// }
 
 func insertIntoDB(movie Movie) {
 	_, err := db.Database.Exec("insert into movies (title, subtitle, director, year, series, length, image, genre, synopsis, path) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", movie.Title, movie.Subtitle, movie.Director, movie.Year, movie.Series, movie.Length, movie.Image, movie.Genre, movie.Synopsis, movie.Path)

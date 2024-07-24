@@ -45,7 +45,7 @@ func main() {
 	r.GET("/games", langames.Home)
 
 	r.GET("/movies", lanmovies.Home)
-	r.GET("/movie", lanmovies.ShowMovie)
+	r.GET("/movie/:movieID", lanmovies.ShowMovie)
 	r.GET("/addmovie", lanmovies.AddMovie)
 	r.POST("/submitmovie", lanmovies.SubmitMovie)
 
