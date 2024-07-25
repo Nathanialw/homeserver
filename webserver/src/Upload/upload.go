@@ -37,11 +37,11 @@ func UploadMedia(file multipart.File, folderName string, handler *multipart.File
 	return true
 }
 
-func RemoveMedia(folderName string) bool {
+func RemoveMedia(folderName string) error {
 	err := os.RemoveAll(folderName)
 	if err != nil {
 		fmt.Printf("error removing the file: %s\n", err)
-		return false
+		return err
 	}
-	return true
+	return nil
 }

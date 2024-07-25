@@ -282,9 +282,8 @@ func AddMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 }
 
 func RemoveMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	// var data Movie
-	// var success bool = false
 	submitValue := r.FormValue("delete")
+	var legacyFolderForm string
 
 	var title string
 	var subtitle string
@@ -293,11 +292,18 @@ func RemoveMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	title = strings.Split(submitValue, "_")[0]
 	subtitle = strings.Split(submitValue, "_")[1]
 	director = strings.Split(submitValue, "_")[2]
-	fmt.Printf("%s delete db entry: %s %s %s\nn", submitValue, title, subtitle, director)
+	// legacyFolderForm = title + "-" + subtitle + "_" + director
 
 	RemoveMovieFromDB(title, subtitle, director)
-	upload.RemoveMedia("/mnt/media/movies/" + submitValue)
 
+	err := upload.RemoveMedia("/mnt/media/movies/" + legacyFolderForm)
+	if err != nil {
+		fmt.Printf("error removing legacy movie folder: %s\n", err)
+	}
+	err = upload.RemoveMedia("/mnt/media/movies/" + submitValue)
+	if err != nil {
+		fmt.Printf("error removing movie folder: %s\n", err)
+	}
 	//redirect to the movies page
 	Home(w, r, p)
 }
