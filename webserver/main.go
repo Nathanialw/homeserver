@@ -50,6 +50,7 @@ func main() {
 	r.GET("/movie/:movieID", lanmovies.ShowMovie)
 	r.GET("/addmovie", lanmovies.AddMovie)
 	r.POST("/submitmovie", lanmovies.SubmitMovie)
+	r.POST("/removemovie", lanmovies.RemoveMovie)
 
 	r.GET("/music", lanmusic.Home)
 	r.GET("/pics", lanpics.Home)

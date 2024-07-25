@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	authenticate "webserver/src/Authenticate"
 	content "webserver/src/Content"
 	db "webserver/src/DB"
@@ -159,8 +160,8 @@ func ShowMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	var err error
 	var data Movie
-	//need the folder name to feed into here
-	//pretty sure JS is the only way to get the folder name
+
+	//need to mkae sure th "movieID" actually exists so it can 404 if it doesn't
 	data, err = RetrieveMovieFromDB(p.ByName("movieID"))
 
 	content.GenerateHTML(w, data, "LANMovies", "movie")
@@ -198,6 +199,13 @@ func insertIntoDB(movie Movie) {
 	}
 }
 
+func RemoveMovieFromDB(title string, subtitle string, director string) {
+	_, err := db.Database.Exec("delete from movies where title = ? and subtitle = ? and director = ?", title, subtitle, director)
+	if err != nil {
+		fmt.Printf("error removing movie: %s\n", err)
+	}
+}
+
 func validDBEntry(movie Movie) bool {
 	rows, err := db.Database.Query("select title from movies where title = ? and subtitle = ? and director = ?", movie.Title, movie.Subtitle, movie.Director)
 	if err != nil {
@@ -221,7 +229,7 @@ func authenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	if !validDBEntry(movie) {
 		return false, movie
 	}
-	var folderName string = "/mnt/media/movies/" + movie.Title + "-" + movie.Subtitle + "_" + movie.Director
+	var folderName string = "/mnt/media/movies/" + movie.Title + "_" + movie.Subtitle + "_" + movie.Director
 
 	movie.Year = r.FormValue("year")
 	movie.Series = r.FormValue("series")
@@ -271,6 +279,27 @@ func AddMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// user.Session.LoggedIn = LoginStatus(r)
 	// user.Session.Admin = AdminStatus(r)
 	content.GenerateHTML(w, data, "LANMovies", "addmovie")
+}
+
+func RemoveMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	// var data Movie
+	// var success bool = false
+	submitValue := r.FormValue("delete")
+
+	var title string
+	var subtitle string
+	var director string
+	//parse the form value to get the title, subtitle, and director
+	title = strings.Split(submitValue, "_")[0]
+	subtitle = strings.Split(submitValue, "_")[1]
+	director = strings.Split(submitValue, "_")[2]
+	fmt.Printf("%s delete db entry: %s %s %s\nn", submitValue, title, subtitle, director)
+
+	RemoveMovieFromDB(title, subtitle, director)
+	upload.RemoveMedia("/mnt/media/movies/" + submitValue)
+
+	//redirect to the movies page
+	Home(w, r, p)
 }
 
 func SubmitMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {

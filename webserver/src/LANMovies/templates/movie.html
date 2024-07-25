@@ -26,6 +26,9 @@
             Your browser does not support the video tag.
           </video>
           <p class="overview-text">{{ .Synopsis }}</p>
+          <form action="/removemovie" method="post" >
+            <button type="submit" name="delete" value="{{.Title}}_{{.Subtitle}}_{{.Director}}" class="btn btn-center" style="background-color: darkred;">Delete</button>
+          </form>
         </article>
 
         <footer id="footer">
