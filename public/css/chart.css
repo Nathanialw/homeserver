@@ -76,8 +76,6 @@ p {
   max-width: 900px;
   padding: 2rem;
   margin: 0 auto;
-  columns: 2;
-  column-gap: 2rem;
 }
 
 .category-chart {
@@ -205,9 +203,5 @@ p {
     max-width: 992px;
     columns: 2;
     column-gap: 2rem;
-  }
-
-  .overview-text {
-    columns: 3;
   }
 }
