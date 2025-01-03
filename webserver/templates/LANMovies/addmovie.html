@@ -21,9 +21,11 @@
 
         <!-- The only necessary fields are Title, Subtitle, Director to ensure it is a unique entry -->
         <form class="form" action="/submitmovie" method="post" enctype="multipart/form-data">
+          <label class="form-label" for="media">Required:</label>
           <label class="form-label" for="media">Drop a Movie:</label>
           <input class="form-input form-row" type="file" id="media" name="media" required>
           <br>
+          <!-- required start -->
           <label class="form-label" for="title">Title:</label>
           <input class="form-input form-row" type="text" id="title" name="title" required>
           <br>
@@ -32,41 +34,45 @@
           <br>
           <label class="form-label" for="author">Director:</label>
           <input class="form-input form-row" type="text" id="director" name="director" required>
+          <!-- required end -->
           <br>
+          <br>
+          <br>
+          <label class="form-label" for="media">Optional:</label>
           <span class="form-adjacent">
             <label class="form-label form-label-adjacent" for="year">Release Year:</label>
             <span class="form-adjacent">
-              <input class="form-input form-row form-adjacent" type="number" min="1" max="6000" step="1" id="year" name="year" placeholder="2024" required>
+              <input class="form-input form-row form-adjacent" type="number" min="1" max="6000" step="1" id="year" name="year" placeholder="2024">
             </span>
           </span>
           <br>
           <label class="form-label" for="image">Movie Cover:</label>
-          <input class="form-input form-row" type="file" id="image" name="image" required>
+          <input class="form-input form-row" type="file" id="image" name="image">
           <label class="form-label" for="length">Length(minutes):</label>
-          <input class="form-input form-row" type="number" min="1" max="600" step="1" id="length" name="length" required>
+          <input class="form-input form-row" type="number" min="1" max="600" step="1" id="length" name="length">
           <br>
           <label class="form-label" for="image">Series:</label>
           <span class="form-adjacent">
-            <select class="form-input form-row form-adjacent" id="series" name="series" required>
+            <select class="form-input form-row form-adjacent" id="series" name="series">
               <option value="input"></option>
               <option value="AD">AD</option>
               <option value="BC">BC</option>
             </select>
-            <input class="form-input form-row form-adjacent" type="text" id="series" name="series" placeholder="none" required>
+            <input class="form-input form-row form-adjacent" type="text" id="series" name="series" placeholder="none">
           </span>
           <br>
           <label class="form-label" for="genre">Genre:</label>
           <span class="form-adjacent">
-            <select class="form-input form-row form-adjacent" id="genre" name="genre" required>
+            <select class="form-input form-row form-adjacent" id="genre" name="genre">
               <option value="input"></option>
               <option value="horror">horror</option>
               <option value="fantasy">fantasy</option>
             </select>
-            <input class="form-input form-row form-adjacent" type="text" id="series" name="series" placeholder="horror" required>
+            <input class="form-input form-row form-adjacent" type="text" id="series" name="series" placeholder="horror">
           </span>
           <br>
           <label class="form-label" for="synopsis">Synopsis:</label>
-          <textarea class="form-input form-row form-textarea" id="synopsis" name="synopsis" required></textarea>
+          <textarea class="form-input form-row form-textarea" id="synopsis" name="synopsis"></textarea>
           <br>
 
           <input class="btn btn-center" type="submit" value="Submit">

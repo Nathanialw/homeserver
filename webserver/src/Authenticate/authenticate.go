@@ -34,6 +34,10 @@ func ValidText(text string) bool {
 // }
 
 func ValidLength(length string) bool {
+	if length == "" {
+		fmt.Println("length is empty") //length not set
+		return true
+	}
 	for _, c := range length {
 		if c < '0' || c > '9' {
 			fmt.Println("year is not a number")
@@ -58,8 +62,8 @@ func ValidLength(length string) bool {
 
 func ValidYear(year string) bool {
 	if year == "" {
-		fmt.Println("year is empty")
-		return false
+		fmt.Println("year is empty") //year not set
+		return true
 	}
 	for _, c := range year {
 		if c < '0' || c > '9' {
@@ -84,8 +88,8 @@ func ValidYear(year string) bool {
 
 func ValidEra(era string, year string) bool {
 	if era == "" {
-		fmt.Println("year is empty")
-		return false
+		fmt.Println("year is empty") //era not set
+		return true
 	}
 	if era != "BC" && era != "AD" {
 		fmt.Println("era is not BC or AD")
@@ -100,8 +104,13 @@ func ValidEra(era string, year string) bool {
 
 func ValidImage(filePath string, handler *multipart.FileHeader) bool {
 	// Check the file type
-	fileType := handler.Header.Get("Content-Type")
 	// fmt.Printf("/mnt/media/movies/%s/%s\n", folderName, handler.Filename)
+	if handler.Filename == "" {
+		// fmt.Printf("File name is empty: %s\n", handler.Filename)
+		return true
+	}
+
+	fileType := handler.Header.Get("Content-Type")
 
 	switch fileType {
 	case "image/jpeg", "image/jpg", "image/png":

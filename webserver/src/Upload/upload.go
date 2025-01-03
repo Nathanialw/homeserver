@@ -10,6 +10,10 @@ import (
 )
 
 func UploadMedia(file multipart.File, folderName string, handler *multipart.FileHeader) bool {
+	if handler.Filename == "" {
+		fmt.Println("Image File name is empty")
+		return false
+	}
 
 	// Create the folder and subfolders
 	path := folderName

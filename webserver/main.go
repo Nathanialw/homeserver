@@ -43,9 +43,11 @@ func main() {
 	})
 
 	r.GET("/", home)
+
 	r.GET("/books", lanbooks.Home)
-	r.GET("/docs", landocs.Home)
-	r.GET("/games", langames.Home)
+	r.GET("/book/:bookID", lanbooks.Show)
+	r.GET("/addbook", lanbooks.AddBook)
+	r.POST("/submitbook", lanbooks.SubmitBook)
 
 	r.GET("/movies", lanmovies.Home)
 	r.GET("/movie/:movieID", lanmovies.ShowMovie)
@@ -53,6 +55,8 @@ func main() {
 	r.POST("/submitmovie", lanmovies.SubmitMovie)
 	r.POST("/removemovie", lanmovies.RemoveMovie)
 
+	r.GET("/docs", landocs.Home)
+	r.GET("/games", langames.Home)
 	r.GET("/music", lanmusic.Home)
 	r.GET("/pics", lanpics.Home)
 	r.GET("/tv", lantv.Home)

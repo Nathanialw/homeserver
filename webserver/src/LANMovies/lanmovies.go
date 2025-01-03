@@ -146,7 +146,7 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		data.NotEmpty = false
 		fmt.Printf("none found\n")
 	}
-	content.GenerateHTML(w, data, "LANMovies", "LANMovies")
+	content.GenerateHTML(w, data, "LANMovies", "home")
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -237,10 +237,10 @@ func authenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	movie.Synopsis = r.FormValue("synopsis")
 	movie.Genre = r.FormValue("genre")
 
-	imageFile, imageHandler := authenticate.FormMedia("image", r)
+	// imageFile, imageHandler := authenticate.FormMedia("image", r)
 	videoFile, videoHandler := authenticate.FormMedia("media", r)
 
-	movie.Image = folderName + "/" + imageHandler.Filename
+	// movie.Image = folderName + "/" + imageHandler.Filename
 	movie.Path = folderName + "/" + videoHandler.Filename
 
 	if authenticate.ValidText(movie.Title) &&
@@ -248,9 +248,7 @@ func authenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 		authenticate.ValidText(movie.Director) &&
 		authenticate.ValidYear(movie.Year) &&
 		authenticate.ValidLength(movie.Length) &&
-		authenticate.ValidText(movie.Series) &&
-		authenticate.ValidText(movie.Synopsis) &&
-		authenticate.ValidImage(movie.Image, imageHandler) &&
+		// authenticate.ValidImage(movie.Image, imageHandler) &&
 		authenticate.ValidVideo(movie.Path, videoHandler) {
 		success = true
 	} else {
@@ -258,16 +256,16 @@ func authenticateMovie(w http.ResponseWriter, r *http.Request) (bool, Movie) {
 	}
 
 	//needs an upload bar to see progress, not sure how to do that
-	if !upload.UploadMedia(imageFile, folderName, imageHandler) {
-		return false, movie
-	}
+	// if !upload.UploadMedia(imageFile, folderName, imageHandler) {
+	// 	return false, movie
+	// }
 	if !upload.UploadMedia(videoFile, folderName, videoHandler) {
 		return false, movie
 	}
 
 	// authenticate.ValidVideo(folderName, videoHandler)
 
-	imageFile.Close()
+	// imageFile.Close()
 	videoFile.Close()
 	return success, movie
 }

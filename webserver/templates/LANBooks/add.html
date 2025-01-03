@@ -1,0 +1,50 @@
+{{ define "add" }}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Add a Book</title>
+    {{ template "head" . }}    
+  <body>
+    <!-- navigation bar at the top -->
+    <header class="nav-center" id="nav-bar">
+      {{template "navbar" . }}
+    </header>
+
+    <main class="main-container-nobackground">
+      <article>
+        <h3 class="title">Add a Book</h3>
+        <div class="title-underline"></div>
+        <h3 class="title">
+          <a href="/movies">Back</a>
+        </h3>
+
+        <!-- The only necessary fields are Title, Subtitle, Director to ensure it is a unique entry -->
+        <form class="form" action="/submitbook" method="post" enctype="multipart/form-data">
+          <label class="form-label" for="media">Required:</label>
+          <label class="form-label" for="media">Drop a Book:</label>
+          <input class="form-input form-row" type="file" id="media" name="media" required>
+          <br>
+          <!-- required start -->
+          <label class="form-label" for="title">Title:</label>
+          <input class="form-input form-row" type="text" id="title" name="title" required>
+          <br>
+          <label class="form-label" for="subtitle">Subtitle:</label>
+          <input class="form-input form-row" type="text" id="subtitle" name="subtitle" required>
+          <br>
+          <label class="form-label" for="author">Author:</label>
+          <input class="form-input form-row" type="text" id="author" name="author" required>
+          <br>
+          <input class="btn btn-center" type="submit" value="Submit">
+        </form>
+      </article>  
+    </main>
+
+    <footer id="footer">
+      {{ template "footer" . }}
+    </footer>
+
+   </body>
+</html>
+
+{{ end }}
