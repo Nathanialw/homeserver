@@ -1,2 +1,4 @@
-go build -buildvcs=false -o app/main
-go build -buildvcs=false -o app/winmain.exe
+Linux:
+    go build -buildvcs=false -o app/main
+Windows:
+    go build -buildvcs=false -o app/winmain.exe

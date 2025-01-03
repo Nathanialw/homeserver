@@ -26,6 +26,7 @@ type PageData struct {
 
 func main() {
 	db.Init()
+
 	r := httprouter.New()
 
 	r.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -58,15 +59,22 @@ func main() {
 	r.GET("/gifs", langif.Home)
 
 	server := http.Server{
-		Addr:    "127.0.0.1:10002",
+		Addr:    "127.0.0.1:",
 		Handler: r,
 	}
 
+	if len(os.Args) > 1 {
+		server.Addr += os.Args[1] ;
+	} else {
+		server.Addr += "10002"
+	}
+
+	fmt.Println("Running at address: ", server.Addr)
+		
 	err := server.ListenAndServe()
 	if err != nil {
 		fmt.Println(err)
 	}
-
 }
 
 func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {

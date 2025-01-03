@@ -288,23 +288,20 @@ func RemoveMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	var title string
 	var subtitle string
 	var director string
-	//parse the form value to get the title, subtitle, and director
+
 	title = strings.Split(submitValue, "_")[0]
 	subtitle = strings.Split(submitValue, "_")[1]
 	director = strings.Split(submitValue, "_")[2]
-	// legacyFolderForm = title + "-" + subtitle + "_" + director
+	legacyFolderForm = title + "_" + subtitle + "_" + director
 
 	RemoveMovieFromDB(title, subtitle, director)
 
+	fmt.Printf("deleting1: /mnt/media/movies/%s\n", legacyFolderForm)
 	err := upload.RemoveMedia("/mnt/media/movies/" + legacyFolderForm)
 	if err != nil {
 		fmt.Printf("error removing legacy movie folder: %s\n", err)
 	}
-	err = upload.RemoveMedia("/mnt/media/movies/" + submitValue)
-	if err != nil {
-		fmt.Printf("error removing movie folder: %s\n", err)
-	}
-	//redirect to the movies page
+
 	Home(w, r, p)
 }
 
