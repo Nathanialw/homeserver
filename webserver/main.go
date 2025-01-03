@@ -64,13 +64,13 @@ func main() {
 	}
 
 	if len(os.Args) > 1 {
-		server.Addr += os.Args[1] ;
+		server.Addr += os.Args[1]
 	} else {
 		server.Addr += "10002"
 	}
 
 	fmt.Println("Running at address: ", server.Addr)
-		
+
 	err := server.ListenAndServe()
 	if err != nil {
 		fmt.Println(err)
@@ -85,7 +85,7 @@ func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		Body:  "Welcome to the home server landing page",
 	}
 
-	content.GenerateHTML(w, data, "Content", "home")
+	content.GenerateHTML(w, data, "General", "home")
 }
 
 func fileServerWith404(h http.Handler) http.HandlerFunc {
@@ -110,5 +110,5 @@ func notfound(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	data := PageData{}
 
-	content.GenerateHTML(w, data, "Content", "notfound")
+	content.GenerateHTML(w, data, "General", "notfound")
 }
