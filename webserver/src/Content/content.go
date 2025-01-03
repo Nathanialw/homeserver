@@ -9,12 +9,12 @@ import (
 func GenerateHTML(w http.ResponseWriter, data interface{}, module string, fn ...string) {
 	var files []string
 
-	files = append(files, "../content/General/templates/navbar.html")
-	files = append(files, "../content/General/templates/footer.html")
-	files = append(files, "../content/General/templates/head.html")
+	files = append(files, "../templates/General/navbar.html")
+	files = append(files, "../templates/General/footer.html")
+	files = append(files, "../templates/General/head.html")
 
 	for _, file := range fn {
-		files = append(files, fmt.Sprintf("../content/%s/templates/%s.html", module, file))
+		files = append(files, fmt.Sprintf("../templates/%s/%s.html", module, file))
 	}
 	for _, file := range files {
 		fmt.Print(file)

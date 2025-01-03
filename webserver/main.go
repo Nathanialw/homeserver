@@ -58,15 +58,16 @@ func main() {
 	r.GET("/tv", lantv.Home)
 	r.GET("/gifs", langif.Home)
 
-	server := http.Server{
-		Addr:    "127.0.0.1:",
-		Handler: r,
+	address := "127.0.0.1:"
+	if len(os.Args) > 1 {
+		address += os.Args[1]
+	} else {
+		address += "10002"
 	}
 
-	if len(os.Args) > 1 {
-		server.Addr += os.Args[1]
-	} else {
-		server.Addr += "10002"
+	server := http.Server{
+		Addr:    address,
+		Handler: r,
 	}
 
 	fmt.Println("Running at address: ", server.Addr)
