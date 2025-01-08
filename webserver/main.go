@@ -59,10 +59,10 @@ func main() {
 	r.GET("/addseries", lantv.AddSeries)
 	r.POST("/submitseries", lantv.SubmitSeries)
 	r.GET("/addseason", lantv.AddSeason)
-	r.POST("/submitseason/:seriesID", lantv.SubmitSeason)
+	r.POST("/submitseason", lantv.SubmitSeason)
 	r.GET("/tv/:seriesID", lantv.ShowSeries)
-	r.GET("/tv/:seriesID/:seasonNum", lantv.ShowSeason)
-	r.GET("/tv/:seriesID/:seasonNum/:episodeNum", lantv.ShowEpisode)
+	r.POST("/selectSeason", lantv.SelectSeason)
+	r.POST("/selectEpisode", lantv.SelectEpisode)
 
 	r.GET("/docs", landocs.Home)
 	r.GET("/games", langames.Home)

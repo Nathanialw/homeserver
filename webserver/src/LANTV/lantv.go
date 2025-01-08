@@ -1,6 +1,7 @@
 package lantv
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -25,7 +26,7 @@ type Episode struct {
 	Image      string
 	Synopsis   string
 	Path       string
-	Back       string
+	Active     bool
 }
 
 type Season struct {
@@ -36,7 +37,7 @@ type Season struct {
 	Synopsis  string
 	Path      string
 	Episodes  []Episode
-	Back      string
+	Active    bool
 }
 
 type Series struct {
@@ -48,7 +49,6 @@ type Series struct {
 	Synopsis string
 	Path     string
 	Seasons  []Season
-	Back     string
 }
 
 type List struct {
@@ -106,77 +106,10 @@ func ShowSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	data = OrganizeIntoSeasons(data, episodes)
 	fmt.Printf("number of seasons: %d\n", len(data.Seasons))
 
-	data.Back = "/tv/"
+	data.Seasons[0].Active = true
+	data.Seasons[0].Episodes[0].Active = true
 	// /tv/:seriesID/:seasonNum
 	content.GenerateHTML(w, data, "LANTV", "series")
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-//list the episodes of the selected season
-func ShowSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-	createSeriesDB()
-	createEpisodesDB()
-
-	var err error
-	var data Series
-	var episodes []Episode
-
-	fmt.Printf("Series: %s\n", p.ByName("seriesID"))
-	fmt.Printf("Season %s\n", p.ByName("seasonNum"))
-
-	//need to mkae sure th "movieID" actually exists so it can 404 if it doesn't
-	data, err = RetrieveSeriesFromDB(p.ByName("seriesID"))
-
-	//organize the episodes by season
-	episodes, _ = RetrieveEpisodesFromDB(data.Title)
-	fmt.Printf("number of episodes: %d\n", len(episodes))
-
-	data = OrganizeIntoSeasons(data, episodes)
-	fmt.Printf("number of seasons: %d\n", len(data.Seasons))
-
-	num, _ := strconv.Atoi(p.ByName("seasonNum"))
-	data.Seasons[num-1].Back = "/tv/" + p.ByName("seriesID")
-	content.GenerateHTML(w, data.Seasons[num-1], "LANTV", "seasons")
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-}
-
-func ShowEpisode(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-	createSeriesDB()
-	createEpisodesDB()
-
-	var err error
-	var data Series
-	var episodes []Episode
-
-	fmt.Printf("Series: %s\n", p.ByName("seriesID"))
-	fmt.Printf("Season %s\n", p.ByName("seasonNum"))
-	fmt.Printf("Episode: %s\n", p.ByName("episodeNum"))
-
-	//need to mkae sure th "movieID" actually exists so it can 404 if it doesn't
-	data, err = RetrieveSeriesFromDB(p.ByName("seriesID"))
-
-	//organize the episodes by season
-	episodes, _ = RetrieveEpisodesFromDB(data.Title)
-	fmt.Printf("number of episodes: %d\n", len(episodes))
-
-	data = OrganizeIntoSeasons(data, episodes)
-	fmt.Printf("number of seasons: %d\n", len(data.Seasons))
-
-	seasonNum, _ := strconv.Atoi(p.ByName("seasonNum"))
-	episodeNum, _ := strconv.Atoi(p.ByName("episodeNum"))
-
-	data.Seasons[seasonNum-1].Episodes[episodeNum-1].Back = "/tv/" + p.ByName("seriesID") + "/" + p.ByName("seasonNum")
-	content.GenerateHTML(w, data.Seasons[seasonNum-1].Episodes[episodeNum-1], "LANTV", "episode")
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -327,6 +260,11 @@ func OrganizeIntoSeasons(series Series, episodes []Episode) Series {
 			series.Seasons = append(series.Seasons, Season{})
 			series.Seasons[episode.Season-1].SeasonNum = episode.Season
 			series.Seasons[episode.Season-1].Title = series.Title
+			if episode.Season == 1 {
+				series.Seasons[episode.Season-1].Active = true
+			} else {
+				series.Seasons[episode.Season-1].Active = false
+			}
 		}
 		series.Seasons[episode.Season-1].Episodes = append(series.Seasons[episode.Season-1].Episodes, episode)
 	}
@@ -354,6 +292,91 @@ func OrganizeIntoSeasons(series Series, episodes []Episode) Series {
 	}
 
 	//organize the episodes by season
-
 	return series
+}
+
+func SelectSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	series := r.FormValue("seriesID")
+	currentSeason, _ := strconv.Atoi(r.FormValue("seasonNum"))
+	episodeNum, _ := strconv.Atoi(r.FormValue("episodeNum"))
+
+	fmt.Printf("Playing episode: SeriesID=%s, SeasonNum=%d, EpisodeNum=%d\n", series, currentSeason, episodeNum)
+
+	var err error
+	var data Series
+	var episodes []Episode
+
+	//need to ensure the "movieID" actually exists so it can 404 if it doesn't
+	data, err = RetrieveSeriesFromDB(series)
+
+	//organize the episodes by season
+	episodes, _ = RetrieveEpisodesFromDB(data.Title)
+	fmt.Printf("number of episodes: %d\n", len(episodes))
+
+	data = OrganizeIntoSeasons(data, episodes)
+	fmt.Printf("number of seasons: %d\n", len(data.Seasons))
+
+	//reset the active season/episode
+	for i := 0; i < len(data.Seasons); i++ {
+		for j := 0; j < len(data.Seasons[i].Episodes); j++ {
+			if i == currentSeason-1 && j == episodeNum-1 {
+				data.Seasons[i].Episodes[j].Active = true
+			} else {
+				data.Seasons[i].Episodes[j].Active = false
+			}
+		}
+		if i == currentSeason-1 {
+			data.Seasons[i].Active = true
+		} else {
+			data.Seasons[i].Active = false
+		}
+	}
+
+	content.GenerateHTML(w, data, "LANTV", "series")
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+type VideoResponse struct {
+	VideoURL string `json:"videoURL"`
+}
+
+func SelectEpisode(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	series := r.FormValue("seriesID")
+	currentSeason, _ := strconv.Atoi(r.FormValue("seasonNum"))
+	episodeNum, _ := strconv.Atoi(r.FormValue("episodeNum"))
+
+	fmt.Printf("Playing episode: SeriesID=%s, SeasonNum=%d, EpisodeNum=%d\n", series, currentSeason, episodeNum)
+
+	var err error
+	var data Series
+	var episodes []Episode
+
+	//need to ensure the "movieID" actually exists so it can 404 if it doesn't
+	data, err = RetrieveSeriesFromDB(series)
+
+	//organize the episodes by season
+	episodes, _ = RetrieveEpisodesFromDB(data.Title)
+	fmt.Printf("number of episodes: %d\n", len(episodes))
+
+	data = OrganizeIntoSeasons(data, episodes)
+	fmt.Printf("number of seasons: %d\n", len(data.Seasons))
+
+	videoURL := data.Seasons[currentSeason-1].Episodes[episodeNum-1].Path
+
+	response := VideoResponse{VideoURL: videoURL}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

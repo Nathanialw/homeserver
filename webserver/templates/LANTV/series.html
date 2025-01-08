@@ -5,6 +5,8 @@
   <head>
     <title>{{ .Title }}</title>
     {{ template "head" . }}    
+    <link rel="stylesheet" href="/css/tv.css">
+    <script src="/js/tv.js"></script>
   </head>
 
     <body>
@@ -14,7 +16,7 @@
         
         <article class="main-container">
           <h3 class="title">
-            <a href="{{ .Back }}">Back</a>
+            <a href="/tv">Back</a>
           </h3>
 
           <h3 class="title">
@@ -25,23 +27,113 @@
           <h3 class="title title-header">{{ .Title }}</h3>
           <div class="title-underline"></div>
 
+          <!-- video player  -->
+          <section class="player-container">
+              <article class="episode-list">
+                <ul>
+                  {{ range .Seasons }}
+                    {{ if .Active }}
+                      {{ range .Episodes }}
+                      <li class="episode-card">
+                        <button class="side-card" onclick="playEpisode('{{ .Series }}', '{{ .Season }}', '{{ .EpisodeNum }}')" id="{{ .Season }}-{{ .EpisodeNum }}">
+                          <!-- when you click on this it should play the episode -->
+                          <h5 class="episode-text">{{ .EpisodeNum }}. {{ .Title}}</h3>
+                        </button>
+                      </li>
+                      {{ end }}              
+                    {{ end }}              
+                  {{ end }}
+                </ul>
+              </article>
+
+              <div class="video-container">
+                  {{ range .Seasons }}
+                    {{ if .Active }}
+                      {{ range .Episodes }}
+                        {{ if eq .EpisodeNum 1 }}
+                          <video id="video-player" width="100%" poster="" preload="auto" controls style="margin: auto; display: flex;" autoplay>
+                            <source src="{{ .Path }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                          </video>
+                        {{end}}
+                      {{end}}
+                    {{end}}
+                  {{end}}                
+              </div>
+          </section>
+
+          <!-- options -->
+           <section class="options">
+             <ul class="options options-buttons">
+              <li>
+                <button class="btn">
+                  <h5>Prev</h6>
+                </button>
+                </li>
+              <li>
+                <button class="btn">
+                  <h5>Next</h6>
+                </button>
+                </li>
+              <li>
+                <h5>Dubs:</h5>
+              </li>
+              <li>
+              <button class="btn">
+                <h5>English</h6>
+              </button>
+              </li>
+              <li>
+                <button class="btn">
+                  <h5>Japanese</h6>
+                </button>
+              </li>
+              <li>
+                <h5>Subs:</h5>
+              </li>
+              <li>
+              <button class="btn">
+                <h5>English</h6>
+              </button>
+              </li>
+              <li>
+                <button class="btn">
+                  <h5>Japanese</h6>
+                </button>
+              </li>
+            </ul>
+          </section>
+
+
           <!--content-->
           <ul class="main-links">
-            {{ range .Seasons }}
-            <li>
-              <a href="/tv/{{ .Title }}/{{ .SeasonNum }}" class="main-card">
-                <img
-                  src="{{.Image}}"
-                  class="img card-img"
-                />
-                <section class="card-info">
-                  <h3>Season {{ .SeasonNum }}</h3>
-                  <div class="title-underline"></div>
-                </section>
-              </a>
-            </li>			
+            {{ if gt (len .Seasons) 0 }}
+              {{ range .Seasons }}
+              <li>
+                <form action="/selectSeason" method="post">
+                  <input type="hidden" name="seriesID" value="{{ .Title }}">
+                  <input type="hidden" name="seasonNum" value="{{ .SeasonNum }}">
+                  <input type="hidden" name="episodeNum" value="1">
+                  <button class="main-card">
+                    <!-- when you click on this it should populate the side bar with the selected season -->
+                    <img src="{{ .Image }}" class="img card-img" />
+                    
+                    <section class="card-info">
+                      <h3>Season: {{ .SeasonNum }}</h3>
+                      <div class="title-underline"></div>
+                    </section>
+                  </button>
+                </form>
+              </li>			
+              {{ end }}
             {{ end }}
-          
+          </ul>
+
+          <section>
+            <img src="{{ .Image }}" alt="series image">
+
+            <p>This is where most of the scraped data will go.</p>
+          </section>
 
         </article>
 
