@@ -8,8 +8,6 @@ import (
 	content "webserver/src/Content"
 	db "webserver/src/DB"
 	lanbooks "webserver/src/LANBooks"
-	landocs "webserver/src/LANDocs"
-	langif "webserver/src/LANGIFs"
 	langames "webserver/src/LANGames"
 	lanmovies "webserver/src/LANMovies"
 	lanmusic "webserver/src/LANMusic"
@@ -64,11 +62,9 @@ func main() {
 	r.POST("/selectSeason", lantv.SelectSeason)
 	r.POST("/selectEpisode", lantv.SelectEpisode)
 
-	r.GET("/docs", landocs.Home)
 	r.GET("/games", langames.Home)
 	r.GET("/music", lanmusic.Home)
 	r.GET("/pics", lanpics.Home)
-	r.GET("/gifs", langif.Home)
 
 	address := "127.0.0.1:"
 	if len(os.Args) > 1 {

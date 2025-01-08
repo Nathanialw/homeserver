@@ -22,20 +22,20 @@
           <!--content-->          
             <ul class="main-links">
               {{ if .NotEmpty}}
-              {{ range .Movies }}
-              <li>
-                <a href="movie/{{.Title}}" class="main-card">
-                  <img
-                    src="{{.Image}}"
-                    class="img card-img"
-                  />
-                  <section class="card-info">
-                    <h3>{{.Title}}</h3>
-                    <div class="title-underline"></div>
-                  </section>
-                </a>
-              </li>			
-              {{ end }}
+                {{ range .Movies }}
+                <li>
+                  <a href="movie/{{.Title}}" class="main-card">
+                    <img
+                      src="{{.Image}}"
+                      class="img card-img"
+                    />
+                    <section class="card-info">
+                      <h3>{{.Title}}</h3>
+                      <div class="title-underline"></div>
+                    </section>
+                  </a>
+                </li>			
+                {{ end }}
               {{ end}}
             </ul>
         

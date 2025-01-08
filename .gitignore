@@ -1,3 +1,5 @@
 .idea
+.gitignore
+webserver/app/main
 webserver/app/winmain.exe
 webserver/db/homeserver.sqlite3

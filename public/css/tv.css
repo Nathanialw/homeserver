@@ -55,7 +55,7 @@
     flex-direction: row;
     max-height: 563px;
     padding: 2px;
-    background-color: var(--grey--300)
+    background-color: var(--primary--300)
 }
 
 .video-container {
@@ -68,7 +68,7 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    background-color: gray;
+    background-color: var(--black);
     overflow-y: auto; 
     overflow-x: hidden; 
     width: 200px;
@@ -90,6 +90,7 @@
 
 .side-card:hover {
     background-color: var(--primary-300);
+    cursor: grab;
 }
 
 .side-card.highlighted {
