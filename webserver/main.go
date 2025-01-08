@@ -20,6 +20,17 @@ import (
 type PageData struct {
 	Title string
 	Body  string
+	Back  string
+	Add   string
+}
+
+func StripPrefix(w http.ResponseWriter, r *http.Request, prefix string, toStrip string) {
+	filePath := strings.TrimPrefix(r.URL.Path, "/")
+	if _, err := os.Stat(toStrip + filePath); os.IsNotExist(err) {
+		notfound(w, r, httprouter.Params{})
+		return
+	}
+	http.StripPrefix(prefix, http.FileServer(http.Dir(toStrip))).ServeHTTP(w, r)
 }
 
 func main() {
@@ -29,14 +40,23 @@ func main() {
 
 	r.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Serve static files from /mnt/media, strip the leading part of the URL path
+		fmt.Printf("serving %s\n", r.URL.Path)
 		if strings.HasPrefix(r.URL.Path, "/mnt/media/") {
 			http.StripPrefix("/mnt/media/", http.FileServer(http.Dir("/mnt/media"))).ServeHTTP(w, r)
 		} else if strings.HasPrefix(r.URL.Path, "/movie/") {
-			http.StripPrefix("/movie/", http.FileServer(http.Dir("../../public/"))).ServeHTTP(w, r)
-			notfound(w, r, httprouter.Params{})
+			StripPrefix(w, r, "/movie/", "../../public/")
+		} else if strings.HasPrefix(r.URL.Path, "/tv/") {
+			StripPrefix(w, r, "/tv/", "../../public/")
+		} else if strings.HasPrefix(r.URL.Path, "/books/") {
+			StripPrefix(w, r, "/books/", "../../public/")
+		} else if strings.HasPrefix(r.URL.Path, "/books/") {
+			StripPrefix(w, r, "/music/", "../../public/")
+		} else if strings.HasPrefix(r.URL.Path, "/books/") {
+			StripPrefix(w, r, "/games/", "../../public/")
+		} else if strings.HasPrefix(r.URL.Path, "/books/") {
+			StripPrefix(w, r, "/pics/", "../../public/")
 		} else {
-			http.StripPrefix("/", http.FileServer(http.Dir("../../public/"))).ServeHTTP(w, r)
-			notfound(w, r, httprouter.Params{})
+			StripPrefix(w, r, "/", "../../public/")
 		}
 	})
 
@@ -47,7 +67,7 @@ func main() {
 	r.GET("/addbook", lanbooks.AddBook)
 	r.POST("/submitbook", lanbooks.SubmitBook)
 
-	r.GET("/movies", lanmovies.Home)
+	r.GET("/movie", lanmovies.Home)
 	r.GET("/movie/:movieID", lanmovies.ShowMovie)
 	r.GET("/addmovie", lanmovies.AddMovie)
 	r.POST("/submitmovie", lanmovies.SubmitMovie)
@@ -56,7 +76,7 @@ func main() {
 	r.GET("/tv", lantv.Home)
 	r.GET("/addseries", lantv.AddSeries)
 	r.POST("/submitseries", lantv.SubmitSeries)
-	r.GET("/addseason", lantv.AddSeason)
+	r.GET("/addseason/:seriesID", lantv.AddSeason)
 	r.POST("/submitseason", lantv.SubmitSeason)
 	r.GET("/tv/:seriesID", lantv.ShowSeries)
 	r.POST("/selectSeason", lantv.SelectSeason)
@@ -89,33 +109,14 @@ func main() {
 func home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
-	data := PageData{
-		Title: "Landing Page",
-		Body:  "Welcome to the home server landing page",
-	}
+	data := PageData{}
 
 	content.GenerateHTML(w, data, "General", "home")
 }
 
-func fileServerWith404(h http.Handler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		_, err := os.Stat("../../public/" + r.URL.Path)
-
-		if os.IsNotExist(err) {
-			fmt.Printf("file does not exist: %s\n", r.URL.Path)
-			// If the file does not exist, serve your 404 page
-			notfound(w, r, httprouter.Params{})
-			return
-		}
-
-		fmt.Printf("file exists: %s\n", r.URL.Path)
-		// If the file exists, serve it
-		h.ServeHTTP(w, r)
-	}
-}
-
 func notfound(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	fmt.Printf("not found received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
 	data := PageData{}
 

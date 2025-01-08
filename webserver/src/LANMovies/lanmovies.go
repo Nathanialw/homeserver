@@ -26,12 +26,16 @@ type Movie struct {
 	Series   string
 	Synopsis string
 	Path     string
+	Back     string
+	Add      string
 }
 
 type MoviesList struct {
 	User     user.Session
 	NotEmpty bool
 	Movies   []Movie
+	Back     string
+	Add      string
 }
 
 func createMoviesDB() {
@@ -146,6 +150,10 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		data.NotEmpty = false
 		fmt.Printf("none found\n")
 	}
+
+	data.Back = "/"
+	data.Add = "/addmovie"
+
 	content.GenerateHTML(w, data, "LANMovies", "home")
 
 	if err != nil {
@@ -163,6 +171,13 @@ func ShowMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	//need to mkae sure th "movieID" actually exists so it can 404 if it doesn't
 	data, err = RetrieveMovieFromDB(p.ByName("movieID"))
+	if data.Title == "" {
+		content.GenerateHTML(w, nil, "General", "notfound")
+		return
+	}
+
+	data.Back = "/movie"
+	data.Add = ""
 
 	content.GenerateHTML(w, data, "LANMovies", "movie")
 
@@ -276,6 +291,10 @@ func AddMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	var data MoviesList
 	// user.Session.LoggedIn = LoginStatus(r)
 	// user.Session.Admin = AdminStatus(r)
+
+	data.Back = "/movie"
+	data.Add = ""
+
 	content.GenerateHTML(w, data, "LANMovies", "addmovie")
 }
 

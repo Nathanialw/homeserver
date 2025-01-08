@@ -49,12 +49,16 @@ type Series struct {
 	Synopsis string
 	Path     string
 	Seasons  []Season
+	Back     string
+	Add      string
 }
 
 type List struct {
 	User     user.Session
 	NotEmpty bool
 	Series   []Series
+	Back     string
+	Add      string
 }
 
 //list the series
@@ -74,6 +78,9 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		data.NotEmpty = false
 		fmt.Printf("none found\n")
 	}
+
+	data.Back = "/"
+	data.Add = "/addseries"
 
 	content.GenerateHTML(w, data, "LANTV", "home")
 
@@ -97,6 +104,12 @@ func ShowSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	data, _ = RetrieveSeriesFromDB(p.ByName("seriesID"))
 	fmt.Printf("title is %s\n", data.Title)
 
+	//if the series is not found, return a 404
+	if data.Title == "" {
+		content.GenerateHTML(w, nil, "General", "notfound")
+		return
+	}
+
 	currentSeriesTitle = data.Title
 	currentSeriesSubtitle = data.Subtitle
 
@@ -106,9 +119,16 @@ func ShowSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	data = OrganizeIntoSeasons(data, episodes)
 	fmt.Printf("number of seasons: %d\n", len(data.Seasons))
 
-	data.Seasons[0].Active = true
-	data.Seasons[0].Episodes[0].Active = true
-	// /tv/:seriesID/:seasonNum
+	//set the first season and episode to active
+	if len(data.Seasons) > 0 {
+		fmt.Printf("setting active\n")
+		data.Seasons[0].Active = true
+		data.Seasons[0].Episodes[0].Active = true
+	}
+
+	data.Back = "/tv"
+	data.Add = "/addseason/" + p.ByName("seriesID")
+
 	content.GenerateHTML(w, data, "LANTV", "series")
 
 	if err != nil {
@@ -199,6 +219,10 @@ func AddSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	var data List
 	// user.Session.LoggedIn = LoginStatus(r)
 	// user.Session.Admin = AdminStatus(r)
+
+	data.Back = "/tv"
+	data.Add = ""
+
 	content.GenerateHTML(w, data, "LANTV", "addseries")
 }
 
@@ -222,6 +246,9 @@ func AddSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	var data List
 	// user.Session.LoggedIn = LoginStatus(r)
 	// user.Session.Admin = AdminStatus(r)
+	data.Back = "/tv/" + p.ByName("seriesID")
+	data.Add = ""
+
 	content.GenerateHTML(w, data, "LANTV", "addseason")
 }
 
@@ -333,6 +360,9 @@ func SelectSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 			data.Seasons[i].Active = false
 		}
 	}
+
+	data.Back = "/tv/" + p.ByName("seriesID")
+	data.Add = "/addseason"
 
 	content.GenerateHTML(w, data, "LANTV", "series")
 

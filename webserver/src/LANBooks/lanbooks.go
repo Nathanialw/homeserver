@@ -31,6 +31,8 @@ type BookList struct {
 	User     user.Session
 	NotEmpty bool
 	Books    []Book
+	Back     string
+	Add      string
 }
 
 func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -48,6 +50,9 @@ func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		data.NotEmpty = false
 		fmt.Printf("none found\n")
 	}
+
+	data.Back = "/"
+	data.Add = "/addbook"
 
 	content.GenerateHTML(w, data, "LANBooks", "home")
 
@@ -115,6 +120,7 @@ func Show(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	//need to mkae sure th "movieID" actually exists so it can 404 if it doesn't
 	data, err = RetrieveFromDB(p.ByName("bookID"))
 
+	fmt.Printf("path: %s\n", data.Path)
 	http.Redirect(w, r, data.Path, http.StatusSeeOther) //open the pdf directly
 
 	// content.GenerateHTML(w, data, "LANBooks", "book") //open the pdf as an element in a page
@@ -131,6 +137,10 @@ func AddBook(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	var data BookList
 	// user.Session.LoggedIn = LoginStatus(r)
 	// user.Session.Admin = AdminStatus(r)
+
+	data.Back = "/books"
+	data.Add = ""
+
 	content.GenerateHTML(w, data, "LANBooks", "add")
 }
 

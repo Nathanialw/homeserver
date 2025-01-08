@@ -6,8 +6,15 @@
         <i class='fa fa-bars'></i>
     </button>
 </div>
+
 <nav>
     <ul class='nav-links' id='nav-links'>
+        {{ if .Back }}
+        <li><a href='{{ .Back }}'>Back</a></li>
+        {{ end }}
+        {{ if .Add }}
+        <li><a href='{{ .Add }}'>Add</a></li>
+        {{ end }}
         <li><a href='/'>home</a></li>
     </ul>
 </nav>

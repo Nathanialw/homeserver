@@ -1,3 +1,5 @@
+'use strict';
+
 let primary100;
 let primary200;
 let primary300;
