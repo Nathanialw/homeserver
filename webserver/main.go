@@ -55,11 +55,19 @@ func main() {
 	r.POST("/submitmovie", lanmovies.SubmitMovie)
 	r.POST("/removemovie", lanmovies.RemoveMovie)
 
+	r.GET("/tv", lantv.Home)
+	r.GET("/addseries", lantv.AddSeries)
+	r.POST("/submitseries", lantv.SubmitSeries)
+	r.GET("/addseason", lantv.AddSeason)
+	r.POST("/submitseason/:seriesID", lantv.SubmitSeason)
+	r.GET("/tv/:seriesID", lantv.ShowSeries)
+	r.GET("/tv/:seriesID/:seasonNum", lantv.ShowSeason)
+	r.GET("/tv/:seriesID/:seasonNum/:episodeNum", lantv.ShowEpisode)
+
 	r.GET("/docs", landocs.Home)
 	r.GET("/games", langames.Home)
 	r.GET("/music", lanmusic.Home)
 	r.GET("/pics", lanpics.Home)
-	r.GET("/tv", lantv.Home)
 	r.GET("/gifs", langif.Home)
 
 	address := "127.0.0.1:"

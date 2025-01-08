@@ -1,0 +1,44 @@
+{{ define "episode" }}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{ .Title }}</title>
+    {{ template "head" . }}    
+  </head>
+
+    <body>
+        <header class="nav-center" id="nav-bar">
+            {{ template "navbar" . }}
+        </header>
+        
+        <article class="main-container">
+          <h3 class="title">
+            <a href="{{ .Back }}">Back</a>
+          </h3>
+          
+          <!--title-->
+          <h3 class="title title-header">{{ .Title }}</h3>
+          <div class="title-underline"></div>
+
+          <!--content-->
+          <!-- along the left we want a list of the episodes in the season -->
+
+          <!-- video player  -->
+          <video width="640" poster="" preload="auto" controls style="margin: auto; display: flex;">
+            <source src="{{ .Path }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          
+          <!-- below the synopsis and relevant info about the episode -->
+
+        </article>
+
+        <footer id="footer">
+            {{ template "footer" . }}
+        </footer>
+    </body>
+
+</html>
+
+{{ end }}

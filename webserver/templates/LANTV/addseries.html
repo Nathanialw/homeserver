@@ -1,0 +1,52 @@
+{{ define "addseries" }}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Add a Series</title>
+    {{ template "head" . }}    
+  <body>
+    <!-- navigation bar at the top -->
+    <header class="nav-center" id="nav-bar">
+      {{template "navbar" . }}
+    </header>
+
+    <main class="main-container-nobackground">
+      <article>
+        <h3 class="title">Add a Series</h3>
+        <div class="title-underline"></div>
+        <h3 class="title">
+          <a href="/tv">Back</a>
+        </h3>
+
+        <!-- The only necessary fields are Title, Subtitle, Director to ensure it is a unique entry -->
+        <form class="form" action="/submitseries" method="post" enctype="multipart/form-data">
+          <!-- <label class="form-label" for="media">Required:</label>
+          <label class="form-label" for="media">Drop a Series:</label>
+          <input class="form-input form-row" type="file" id="media" name="media"  multiple webkitdirectory mozdirectory required>
+          <br> -->
+          <!-- required start -->
+          <label class="form-label" for="title">Title:</label>
+          <input class="form-input form-row" type="text" id="title" name="title" required>
+          <br>
+          <label class="form-label" for="subtitle">Subtitle:</label>
+          <input class="form-input form-row" type="text" id="subtitle" name="subtitle">
+          <br>
+          
+          <br>
+          <label class="form-label" for="image">Series Image:</label>
+          <input class="form-input form-row" type="file" id="image" name="image">
+
+          <input class="btn btn-center" type="submit" value="Submit">
+        </form>
+      </article>  
+    </main>
+
+    <footer id="footer">
+      {{ template "footer" . }}
+    </footer>
+
+   </body>
+</html>
+
+{{ end }}

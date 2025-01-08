@@ -190,3 +190,18 @@ func FormMedia(media string, r *http.Request) (multipart.File, *multipart.FileHe
 
 	return file, handler
 }
+
+func FormMediaFolder(r *http.Request) (map[string][]*multipart.FileHeader, error) {
+	err := r.ParseMultipartForm(10 << 20) // 10 MB
+	if err != nil {
+		fmt.Printf("error parsing the form: %s\n", err)
+		return nil, err
+	}
+
+	if r.MultipartForm == nil || len(r.MultipartForm.File) == 0 {
+		fmt.Println("Form is empty")
+		return nil, fmt.Errorf("form is empty")
+	}
+
+	return r.MultipartForm.File, nil
+}

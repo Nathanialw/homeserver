@@ -1,0 +1,55 @@
+{{ define "series" }}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{ .Title }}</title>
+    {{ template "head" . }}    
+  </head>
+
+    <body>
+        <header class="nav-center" id="nav-bar">
+            {{ template "navbar" . }}
+        </header>
+        
+        <article class="main-container">
+          <h3 class="title">
+            <a href="{{ .Back }}">Back</a>
+          </h3>
+
+          <h3 class="title">
+            <a href="/addseason">Add Season</a>
+          </h3>
+          
+          <!--title-->
+          <h3 class="title title-header">{{ .Title }}</h3>
+          <div class="title-underline"></div>
+
+          <!--content-->
+          <ul class="main-links">
+            {{ range .Seasons }}
+            <li>
+              <a href="/tv/{{ .Title }}/{{ .SeasonNum }}" class="main-card">
+                <img
+                  src="{{.Image}}"
+                  class="img card-img"
+                />
+                <section class="card-info">
+                  <h3>Season {{ .SeasonNum }}</h3>
+                  <div class="title-underline"></div>
+                </section>
+              </a>
+            </li>			
+            {{ end }}
+          
+
+        </article>
+
+        <footer id="footer">
+            {{ template "footer" . }}
+        </footer>
+    </body>
+
+</html>
+
+{{ end }}

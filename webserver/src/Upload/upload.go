@@ -7,6 +7,7 @@ import (
 	"log"
 	"mime/multipart"
 	"os"
+	"path/filepath"
 )
 
 func UploadMedia(file multipart.File, folderName string, handler *multipart.FileHeader) bool {
@@ -48,4 +49,45 @@ func RemoveMedia(folderName string) error {
 		return err
 	}
 	return nil
+}
+
+func UploadFolder(files map[string][]*multipart.FileHeader, baseFolder string) bool {
+	// Assuming folder is a zip file, extract it
+	fmt.Printf("starting to upload folder\n")
+	for _, fileHeaders := range files {
+		for _, fileHeader := range fileHeaders {
+			fmt.Printf("Uploading fileHeader.Filename: %s\n", fileHeader.Filename)
+
+			file, err := fileHeader.Open()
+			if err != nil {
+				fmt.Printf("error opening the file: %s\n", err)
+				return false
+			}
+			defer file.Close()
+
+			// Create the folder and subfolders
+			path := filepath.Join(baseFolder, fileHeader.Filename)
+			if err := os.MkdirAll(filepath.Dir(path), os.ModePerm); err != nil {
+				fmt.Printf("error creating directories: %s\n", err)
+				return false
+			}
+
+			// Create the file in the file system
+			dst, err := os.Create(path)
+			if err != nil {
+				fmt.Printf("error creating the file: %s\n", err)
+				return false
+			}
+			defer dst.Close()
+
+			// Copy the uploaded file to the filesystem at the specified destination
+			_, err = io.Copy(dst, file)
+			if err != nil {
+				fmt.Printf("error copying the file: %s\n", err)
+				return false
+			}
+		}
+	}
+
+	return true
 }

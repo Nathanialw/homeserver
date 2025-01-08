@@ -21,7 +21,7 @@
           <h3 class="title title-header">{{ .Title }}</h3>
           <div class="title-underline"></div>
           <!--content-->
-          <video width="640" height="480" poster="{{ .Image }}" preload="auto" controls style="margin: auto; display: flex;">
+          <video width="640" height="auto" poster="{{ .Image }}" preload="auto" controls style="margin: auto; display: flex;">
             <source src="{{ .Path }}" type="video/mp4">
             Your browser does not support the video tag.
           </video>

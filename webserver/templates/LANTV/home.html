@@ -1,0 +1,51 @@
+{{ define "home" }}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Show Series</title>
+    {{ template "head" . }}    
+  </head>
+
+    <body>
+        <header class="nav-center" id="nav-bar">
+            {{template "navbar" . }}
+        </header>
+        
+        <article class="main-container">
+            <!--title-->
+          <h1 class="title title-header">LAN TV</h1>
+          <div class="title-underline"></div>
+
+          <h3 class="title">
+            <a href="/addseries">Add Series</a>
+          </h3>
+            <!--content-->
+            <ul class="main-links">
+                {{ if .NotEmpty}}
+                {{ range .Series }}
+                <li>
+                  <a href="tv/{{.Title}}" class="main-card">
+                    <img
+                      src="{{.Image}}"
+                      class="img card-img"
+                    />
+                    <section class="card-info">
+                      <h3>{{.Title}}</h3>
+                      <div class="title-underline"></div>
+                    </section>
+                  </a>
+                </li>			
+                {{ end }}
+                {{ end}}
+              </ul>
+        </article>
+        
+        <footer id="footer">
+            {{ template "footer" . }}
+        </footer>
+    </body>
+
+</html>
+
+{{ end }}

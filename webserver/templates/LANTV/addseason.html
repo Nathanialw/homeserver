@@ -1,0 +1,50 @@
+{{ define "addseason" }}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Add a Season</title>
+    {{ template "head" . }}    
+  <body>
+    <!-- navigation bar at the top -->
+    <header class="nav-center" id="nav-bar">
+      {{template "navbar" . }}
+    </header>
+
+    <main class="main-container-nobackground">
+      <article>
+        <h3 class="title">Add a Season</h3>
+        <div class="title-underline"></div>
+        
+        <h3 class="title">
+          <a href="{{ .Back }}">Back</a>
+        </h3>
+
+        <!-- The only necessary fields are Title, Subtitle, Director to ensure it is a unique entry -->
+        <form class="form" action="/submitseason/:seriesID" method="post" enctype="multipart/form-data">
+
+          <label class="form-label" for="media">Drop a Folder Containing the Season Episodes:</label>
+          <input class="form-input form-row" type="file" id="media" name="media"  multiple webkitdirectory mozdirectory required>
+          
+          <br>
+          <label class="form-label" for="subtitle">Season:</label>
+          <input class="form-input form-row" type="number" min="1" max="99" id="season" name="season">
+          <br>
+          
+          <br>
+          <label class="form-label" for="image">Series Image:</label>
+          <input class="form-input form-row" type="file" id="image" name="image">
+
+          <input class="btn btn-center" type="submit" value="Submit">
+        </form>
+      </article>  
+    </main>
+
+    <footer id="footer">
+      {{ template "footer" . }}
+    </footer>
+
+   </body>
+</html>
+
+{{ end }}

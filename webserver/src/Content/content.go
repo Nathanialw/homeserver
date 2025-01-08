@@ -16,10 +16,10 @@ func GenerateHTML(w http.ResponseWriter, data interface{}, module string, fn ...
 	for _, file := range fn {
 		files = append(files, fmt.Sprintf("../templates/%s/%s.html", module, file))
 	}
-	for _, file := range files {
-		fmt.Print(file)
-		fmt.Print("\n")
-	}
+	// for _, file := range files {
+	// fmt.Print(file)
+	// fmt.Print("\n")
+	// }
 	templates := template.Must(template.ParseFiles(files...))
 	_ = templates.ExecuteTemplate(w, fn[0], data)
 
