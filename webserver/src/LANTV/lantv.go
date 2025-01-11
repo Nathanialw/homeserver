@@ -257,8 +257,6 @@ func PopulateSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 	var response []byte
 	var err error
 
-	//query IMDB for the series
-	//populate the series preview
 	results := Preview_Series(id)
 
 	response, err = json.Marshal(results)

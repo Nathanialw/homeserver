@@ -40,21 +40,27 @@
             </div>
           </div>
 
-          <span class="selected-series" id="selected-series">
+          <span class="selected-series" id="selected-series"> 
             <img class="select-img" src="images/bunnie_1.jpg" id="selected-series-image" alt="">
-            <div>
+            <div class="selected-series-info">
               <h3 class="selected-series-title title" id="selected-series-title">Selected title</h3>
               <div class="title-underline"></div>
               <p class="selected-series-data" id="selected-series-synopsis">Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum, sed minus ratione quis consectetur a expedita nostrum tenetur, temporibus autem recusandae. Tempore iusto numquam nam atque veritatis adipisci delectus eius!</p>
-              <span style="display: flex;">
-                <p class="selected-series-data" id="selected-series-release">release year</p>
-                <p class="selected-series-data" id="selected-series-seasons">number of seasons</p>
+              <span style="display: flex;">                
+                <p class="selected-series-data" id="selected-series-release">Release</p>
+                <p class="selected-series-data" id="selected-series-runtime">Runtime</p>
+                <p class="selected-series-data" id="selected-series-seasons">Seasons</p>
+              </span>
+              <span style="display: flex;">                
+                <p class="selected-series-data" id="selected-series-ratings">Rating</p>
+                <p class="selected-series-data" id="selected-series-rating">unrated</p>
               </span>
               <p class="selected-series-data" id="selected-series-genres">genres</p>
-      
-              <button class="btn btn-center" onclick="document.querySelector('.btn').click()">Create</button>
             </div>
           </span>
+
+          <p class="selected-series-review selected-series-data" id="selected-series-review">review</p>
+          <button class="btn btn-center" id="hidden" onclick="document.querySelector('.btn').click()">Create</button>
         </section>
 
 

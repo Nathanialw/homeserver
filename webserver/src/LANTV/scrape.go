@@ -59,7 +59,7 @@ func Search_Series(input string) [][]string {
 }
 
 // scrape the bare minimum information for a series
-func Preview_Series(key string) []string {
+func Preview_Series(key string) [][]string {
 	fmt.Printf("create input: %s\n", key)
 
 	cmd := exec.Command("python3", "../scripts/scrapeSeriesPreview.py", key)
@@ -69,21 +69,19 @@ func Preview_Series(key string) []string {
 		return nil
 	}
 
-	fmt.Println("raw Output: ", output)
-
 	// Parse the JSON output
-	var results []string
+	var results [][]string
 	err = json.Unmarshal(output, &results)
 	if err != nil {
 		log.Printf("Failed to unmarshal JSON: %v\n", err)
 		return nil
 	}
 
-	println("results", results)
-
 	// Print the results
 	for _, result := range results {
-		fmt.Printf("Result: %s\n", result)
+		for _, item := range result {
+			fmt.Printf("Result: %s\n", item)
+		}
 	}
 
 	return results

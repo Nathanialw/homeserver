@@ -99,35 +99,80 @@ function SearchInput() {
 }
 
 function PreviewSeries(id) {
+    //set as loading
+
     //check to see if the resources already exist first
 
-    //...
+        //check the db for the series
+        //...
+        //if it exists, populate the fields
+        //...
+        //return
 
     //if not, make a request to the server
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/populateSeries", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        const response = JSON.parse(xhr.responseText);
-        
-        console.log(response);
-        // //title
-        const title = document.getElementById("selected-series-title");
-        title.textContent = response[0]
-        
-        // //synopsis
-        const synopsis = document.getElementById("selected-series-synopsis");
-        synopsis.textContent = response[1]
-        // //image path 1
-        
-        if (response[2] !== null || response[2] !== undefined || response[2] !== "") {
-            const image = document.getElementById("selected-series-image");
-            image.src = response[2];
-        }
-        
-        // //image path 2
-        // response[3]
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            
+            console.log(response);
+            // //title
+            const title = document.getElementById("selected-series-title");
+            title.textContent = response[0][0]
+            
+            // //synopsis
+            const synopsis = document.getElementById("selected-series-synopsis");
+            synopsis.textContent = response[1][0]
+            
+            const release = document.getElementById("selected-series-release");
+            release.textContent = response[2][0]
+
+            const runtime = document.getElementById("selected-series-runtime");
+            runtime.textContent = response[3][0]
+            
+            const seasons = document.getElementById("selected-series-seasons");
+            seasons.textContent = response[4][0]
+
+            const rating = document.getElementById("selected-series-rating");
+            rating.textContent = response[5][0]
+            
+            const ratings = document.getElementById("selected-series-ratings");
+            ratings.textContent = response[6][0] + "/10"
+
+            const genres = document.getElementById("selected-series-genres");
+            genres.textContent = ""
+            for (let i = 0; i < response[7].length; i++) {
+                genres.textContent += response[7][i] + ", ";
+            }
+
+            // //image path 1
+            const image0 = document.getElementById("selected-series-image");
+            if (response[8][0] !== null && response[8][0] !== undefined && response[8][0] !== ' ') {
+                console.log("setting image");
+                image0.src = response[8][0];
+            }    
+            else {
+                // select a random image
+                image0.src = 'images/bunnie_1.jpg';
+            }
+
+            // //image path 2
+            // const image1 = document.getElementById("selected-series-image");
+            // if (response[9][0] !== null && response[9][0] !== undefined && response[9][0] !== ' ') {
+            //     image1.src = response[9][0];
+            // }
+            // else {
+            //     // select a random image
+            //     image1.src = 'images/bunnie_1.jpg';
+            // }        
+            for (let i = 0; i < response[9].length; i++) {
+                console.log("imgpath:", response[9][i])
+            }
+
+            const review = document.getElementById("selected-series-review");
+            review.textContent = response[10][0]
         }
     };
     xhr.send("id=" + id);
@@ -136,10 +181,10 @@ function PreviewSeries(id) {
 function SelectSeries(seriesID) {
     const selected = document.getElementById("selected-series");
     selected.classList.add("show-selected");
+    
 
     const start = document.getElementById("show-selected-start");
     start.classList.remove("show-selected-start");
-
 
     let code = document.getElementById("imdbCode");
     code.value = seriesID;
