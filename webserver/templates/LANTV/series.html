@@ -27,7 +27,7 @@
                     {{ if .Active }}
                       {{ range .Episodes }}
                       <li class="episode-card">
-                        <button class="side-card" onclick="playEpisode('{{ .Series }}', '{{ .Season }}', '{{ .EpisodeNum }}')" id="{{ .Season }}-{{ .EpisodeNum }}">
+                        <button class="side-card {{ if eq .EpisodeNum 1 }}highlighted{{ end }}" onclick="playEpisode('{{ .Series }}', '{{ .Season }}', '{{ .EpisodeNum }}')" id="{{ .Season }}-{{ .EpisodeNum }}">
                           <!-- when you click on this it should play the episode -->
                           <h5 class="episode-text">{{ .EpisodeNum }}. {{ .Title}}</h3>
                         </button>
@@ -87,6 +87,11 @@
                 <li>
                   <h5>Subs:</h5>
                 </li>
+                <li>
+                  <button class="btn">
+                    <h5>None</h6>
+                  </button>
+                  </li>
                 <li>
                 <button class="btn">
                   <h5>English</h6>

@@ -81,6 +81,8 @@ func main() {
 	r.GET("/tv/:seriesID", lantv.ShowSeries)
 	r.POST("/selectSeason", lantv.SelectSeason)
 	r.POST("/selectEpisode", lantv.SelectEpisode)
+	r.POST("/UpdateSeriesSearch", lantv.UpdateSeriesSearch)
+	r.POST("/populateSeries", lantv.PopulateSeries)
 
 	r.GET("/games", langames.Home)
 	r.GET("/music", lanmusic.Home)

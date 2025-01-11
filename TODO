@@ -6,3 +6,7 @@ LANTV
     -start by naming each episode whatever the name of the file is
 
     -when you click on a series it should take you to a page to pick which episode
+
+    -look up the series in the database of tv
+    -when you click submit, scrape imdb to fill the fields
+    -when you add a season, scrape imdb to fill the fields

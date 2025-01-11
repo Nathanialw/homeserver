@@ -226,16 +226,62 @@ func AddSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	content.GenerateHTML(w, data, "LANTV", "addseries")
 }
 
+func UpdateSeriesSearch(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	query := r.FormValue("query")
+	results := Search_Series(query)
+
+	var response []byte
+	var err error
+
+	if len(results) != 0 {
+		// Create response as JSON
+		response, err = json.Marshal(results)
+		if err != nil {
+			fmt.Printf("error: %s\n", err)
+			http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
+			return
+		}
+	} else {
+		response = []byte(`""`)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(response)
+}
+
+func PopulateSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+
+	id := r.FormValue("id")
+	var response []byte
+	var err error
+
+	//query IMDB for the series
+	//populate the series preview
+	results := Preview_Series(id)
+
+	response, err = json.Marshal(results)
+	if err != nil {
+		fmt.Printf("error: %s\n", err)
+		http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(response)
+
+}
+
 func SubmitSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
-	success, series := authenticateSeries(w, r)
-	if success {
-		insertSeriesIntoDB(series)
-		fmt.Print("added\n")
-	} else {
-		fmt.Print("not added\n")
-	}
+	query := r.FormValue("imdbCode")
+	fmt.Printf("imdbCode: %s\n", query)
+
+	// create the series
+	Create_Series(query)
+	// insertSeriesIntoDB(series)
 
 	http.Redirect(w, r, "/tv", http.StatusSeeOther)
 }

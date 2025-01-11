@@ -5,6 +5,8 @@
   <head>
     <title>Add a Series</title>
     {{ template "head" . }}    
+    <link rel="stylesheet" href="/css/tv.css">
+    <script src="/js/tv.js"></script>
   <body>
     <!-- navigation bar at the top -->
     <header class="nav-center" id="nav-bar">
@@ -17,25 +19,51 @@
         <div class="title-underline"></div>
 
         <!-- The only necessary fields are Title, Subtitle, Director to ensure it is a unique entry -->
-        <form class="form" action="/submitseries" method="post" enctype="multipart/form-data">
-          <!-- <label class="form-label" for="media">Required:</label>
-          <label class="form-label" for="media">Drop a Series:</label>
-          <input class="form-input form-row" type="file" id="media" name="media"  multiple webkitdirectory mozdirectory required>
-          <br> -->
+        <form class="form" action="" method="post" enctype="multipart/form-data">
           <!-- required start -->
           <label class="form-label" for="title">Title:</label>
-          <input class="form-input form-row" type="text" id="title" name="title" required>
-          <br>
-          <label class="form-label" for="subtitle">Subtitle:</label>
-          <input class="form-input form-row" type="text" id="subtitle" name="subtitle">
-          <br>
-          
-          <br>
-          <label class="form-label" for="image">Series Image:</label>
-          <input class="form-input form-row" type="file" id="image" name="image">
-
-          <input class="btn btn-center" type="submit" value="Submit">
+          <input oninput="SearchInput()" class="form-input form-row" type="text" id="title" name="title" required>
+          <!-- hid this button -->
         </form>
+        
+        <!-- hidden form that sends the request on to the scraper-->
+        <form class="form" action="/submitseries" method="post" style="display: none;" enctype="multipart/form-data">
+          <input class="form-input form-row" type="text" id="imdbCode" name="imdbCode" required>
+          <button class="btn" type="submit" style="display: none;"></button>
+        </form>
+
+        <section class="selected-container">
+          <div class="selected-series-start show-selected-start" id="show-selected-start">
+            <div class="selected-series-start-content">
+              <h3 class="title" id="start-title">Start your search...</h1>
+              <div class="title-underline"></div>
+            </div>
+          </div>
+
+          <span class="selected-series" id="selected-series">
+            <img class="select-img" src="images/bunnie_1.jpg" id="selected-series-image" alt="">
+            <div>
+              <h3 class="selected-series-title title" id="selected-series-title">Selected title</h3>
+              <div class="title-underline"></div>
+              <p class="selected-series-data" id="selected-series-synopsis">Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum, sed minus ratione quis consectetur a expedita nostrum tenetur, temporibus autem recusandae. Tempore iusto numquam nam atque veritatis adipisci delectus eius!</p>
+              <span style="display: flex;">
+                <p class="selected-series-data" id="selected-series-release">release year</p>
+                <p class="selected-series-data" id="selected-series-seasons">number of seasons</p>
+              </span>
+              <p class="selected-series-data" id="selected-series-genres">genres</p>
+      
+              <button class="btn btn-center" onclick="document.querySelector('.btn').click()">Create</button>
+            </div>
+          </span>
+        </section>
+
+
+        <section class="search-container">
+          <ul id="search-results"></ul>
+        </section>
+
+        <!-- I want a button that send the form -->
+
       </article>  
     </main>
 
