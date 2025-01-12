@@ -1,0 +1,7 @@
+#pip install -r requirements.txt
+
+beautifulsoup4~=4.10.0
+python-Levenshtein
+tqdm~=4.67.1
+requests~=2.32.3
+Levenshtein~=0.26.1

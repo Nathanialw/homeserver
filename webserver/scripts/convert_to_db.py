@@ -3,7 +3,6 @@ import os
 import gzip
 import shutil
 import sqlite3
-import sqlite_spellfix
 from tqdm import tqdm
 import sys
 
@@ -21,7 +20,7 @@ with gzip.open('title.basics.tsv.gz', 'rb') as f_in:
 # Connect to SQLite database (or create it)
 conn = sqlite3.connect('../db/imdb.sqlite3')
 conn.enable_load_extension(True)
-conn.load_extension(sqlite_spellfix.extension_path())
+conn.load_extension("../extensions/spellfix.so")
 cursor = conn.cursor()
 
 # Create table

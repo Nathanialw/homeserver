@@ -1,14 +1,14 @@
+#!/usr/bin/env python3
+
 import sqlite3
-import sqlite_spellfix
 from itertools import product, permutations, combinations
-from tqdm import tqdm
 import sys
 import json
 import Levenshtein
 
 db = sqlite3.connect('../db/imdb.sqlite3')
 db.enable_load_extension(True)
-db.load_extension(sqlite_spellfix.extension_path())
+db.load_extension("../extensions/spellfix.so")
 cursor = db.cursor()
 
 def search(query):

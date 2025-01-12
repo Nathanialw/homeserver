@@ -35,6 +35,7 @@ func StripPrefix(w http.ResponseWriter, r *http.Request, prefix string, toStrip 
 
 func main() {
 	db.Init()
+	lantv.Init()
 
 	r := httprouter.New()
 
@@ -81,7 +82,7 @@ func main() {
 	r.GET("/tv/:seriesID", lantv.ShowSeries)
 	r.POST("/selectSeason", lantv.SelectSeason)
 	r.POST("/selectEpisode", lantv.SelectEpisode)
-	r.POST("/UpdateSeriesSearch", lantv.UpdateSeriesSearch)
+	r.POST("/updateSeriesSearch", lantv.UpdateSeriesSearch)
 	r.POST("/populateSeries", lantv.PopulateSeries)
 
 	r.GET("/games", langames.Home)

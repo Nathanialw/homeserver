@@ -5,11 +5,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"strings"
 )
 
 var currentCmd *exec.Cmd
+
+// Set the PYTHONPATH environment variable
+func Init() {
+	os.Setenv("PYTHONPATH", "/home/server/.local/lib/python3.10/site-packages")
+}
 
 func Search_Series(input string) [][]string {
 	fmt.Printf("search input: %s\n", input)
