@@ -111,11 +111,12 @@
 
           <!--content-->
           <ul class="main-links">
+            <!-- this will be a carousel -->
             {{ if gt (len .Seasons) 0 }}
               {{ range .Seasons }}
               <li>
                 <form action="/selectSeason" method="post">
-                  <input type="hidden" name="seriesID" value="{{ .Title }}">
+                  <input type="hidden" name="seriesID" value="{{ $.ID }}">
                   <input type="hidden" name="seasonNum" value="{{ .SeasonNum }}">
                   <input type="hidden" name="episodeNum" value="1">
                   <button class="main-card">

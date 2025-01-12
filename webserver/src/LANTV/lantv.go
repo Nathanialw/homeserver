@@ -293,6 +293,8 @@ func SubmitSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 func AddSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
+	fmt.Printf("series title: %s\n", p.ByName("seriesID"))
+
 	var data List
 	// user.Session.LoggedIn = LoginStatus(r)
 	// user.Session.Admin = AdminStatus(r)
@@ -411,8 +413,8 @@ func SelectSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		}
 	}
 
-	data.Back = "/tv/" + p.ByName("seriesID")
-	data.Add = "/addseason"
+	data.Back = "/tv/"
+	data.Add = "/addseason/" + series
 
 	content.GenerateHTML(w, data, "LANTV", "series")
 
