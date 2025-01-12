@@ -2,19 +2,18 @@ package lantv
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	db "webserver/src/DB"
 )
 
-func insertSeriesIntoDB(series Series) {
-	//insert series
-	_, err := db.Database.Exec("insert into series (title, subtitle, image, synopsis, path) values (?, ?, ?, ?, ?)", series.Title, series.Subtitle, series.Image, series.Synopsis, series.Path)
+func SetSeriesAdded(id string) {
+	//update the added column in the series table
+	_, err := db.Database.Exec("update series set added = 1 where id = ?", id)
 	if err != nil {
 		fmt.Printf("error adding series: %s\n", err)
 	}
-
-	//insert episodes
 }
 
 func insertSeasonIntoDB(series Series) {
@@ -50,33 +49,12 @@ func RetrieveEpisodesFromDB(title string) ([]Episode, error) {
 	return episodes, nil
 }
 
-//return a list of every episode in the series in the db
-func RetrieveSeriesFromDB(title string) (Series, error) {
-	var series Series
-	rows, err := db.Database.Query("select * from series where title = ?", title)
-	if err != nil {
-		fmt.Printf("error retrieving series: %s\n", err)
-		return series, err
-	}
-	for rows.Next() {
-		if err = rows.Scan(&series.Uid, &series.Title, &series.Subtitle, &series.Image, &series.Synopsis, &series.Path); err != nil {
-			fmt.Printf("error scanning series: %s\n", err)
-			return series, err
-		}
-	}
-	if rows != nil {
-		rows.Close()
-	}
-
-	fmt.Printf("image: %s, path: %s\n", series.Image, series.Path)
-	return series, nil
-}
-
 func createSeriesDB() {
 	stmt, err := db.Database.Prepare(`
 	CREATE TABLE IF NOT EXISTS series (
 		uid INTEGER PRIMARY KEY AUTOINCREMENT,
 		id TEXT,
+		added INTEGER DEFAULT 0,
 		title TEXT,
 		synopsis TEXT,
 		release_date TEXT,
@@ -149,30 +127,11 @@ func getAllSeasons(series string) (seasons []Season, err error) {
 }
 
 func getAllSeries() (series []Series, err error) {
-	rows, err := db.Database.Query("select title, cover_image from series")
+	rows, err := db.Database.Query("select id, title, cover_image from series WHERE added = 1")
 	for rows.Next() {
 		se := Series{}
-		if err = rows.Scan(&se.Title, &se.Subtitle, &se.Image); err != nil {
-			fmt.Printf("%s", err)
-			return
-		}
-		series = append(series, se)
-		fmt.Printf("name: %s\n", se.Title)
-	}
-	if rows != nil {
-		rows.Close()
-	}
-
-	fmt.Println("retrieving all")
-	return
-}
-
-func getSeries() (series []Series, err error) {
-	rows, err := db.Database.Query("select title, cover_image from series")
-	for rows.Next() {
-		se := Series{}
-		if err = rows.Scan(&se.Title, &se.Subtitle, &se.Image); err != nil {
-			fmt.Printf("%s", err)
+		if err = rows.Scan(&se.ID, &se.Title, &se.Image); err != nil {
+			fmt.Printf("error getting series: %s\n", err)
 			return
 		}
 		series = append(series, se)
@@ -201,12 +160,12 @@ func savePreviewToDB(key string, data []string) {
 	}
 }
 
-func retreivePreviewFromDB(id string) (data []string, success bool) {
-	success = false
+func retreivePreviewFromDB(id string) (data []string, success bool, err error) {
 	rows, err := db.Database.Query("SELECT id, title, synopsis, release_date, runtime, seasons, rating, ratings, genres, cover_image, num_images, review FROM series WHERE id = ?", id)
+
 	if err != nil {
 		fmt.Printf("error retrieving series: %s\n", err)
-		return
+		return data, success, err
 	}
 	defer rows.Close()
 
@@ -214,14 +173,15 @@ func retreivePreviewFromDB(id string) (data []string, success bool) {
 		var id, title, synopsis, releaseDate, runtime, rating, seasons, ratings, genresJSON, coverImage, numImages, review string
 		if err := rows.Scan(&id, &title, &synopsis, &releaseDate, &runtime, &seasons, &rating, &ratings, &genresJSON, &coverImage, &numImages, &review); err != nil {
 			fmt.Printf("error scanning row: %s\n", err)
-			return
+			return data, success, err
 		}
 
 		// Unmarshal genres JSON string
 		var genres string
 		if err := json.Unmarshal([]byte(genresJSON), &genres); err != nil {
 			fmt.Printf("error unmarshaling genres: %s\n", err)
-			return
+			success = false
+			return data, success, err
 		}
 
 		genresStr := fmt.Sprintf("%v", genres)
@@ -236,5 +196,30 @@ func retreivePreviewFromDB(id string) (data []string, success bool) {
 		fmt.Printf("series not found: %s\n", id)
 	}
 
-	return data, success
+	return data, success, err
+}
+
+//return a list of every episode in the series in the db
+func RetrieveSeriesFromDB(id string) (Series, error) {
+	data, success, err := retreivePreviewFromDB(id)
+	if !success {
+		return Series{}, errors.New("series not found")
+	}
+
+	series := Series{}
+
+	series.ID = id
+	series.Title = data[0]
+	series.Synopsis = data[1]
+	series.ReleaseDate = data[2]
+	series.Runtime = data[3]
+	series.NumSeasons = data[4]
+	series.Rating = data[5]
+	series.Ratings = data[6]
+	series.Genres = data[7]
+	series.Image = data[8]
+	series.NumImages = data[9]
+	series.Review = data[10]
+
+	return series, err
 }

@@ -1,0 +1,19 @@
+.search-container {
+    text-align: center;
+    margin: 3rem;
+}
+
+.search-form input {
+    width: 30rem;
+    height: 2rem;
+    /* //center the form */
+}
+
+.search-form select {
+    height: 2rem;
+    /* //center the form */
+}
+
+.idea-container {
+    display: none;
+}

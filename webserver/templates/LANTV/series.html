@@ -6,7 +6,7 @@
     <title>{{ .Title }}</title>
     {{ template "head" . }}    
     <link rel="stylesheet" href="/css/tv.css">
-    <script src="/js/tv.js"></script>
+    <script src="/js/tv/series.js"></script>
   </head>
 
     <body>
@@ -27,7 +27,7 @@
                     {{ if .Active }}
                       {{ range .Episodes }}
                       <li class="episode-card">
-                        <button class="side-card {{ if eq .EpisodeNum 1 }}highlighted{{ end }}" onclick="playEpisode('{{ .Series }}', '{{ .Season }}', '{{ .EpisodeNum }}')" id="{{ .Season }}-{{ .EpisodeNum }}">
+                        <button class="side-card {{ if eq .EpisodeNum 1 }}highlighted{{ end }}" onclick="playEpisode('{{ $.ID }}', '{{ .Season }}', '{{ .EpisodeNum }}')" id="{{ .Season }}-{{ .EpisodeNum }}">
                           <!-- when you click on this it should play the episode -->
                           <h5 class="episode-text">{{ .EpisodeNum }}. {{ .Title}}</h3>
                         </button>

@@ -41,16 +41,25 @@ type Season struct {
 }
 
 type Series struct {
-	Uid      int
-	Title    string
-	Subtitle string
-	Writer   string
-	Image    string
-	Synopsis string
-	Path     string
-	Seasons  []Season
-	Back     string
-	Add      string
+	Uid         int
+	ID          string
+	Title       string
+	Subtitle    string
+	Writer      string
+	ReleaseDate string
+	Runtime     string
+	Rating      string
+	Genres      string
+	Ratings     string
+	NumImages   string
+	Review      string
+	Image       string
+	NumSeasons  string
+	Synopsis    string
+	Path        string
+	Seasons     []Season
+	Back        string
+	Add         string
 }
 
 type List struct {
@@ -255,7 +264,7 @@ func PopulateSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 
 	id := r.FormValue("id")
 
-	results, success := retreivePreviewFromDB(id)
+	results, success, _ := retreivePreviewFromDB(id)
 	if !success {
 		results = Preview_Series(id)
 		savePreviewToDB(id, results)
@@ -275,12 +284,8 @@ func PopulateSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 func SubmitSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
-	query := r.FormValue("imdbCode")
-	fmt.Printf("imdbCode: %s\n", query)
-
-	// create the series
-	data := Create_Series(query)
-	insertSeriesIntoDB(data)
+	seriesID := r.FormValue("imdbCode")
+	SetSeriesAdded(seriesID)
 
 	http.Redirect(w, r, "/tv", http.StatusSeeOther)
 }
@@ -424,18 +429,16 @@ type VideoResponse struct {
 func SelectEpisode(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
-	series := r.FormValue("seriesID")
+	seriesTitle := r.FormValue("seriesID")
 	currentSeason, _ := strconv.Atoi(r.FormValue("seasonNum"))
 	episodeNum, _ := strconv.Atoi(r.FormValue("episodeNum"))
 
-	fmt.Printf("Playing episode: SeriesID=%s, SeasonNum=%d, EpisodeNum=%d\n", series, currentSeason, episodeNum)
+	fmt.Printf("Playing episode: SeriesID=%s, SeasonNum=%d, EpisodeNum=%d\n", seriesTitle, currentSeason, episodeNum)
 
-	var err error
-	var data Series
 	var episodes []Episode
 
 	//need to ensure the "movieID" actually exists so it can 404 if it doesn't
-	data, err = RetrieveSeriesFromDB(series)
+	data, err := RetrieveSeriesFromDB(seriesTitle)
 
 	//organize the episodes by season
 	episodes, _ = RetrieveEpisodesFromDB(data.Title)

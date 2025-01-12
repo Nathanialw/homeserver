@@ -80,12 +80,14 @@
 }
 
 .episode-card {
+    width: 100%;
 }
 
 .side-card {
     background-color: var(--primary-100);
     height: 65px;
     align-items: center; 
+    width: inherit;
 }
 
 .side-card:hover {
@@ -99,7 +101,7 @@
 
 .options {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
     padding: 1rem;
 }

@@ -5,11 +5,14 @@
     <head>
         <title>Homeserver</title>
         {{ template "head" . }}
+        <link rel="stylesheet" href="/css/home.css">
+        <script src="/js/home.js"></script>
       </head>
 
     <body>
         <header class="nav-center" id="nav-bar">
             {{ template "navbar" . }}
+            <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Your Site Name">
         </header>
         <article class="main-container">
             <!--title-->
@@ -19,11 +22,22 @@
               </header>
 
             <!--content-->
+            <section class="search-container">
+                <form class="search-form" id="search-form" action="https://search.brave.com/search" method="get">
+                    <input class="form-input" type="text" id="search-query" name="q" placeholder="Search..." >
+                    <select class="btn" id="search-engine" onchange="updateSearchEngine()">
+                        <option value="brave">Brave</option>
+                        <option value="google">Google</option>
+                        <option value="yandex">Yandex</option>
+                    </select>
+                </form>
+            </section>
+
             <ul class="main-links">
                 <li>
                     <a href="/movie" class="main-card">
                         <img
-                        src=""
+                        src="../../images/movie.jpg"
                         class="img card-img"
                         />
                         <section class="card-info">
@@ -35,7 +49,7 @@
                 <li>
                     <a href="/TV" class="main-card">
                         <img
-                        src=""
+                        src="../../images/tv.jpg"
                         class="img card-img"
                         />
                         <section class="card-info">
@@ -47,7 +61,7 @@
                 <li>
                     <a href="/books" class="main-card">
                         <img
-                        src=""
+                        src="../../images/books.jpg"
                         class="img card-img"
                         />
                         <section class="card-info">
