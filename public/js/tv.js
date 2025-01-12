@@ -19,6 +19,13 @@ document.addEventListener("DOMContentLoaded", function() {
     primary300 = styles.getPropertyValue('--primary-300').trim();
     primary400 = styles.getPropertyValue('--primary-400').trim();
     primary500 = styles.getPropertyValue('--primary-500').trim();
+    
+    const form = document.querySelector(".form");
+    form.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+        }
+    });
 });
 
 function highlightEpisode(seasonNum, episodeNum) {
@@ -32,7 +39,7 @@ function highlightEpisode(seasonNum, episodeNum) {
 }
 
 function highlightSeries(listItem) {
-    const allSeries = document.getElementsByClassName("list-group-item");
+    const allSeries = document.querySelectorAll(".list-group-item");
     for (let i = 0; i < allSeries.length; i++) {
         allSeries[i].classList.remove("highlighted");
     }   
@@ -59,6 +66,7 @@ function playEpisode(seriesID, seasonNum, episodeNum) {
     xhr.send("seriesID=" + seriesID + "&seasonNum=" + seasonNum + "&episodeNum=" + episodeNum);
 }
 
+let selectedID = "";
 
 function SearchInput() {
     const xhr = new XMLHttpRequest();
@@ -69,12 +77,12 @@ function SearchInput() {
             //create a list of times to display the recieved arry
             let list = JSON.parse(xhr.responseText);
             if (list.length > 0) {
-                const start = document.getElementById("start-title");
-                start.textContent = "Select a series...";
+                const searchResults = document.querySelector(".search-container");
+                searchResults.classList.add("show-selected");
             }
             console.log("list", list);
 
-            let listElement = document.getElementById("search-results");
+            let listElement = document.querySelector(".search-results");
             listElement.innerHTML = "";
             for (let i = 0; i < list.length; i++) {
                 let listItem = document.createElement("li");
@@ -87,6 +95,7 @@ function SearchInput() {
                     highlightSeries(listItem);
                     SelectSeries(list[i][1]);
                     PreviewSeries(list[i][1]);
+                    selectedID = list[i][1];
                 })
             }            
         };
@@ -119,73 +128,68 @@ function PreviewSeries(id) {
             
             console.log(response);
             // //title
-            const title = document.getElementById("selected-series-title");
-            title.textContent = response[0][0]
+            const title = document.querySelector(".selected-series-title");
+            title.textContent = response[0]
             
             // //synopsis
-            const synopsis = document.getElementById("selected-series-synopsis");
-            synopsis.textContent = response[1][0]
+            const synopsis = document.querySelector(".selected-series-synopsis");
+            synopsis.textContent = response[1]
             
-            const release = document.getElementById("selected-series-release");
-            release.textContent = response[2][0]
+            const release = document.querySelector(".selected-series-release");
+            release.textContent = response[2]
 
-            const runtime = document.getElementById("selected-series-runtime");
-            runtime.textContent = response[3][0]
+            const runtime = document.querySelector(".selected-series-runtime");
+            runtime.textContent = response[3]
             
-            const seasons = document.getElementById("selected-series-seasons");
-            seasons.textContent = response[4][0]
+            const seasons = document.querySelector(".selected-series-seasons");
+            seasons.textContent = response[4]
 
-            const rating = document.getElementById("selected-series-rating");
-            rating.textContent = response[5][0]
+            const rating = document.querySelector(".selected-series-rating");
+            rating.textContent = response[5]
             
-            const ratings = document.getElementById("selected-series-ratings");
-            ratings.textContent = response[6][0] + "/10"
+            const ratings = document.querySelector(".selected-series-ratings");
+            ratings.textContent = response[6] + "/10"
 
-            const genres = document.getElementById("selected-series-genres");
-            genres.textContent = ""
-            for (let i = 0; i < response[7].length; i++) {
-                genres.textContent += response[7][i] + ", ";
+            const genres = document.querySelector(".selected-series-genres");
+            while (genres.firstChild) {
+                genres.removeChild(genres.firstChild);
+            }
+
+            const genresList = response[7].split(",");
+            for (let i = 1; i < genresList.length; i++) {
+                let listItem = document.createElement("p");
+                listItem.classList.add("selected-series-data");
+                listItem.innerHTML = genresList[i];
+                genres.appendChild(listItem);
             }
 
             // //image path 1
-            const image0 = document.getElementById("selected-series-image");
-            if (response[8][0] !== null && response[8][0] !== undefined && response[8][0] !== ' ') {
-                console.log("setting image");
-                image0.src = response[8][0];
+            const image0 = document.querySelector(".selected-series-image");
+            if (response[8] !== null && response[8] !== undefined && response[8] !== ' ') {
+                image0.src = response[8];
             }    
             else {
-                // select a random image
+                // select a random bunny image
                 image0.src = 'images/bunnie_1.jpg';
             }
+      
+            console.log("num images", response[9]);
 
-            // //image path 2
-            // const image1 = document.getElementById("selected-series-image");
-            // if (response[9][0] !== null && response[9][0] !== undefined && response[9][0] !== ' ') {
-            //     image1.src = response[9][0];
-            // }
-            // else {
-            //     // select a random image
-            //     image1.src = 'images/bunnie_1.jpg';
-            // }        
-            for (let i = 0; i < response[9].length; i++) {
-                console.log("imgpath:", response[9][i])
-            }
-
-            const review = document.getElementById("selected-series-review");
-            review.textContent = response[10][0]
+            const review = document.querySelector(".selected-series-review");
+            review.textContent = response[10]
         }
     };
+
+    if (id === selectedID) {
+        return;
+    }
     xhr.send("id=" + id);
 }
 
 function SelectSeries(seriesID) {
-    const selected = document.getElementById("selected-series");
+    const selected = document.querySelector(".selected-container");
     selected.classList.add("show-selected");
     
-
-    const start = document.getElementById("show-selected-start");
-    start.classList.remove("show-selected-start");
-
     let code = document.getElementById("imdbCode");
     code.value = seriesID;
 }

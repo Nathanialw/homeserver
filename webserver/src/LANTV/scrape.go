@@ -65,7 +65,7 @@ func Search_Series(input string) [][]string {
 }
 
 // scrape the bare minimum information for a series
-func Preview_Series(key string) [][]string {
+func Preview_Series(key string) (data []string) {
 	fmt.Printf("create input: %s\n", key)
 
 	cmd := exec.Command("python3", "../scripts/scrapeSeriesPreview.py", key)
@@ -85,25 +85,45 @@ func Preview_Series(key string) [][]string {
 
 	// Print the results
 	for _, result := range results {
-		for _, item := range result {
-			fmt.Printf("Result: %s\n", item)
+		if len(result) == 1 {
+			data = append(data, result[0])
+		} else {
+			data = append(data, strings.Join(result, ", "))
 		}
 	}
 
-	return results
+	return data
 }
 
 // scrape the full information for a series
-func Create_Series(key string) {
+func Create_Series(key string) Series {
 	fmt.Printf("create input: %s\n", key)
 
+	// get all the remaining data for the series
 	cmd := exec.Command("python3", "../scripts/scrapeSeries.py", key)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Printf("Failed to run command: %v\n", err)
 	}
 
-	// Convert the byte slice to a string
-	outputStr := string(output)
-	fmt.Printf("Output: %s\n", outputStr)
+	// Parse the JSON output
+	var results []string
+	err = json.Unmarshal(output, &results)
+	if err != nil {
+		log.Printf("Failed to unmarshal JSON: %v\n", err)
+	}
+
+	series := Series{}
+	series.Title = results[0]
+	series.Subtitle = results[1]
+	series.Image = results[2]
+	// series.Description = results[3]
+	// series.Genres = results[4]
+	// series.Rating = results[5]
+	// series.Year = results[6]
+	// series.Seasons = results[7]
+	// series.Episodes = results[8]
+
+	//return an array of strings of the data
+	return series
 }

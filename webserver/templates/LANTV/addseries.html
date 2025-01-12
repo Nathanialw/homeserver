@@ -32,40 +32,35 @@
           <button class="btn" type="submit" style="display: none;"></button>
         </form>
 
-        <section class="selected-container">
-          <div class="selected-series-start show-selected-start" id="show-selected-start">
-            <div class="selected-series-start-content">
-              <h3 class="title" id="start-title">Start your search...</h1>
-              <div class="title-underline"></div>
-            </div>
-          </div>
-
-          <span class="selected-series" id="selected-series"> 
-            <img class="select-img" src="images/bunnie_1.jpg" id="selected-series-image" alt="">
+        <section class="selected-container selected-container">
+          <span class="selected-series selected-series"> 
+            <img class="select-img selected-series-image" src="images/bunnie_1.jpg selected-series-image" alt="">
             <div class="selected-series-info">
-              <h3 class="selected-series-title title" id="selected-series-title">Selected title</h3>
+              <h3 class="selected-series-title title">Selected title</h3>
               <div class="title-underline"></div>
-              <p class="selected-series-data" id="selected-series-synopsis">Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum, sed minus ratione quis consectetur a expedita nostrum tenetur, temporibus autem recusandae. Tempore iusto numquam nam atque veritatis adipisci delectus eius!</p>
-              <span style="display: flex;">                
-                <p class="selected-series-data" id="selected-series-release">Release</p>
-                <p class="selected-series-data" id="selected-series-runtime">Runtime</p>
-                <p class="selected-series-data" id="selected-series-seasons">Seasons</p>
+              <p class="selected-series-data selected-series-synopsis">Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum, sed minus ratione quis consectetur a expedita nostrum tenetur, temporibus autem recusandae. Tempore iusto numquam nam atque veritatis adipisci delectus eius!</p>
+              <span class="selected-series-line">                
+                <p class="selected-series-data selected-series-release">Release</p>
+                <p class="selected-series-data selected-series-runtime">Runtime</p>
+                <p class="selected-series-data selected-series-seasons">Seasons</p>
               </span>
-              <span style="display: flex;">                
-                <p class="selected-series-data" id="selected-series-ratings">Rating</p>
-                <p class="selected-series-data" id="selected-series-rating">unrated</p>
+              <span class="selected-series-line">                
+                <p class="selected-series-data selected-series-ratings">Rating</p>
+                <p class="selected-series-data selected-series-rating">unrated</p>
               </span>
-              <p class="selected-series-data" id="selected-series-genres">genres</p>
+              <span class="selected-series-line selected-series-genres">
+                
+              </span>
             </div>
           </span>
 
-          <p class="selected-series-review selected-series-data" id="selected-series-review">review</p>
+          <p class="selected-series-review selected-series-data">review</p>
           <button class="btn btn-center" id="hidden" onclick="document.querySelector('.btn').click()">Create</button>
         </section>
 
 
         <section class="search-container">
-          <ul id="search-results"></ul>
+          <ul class="search-results"></ul>
         </section>
 
         <!-- I want a button that send the form -->

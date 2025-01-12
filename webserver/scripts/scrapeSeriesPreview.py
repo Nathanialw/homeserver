@@ -173,9 +173,8 @@ def scrape_series_preview(key):
             append = "_" + str(num)
             with open(savePath + title  + append +  '.png', 'wb') as file:
                 file.write(response.content)
-            result.append(referencePath + title +  append +  '.png')
             num += 1
-        results.append(result)
+        results.append([str(num)])
     except:
         image = " "
         result = [image]

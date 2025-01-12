@@ -1,6 +1,7 @@
 package lantv
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	db "webserver/src/DB"
@@ -72,7 +73,24 @@ func RetrieveSeriesFromDB(title string) (Series, error) {
 }
 
 func createSeriesDB() {
-	stmt, err := db.Database.Prepare("CREATE TABLE IF NOT EXISTS series (uid INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, subtitle TEXT, image TEXT, synopsis TEXT, path TEXT)")
+	stmt, err := db.Database.Prepare(`
+	CREATE TABLE IF NOT EXISTS series (
+		uid INTEGER PRIMARY KEY AUTOINCREMENT,
+		id TEXT,
+		title TEXT,
+		synopsis TEXT,
+		release_date TEXT,
+		runtime TEXT,
+		seasons TEXT,
+		rating TEXT,
+		ratings TEXT,
+		genres TEXT,
+		cover_image TEXT,
+		num_images INTEGER,
+		review TEXT
+	)
+`)
+
 	if err != nil {
 		log.Fatalf("failed to prepare statement: %v\n", err)
 	}
@@ -131,7 +149,7 @@ func getAllSeasons(series string) (seasons []Season, err error) {
 }
 
 func getAllSeries() (series []Series, err error) {
-	rows, err := db.Database.Query("select title, subtitle, image from series")
+	rows, err := db.Database.Query("select title, cover_image from series")
 	for rows.Next() {
 		se := Series{}
 		if err = rows.Scan(&se.Title, &se.Subtitle, &se.Image); err != nil {
@@ -150,7 +168,7 @@ func getAllSeries() (series []Series, err error) {
 }
 
 func getSeries() (series []Series, err error) {
-	rows, err := db.Database.Query("select title, subtitle, image from series")
+	rows, err := db.Database.Query("select title, cover_image from series")
 	for rows.Next() {
 		se := Series{}
 		if err = rows.Scan(&se.Title, &se.Subtitle, &se.Image); err != nil {
@@ -166,4 +184,57 @@ func getSeries() (series []Series, err error) {
 
 	fmt.Println("retrieving all")
 	return
+}
+
+func savePreviewToDB(key string, data []string) {
+	// Convert genres to JSON string
+	genresJSON, err := json.Marshal(data[7])
+	if err != nil {
+		fmt.Printf("error marshaling genres: %s\n", err)
+		return
+	}
+
+	_, err = db.Database.Exec("insert into series (id, title, synopsis, release_date, runtime, seasons, rating, ratings, genres, cover_image, num_images, review) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		key, data[0], data[1], data[2], data[3], data[4], data[5], data[6], string(genresJSON), data[8], data[9], data[10])
+	if err != nil {
+		fmt.Printf("error adding series: %s\n", err)
+	}
+}
+
+func retreivePreviewFromDB(id string) (data []string, success bool) {
+	success = false
+	rows, err := db.Database.Query("SELECT id, title, synopsis, release_date, runtime, seasons, rating, ratings, genres, cover_image, num_images, review FROM series WHERE id = ?", id)
+	if err != nil {
+		fmt.Printf("error retrieving series: %s\n", err)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id, title, synopsis, releaseDate, runtime, rating, seasons, ratings, genresJSON, coverImage, numImages, review string
+		if err := rows.Scan(&id, &title, &synopsis, &releaseDate, &runtime, &seasons, &rating, &ratings, &genresJSON, &coverImage, &numImages, &review); err != nil {
+			fmt.Printf("error scanning row: %s\n", err)
+			return
+		}
+
+		// Unmarshal genres JSON string
+		var genres string
+		if err := json.Unmarshal([]byte(genresJSON), &genres); err != nil {
+			fmt.Printf("error unmarshaling genres: %s\n", err)
+			return
+		}
+
+		genresStr := fmt.Sprintf("%v", genres)
+
+		data = []string{title, synopsis, releaseDate, runtime, seasons, rating, ratings, genresStr, coverImage, numImages, review}
+		success = true
+	}
+
+	if success {
+		fmt.Printf("found series: %s\n", data[0])
+	} else {
+		fmt.Printf("series not found: %s\n", id)
+	}
+
+	return data, success
 }

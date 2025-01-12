@@ -254,12 +254,14 @@ func PopulateSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
 	id := r.FormValue("id")
-	var response []byte
-	var err error
 
-	results := Preview_Series(id)
+	results, success := retreivePreviewFromDB(id)
+	if !success {
+		results = Preview_Series(id)
+		savePreviewToDB(id, results)
+	}
 
-	response, err = json.Marshal(results)
+	response, err := json.Marshal(results)
 	if err != nil {
 		fmt.Printf("error: %s\n", err)
 		http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
@@ -268,7 +270,6 @@ func PopulateSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(response)
-
 }
 
 func SubmitSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -278,8 +279,8 @@ func SubmitSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	fmt.Printf("imdbCode: %s\n", query)
 
 	// create the series
-	Create_Series(query)
-	// insertSeriesIntoDB(series)
+	data := Create_Series(query)
+	insertSeriesIntoDB(data)
 
 	http.Redirect(w, r, "/tv", http.StatusSeeOther)
 }
