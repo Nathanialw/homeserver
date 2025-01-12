@@ -53,18 +53,30 @@
 .player-container {
     display: flex;
     flex-direction: row;
-    max-height: 563px;
-    padding: 2px;
+    max-height: inherit;
+    padding: 0;
+    height: 35rem;
     background-color: var(--primary--300)
 }
 
 .video-container {
     flex-grow: 1;
     width: calc(100% - 200px); /* Adjust the width to account for the fixed width of the episode list */
-    height: 100%
+    padding: 0;
+}
+
+.video-player {
+    display: flex;
+    margin: auto; 
+    height: 100%;
+    /* width: 100%; */
+    padding: 0;
+    background-color: black;
 }
 
 .episode-list {
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -72,6 +84,7 @@
     overflow-y: auto; 
     overflow-x: hidden; 
     width: 200px;
+    height: inherit;
 }
 
 .episode-text {
@@ -100,8 +113,10 @@
 }
 
 .options {
-    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
     flex-direction: row;
+    display: flex;
     justify-content: space-between;
     padding: 1rem;
 }
@@ -172,12 +187,6 @@
 .selected-series-title {
 }
 
-.selected-series-review {
-    background-color: var(--grey--100);
-    margin: auto;
-    margin-top: 1rem;
-}
-
 .selected-series-start {
     display: none;
     margin: auto;
@@ -205,10 +214,8 @@
 }
 
 .btn {
-    margin-top: 2rem;
-    width: 10rem;
+    width: 6rem;
     height: 2rem;
-    font-size: 1.5rem;
 }
 
 .show-selected {
@@ -220,3 +227,49 @@
     flex-direction: row;
     flex-wrap: wrap;
 }
+.review-container {
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center; /* Center horizontally */
+}
+
+.selected-series-review-container {
+    background-color: var(--grey--100);
+    width: 75%;
+    margin: 0 auto;
+    max-height: 7rem; /* Use max-height for smooth transition */
+    overflow: hidden;
+    position: relative; /* Required for the pseudo-element */
+    transition: max-height 0.3s ease; /* Smooth transition */
+    cursor: pointer; /* Indicate clickable */
+}
+
+.selected-series-review-container::after {
+    width: 100%;
+    margin: 0;
+    padding: 1rem;
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 7rem; /* Adjust the height of the fade-out effect */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--grey--100));
+    pointer-events: none; /* Allow clicks to pass through */
+}
+
+.selected-series-review-container.expanded {
+    max-height: none; /* Allow full height */
+}
+
+.selected-series-review-container.expanded::after {
+    display: none; /* Hide the fade-out effect when expanded */
+}
+
+.selected-series-review-container p {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 1rem;
+}
+

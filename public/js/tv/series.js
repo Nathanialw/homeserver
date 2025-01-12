@@ -1,26 +1,3 @@
-'use strict';
-
-let primary100;
-let primary200;
-let primary300;
-let primary400;
-let primary500;
-
-document.addEventListener("DOMContentLoaded", function() {
-    // Get the root element
-    const root = document.documentElement;
-
-    // Get the computed styles of the root element
-    const styles = getComputedStyle(root);
-
-    // Access the CSS custom properties
-    primary100 = styles.getPropertyValue('--primary-100').trim();
-    primary200 = styles.getPropertyValue('--primary-200').trim();
-    primary300 = styles.getPropertyValue('--primary-300').trim();
-    primary400 = styles.getPropertyValue('--primary-400').trim();
-    primary500 = styles.getPropertyValue('--primary-500').trim();
-});
-
 function highlightEpisode(seasonNum, episodeNum) {
     const allEpisodes = document.getElementsByClassName("side-card");
     for (let i = 0; i < allEpisodes.length; i++) {
@@ -50,3 +27,17 @@ function playEpisode(seriesID, seasonNum, episodeNum) {
     xhr.send("seriesID=" + seriesID + "&seasonNum=" + seasonNum + "&episodeNum=" + episodeNum);
 }
 
+function toggleReview() {
+    const reviewElement = document.querySelector('.selected-series-review-container');
+    const isExpanded = reviewElement.classList.contains('expanded');
+
+    if (isExpanded) {
+        // Collapse the review
+        reviewElement.style.maxHeight = '7rem';
+    } else {
+        // Expand the review
+        reviewElement.style.maxHeight = reviewElement.scrollHeight + 'px';
+    }
+
+    reviewElement.classList.toggle('expanded');
+}

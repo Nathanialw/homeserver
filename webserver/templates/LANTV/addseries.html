@@ -7,6 +7,7 @@
     {{ template "head" . }}    
     <link rel="stylesheet" href="/css/tv.css">
     <script src="/js/tv/search.js"></script>
+    <script src="/js/tv/series.js"></script>
   <body>
     <!-- navigation bar at the top -->
     <header class="nav-center" id="nav-bar">
@@ -54,7 +55,12 @@
             </div>
           </span>
 
-          <p class="selected-series-review selected-series-data">review</p>
+          <section class="review-container">
+            <div class="selected-series-review-container" onclick="toggleReview()">
+              <!-- Review content here -->
+              <p class="selected-series-review selected-series-data">review</p>
+            </div>
+          </section>
           <button class="btn btn-center" id="hidden" onclick="document.querySelector('.btn').click()">Create</button>
         </section>
 

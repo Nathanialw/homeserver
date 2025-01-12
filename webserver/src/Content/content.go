@@ -28,3 +28,17 @@ func GenerateHTML(w http.ResponseWriter, data interface{}, module string, fn ...
 	//	return
 	//}
 }
+
+//need to do that at the poitn of parsing to get the formatting right
+func FormatParagraph(input string) (text string) {
+
+	for i := 0; i < len(input); i++ {
+		if input[i] == '.' && i+1 < len(input) && input[i+1] != ' ' && input[i+1] != '.' && input[i+1] != '"' && input[i+1] != '\'' && input[i+2] != '.' {
+			input = input[:i+1] + "<br><br>" + input[i+1:]
+		}
+	}
+
+	text = input
+
+	return text
+}

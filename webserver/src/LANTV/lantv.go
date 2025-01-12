@@ -50,6 +50,7 @@ type Series struct {
 	Runtime     string
 	Rating      string
 	Genres      string
+	GenresList  []string
 	Ratings     string
 	NumImages   string
 	Review      string
@@ -137,6 +138,8 @@ func ShowSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	data.Back = "/tv"
 	data.Add = "/addseason/" + p.ByName("seriesID")
+
+	data.Review = content.FormatParagraph(data.Review)
 
 	content.GenerateHTML(w, data, "LANTV", "series")
 
@@ -269,6 +272,7 @@ func PopulateSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 		results = Preview_Series(id)
 		savePreviewToDB(id, results)
 	}
+	results[10] = content.FormatParagraph(results[10])
 
 	response, err := json.Marshal(results)
 	if err != nil {
@@ -389,6 +393,7 @@ func SelectSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	//need to ensure the "movieID" actually exists so it can 404 if it doesn't
 	data, err = RetrieveSeriesFromDB(series)
+	data.Synopsis = data.Title + `<br>` + data.Synopsis
 
 	//organize the episodes by season
 	episodes, _ = RetrieveEpisodesFromDB(data.Title)
@@ -415,6 +420,7 @@ func SelectSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	data.Back = "/tv/"
 	data.Add = "/addseason/" + series
+	data.Review = content.FormatParagraph(data.Review)
 
 	content.GenerateHTML(w, data, "LANTV", "series")
 
@@ -448,6 +454,8 @@ func SelectEpisode(w http.ResponseWriter, r *http.Request, p httprouter.Params) 
 
 	data = OrganizeIntoSeasons(data, episodes)
 	fmt.Printf("number of seasons: %d\n", len(data.Seasons))
+
+	data.Review = content.FormatParagraph(data.Review)
 
 	videoURL := data.Seasons[currentSeason-1].Episodes[episodeNum-1].Path
 

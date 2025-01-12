@@ -1,25 +1,6 @@
 'use strict';
 
-let primary100;
-let primary200;
-let primary300;
-let primary400;
-let primary500;
-
 document.addEventListener("DOMContentLoaded", function() {
-    // Get the root element
-    const root = document.documentElement;
-
-    // Get the computed styles of the root element
-    const styles = getComputedStyle(root);
-
-    // Access the CSS custom properties
-    primary100 = styles.getPropertyValue('--primary-100').trim();
-    primary200 = styles.getPropertyValue('--primary-200').trim();
-    primary300 = styles.getPropertyValue('--primary-300').trim();
-    primary400 = styles.getPropertyValue('--primary-400').trim();
-    primary500 = styles.getPropertyValue('--primary-500').trim();
-    
     const form = document.querySelector(".form");
     form.addEventListener("keydown", function(event) {
         if (event.key === "Enter") {
@@ -149,7 +130,7 @@ function PreviewSeries(id) {
             console.log("num images", response[9]);
 
             const review = document.querySelector(".selected-series-review");
-            review.textContent = response[10]
+            review.innerHTML = response[10]
         }
     };
 
