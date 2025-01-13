@@ -90,10 +90,7 @@ func main() {
 	r.POST("/submitseries", lantv.SubmitSeries)
 	r.GET("/addseason/:seriesID", lantv.AddSeason)
 	r.POST("/submitseason", lantv.SubmitSeason)
-
-	r.GET("/selectSeries/:seriesID", lantv.SelectSeries)            //populate defults
-	r.GET("/selectSeason/:seriesID/:seasonNum", lantv.SelectSeason) //populate season episodes
-	r.GET("/tv/:seriesID", lantv.ShowSeries)                        //redirect to show series
+	r.GET("/tv/:seriesID/:seasonNum", lantv.ShowSeries) //redirect to show series
 
 	r.POST("/selectEpisode", lantv.SelectEpisode)
 	r.POST("/updateSeriesSearch", lantv.UpdateSeriesSearch)

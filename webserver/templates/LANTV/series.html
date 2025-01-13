@@ -13,42 +13,22 @@
         <header class="nav-center" id="nav-bar">
             {{ template "navbar" . }}
         </header>
+          <article class="main-container">
         
-        <article class="main-container">
-          <!-- about series  -->
-          <section>
-            <section class="selected-container selected-container show-selected">
-              <span class="selected-series selected-series"> 
-                <img class="select-img selected-series-image" src="{{ .Image }}" alt="">
-                <div class="selected-series-info">
-                  <h3 class="selected-series-title title"> {{ .Title }}</h3>
-                  <div class="title-underline"></div>
-                  <p class="selected-series-data selected-series-synopsis">{{ .Synopsis }}</p>
-                  <span class="selected-series-line">                
-                    <p class="selected-series-data selected-series-release">{{ .ReleaseDate }}</p>
-                    <p class="selected-series-data selected-series-runtime">{{ .Runtime }}</p>
-                    <p class="selected-series-data selected-series-seasons">{{ .NumSeasons }}</p>
-                  </span>
-                  <span class="selected-series-line">                
-                    <p class="selected-series-data selected-series-ratings">{{ .Ratings }}/10</p>
-                    <p class="selected-series-data selected-series-rating">{{ .Rating }}</p>
-                  </span>
-                  <span class="selected-series-line selected-series-genres">
-                    {{ range .GenresList }}
-                      <p class="selected-series-data selected-series-data">{{ . }}</p>
-                    {{ end }}
-                  </span>
-                </div>
-              </span>
-              
-               <!-- review section -->
-            <section class="review-container">
-              <div class="selected-series-review-container" onclick="toggleReview()">
-                <!-- Review content here -->
-                <p>{{ .Review }}</p>
-              </div>
-            </section>
-          </section>
+            {{ template "aboutmedia" . }}
+
+              <!-- about series  -->
+
+        {{ if ne .Review " " }}
+          <!-- review section -->
+        <section class="review-container">
+          <div class="selected-series-review-container" onclick="toggleReview()">
+            <!-- Review content here -->
+            <p>{{ .Review }}</p>
+          </div>
+        </section>
+        {{ end }}
+    </section>
 
           <!-- video player  -->
 
@@ -146,26 +126,40 @@
         </section>
         {{ else }}
 
+        <!-- form to add a season -->
+        <form class="form" action="/submitMovieFile/{{ .ID }}" method="post" enctype="multipart/form-data">
+
+          <label class="form-label" for="media">Drop a Folder Containing the Season Episodes:</label>
+          <input class="form-input form-row" type="file" id="media" name="media" mozdirectory webkitdirectory required>
+
+          <input class="btn btn-center" type="submit" value="Submit">
+        </form>
         {{ end }}
 
           <!--seaons select-->
           <ul class="main-links">
+
+            <!-- is they are NOT full they should be greyed out -->
+
+
             <!-- this will be a carousel -->
             {{ if gt (len .Seasons) 0 }}
               {{ range .Seasons }}
               <li>
-                <a href="/selectSeason/{{ $.ID }}/{{ .SeasonNum }}">
-                  <div class="main-card">
+                <a href="/tv/{{ $.ID }}/{{ .SeasonNum }}">
+                  <div class="main-card {{ if lt (len .Episodes) 1 }} season-overlay {{ end}}">
                     <!-- when you click on this it should populate the side bar with the selected season -->
-                    <img src="{{ .Image }}" class="img card-img" />
+                    <img src="{{ if .Image }} {{ .Image }} {{ else }} ../../images/bunnie_2.jpg {{ end}}" class="img card-img" />
                     
                     <section class="card-info">
                       <h3>Season: {{ .SeasonNum }}</h3>
                       <div class="title-underline"></div>
                     </section>
                   </div>
-                </a>
-              </li>			
+                  
+                  
+                  </a>
+                </li>			
               {{ end }}
             {{ end }}
           </ul>

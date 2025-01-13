@@ -1,3 +1,14 @@
+'use strict';
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollContainer = document.querySelector('.main-links');
+    scrollContainer.addEventListener('wheel', (evt) => {
+      evt.preventDefault();
+      scrollContainer.scrollLeft += evt.deltaY;
+    });
+  });
+
 function highlightEpisode(seasonNum, episodeNum) {
     const allEpisodes = document.getElementsByClassName("side-card");
     for (let i = 0; i < allEpisodes.length; i++) {
@@ -41,3 +52,4 @@ function toggleReview() {
 
     reviewElement.classList.toggle('expanded');
 }
+

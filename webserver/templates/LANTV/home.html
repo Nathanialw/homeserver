@@ -20,20 +20,20 @@
             <!--content-->
             <ul class="main-links">
                 {{ if .NotEmpty}}
-                {{ range .Media }}
-                <li>
-                  <a href="/selectSeries/{{.ID}}" class="main-card">
-                    <img
-                      src="{{.Image}}"
-                      class="img card-img"
-                    />
-                    <section class="card-info">
-                      <h3>{{.Title}}</h3>
-                      <div class="title-underline"></div>
-                    </section>
-                  </a>
-                </li>			
-                {{ end }}
+                  {{ range .Media }}
+                  <li>
+                    <a href="/tv/{{.ID}}/1" class="main-card">
+                      <img
+                        src="{{.Image}}"
+                        class="img card-img"
+                      />
+                      <section class="card-info">
+                        <h3>{{.Title}}</h3>
+                        <div class="title-underline"></div>
+                      </section>
+                    </a>
+                  </li>			
+                  {{ end }}
                 {{ end}}
               </ul>
         </article>

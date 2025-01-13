@@ -14,37 +14,9 @@
             {{ template "navbar" . }}
         </header>
         
-        <article class="main-container">
-            <section class="selected-container selected-container show-selected">
-              <span class="selected-series selected-series"> 
-                <img class="select-img selected-series-image" src="{{ .Image }}" alt="">
-                <div class="selected-series-info">
-                  <h3 class="selected-series-title title"> {{ .Title }}</h3>
-                  <div class="title-underline"></div>
-                  <p class="selected-series-data selected-series-synopsis">{{ .Synopsis }}</p>
-                  <span class="selected-series-line">                
-                    <p class="selected-series-data selected-series-release">{{ .ReleaseDate }}</p>
-                    <p class="selected-series-data selected-series-runtime">{{ .Runtime }}</p>
-                  </span>
-                  <span class="selected-series-line">                
-                    <p class="selected-series-data selected-series-ratings">{{ .Ratings }}/10</p>
-                    <p class="selected-series-data selected-series-rating">{{ .Rating }}</p>
-                  </span>
-                  <span class="selected-series-line selected-series-genres">
-                    {{ range .Genres }}
-                      <p class="selected-series-data selected-series-data">{{ . }}</p>
-                    {{ end }}
-                  </span>
-                </div>
-              </span>
-              
-               <!-- review section -->
-            <section class="review-container">
-              <div class="selected-series-review-container" onclick="toggleReview()">
-                <p>{{ .Review }}</p>
-              </div>
-            </section>
-          </section>
+        <main class="main-container">
+
+          {{ template "aboutmedia" . }}
 
           <!-- video player  -->
            {{ if eq .Path " " }}
@@ -74,7 +46,7 @@
             <h4>carousel showing similar films</h4>
           </section>
 
-        </article>
+        </main>
 
         <footer id="footer">
             {{ template "footer" . }}

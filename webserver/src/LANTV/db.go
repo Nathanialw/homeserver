@@ -124,20 +124,17 @@ func RetrieveEpisodesFromDB(title string) ([]Episode, error) {
 
 func OrganizeIntoSeasons(series Series, episodes []Episode) Series {
 	// get number of seasons
+
+	for i := range series.Seasons {
+		series.Seasons[i].Title = series.Title
+		series.Seasons[i].Active = false
+		series.Seasons[i].SeasonNum = i + 1
+	}
+
 	numSeasons := 0
 	for _, episode := range episodes {
 		if episode.Season > numSeasons {
 			numSeasons = episode.Season
-		}
-		if len(series.Seasons) < episode.Season {
-			series.Seasons = append(series.Seasons, Season{})
-			series.Seasons[episode.Season-1].SeasonNum = episode.Season
-			series.Seasons[episode.Season-1].Title = series.Title
-			if episode.Season == 1 {
-				series.Seasons[episode.Season-1].Active = true
-			} else {
-				series.Seasons[episode.Season-1].Active = false
-			}
 		}
 		series.Seasons[episode.Season-1].Episodes = append(series.Seasons[episode.Season-1].Episodes, episode)
 	}
@@ -152,19 +149,6 @@ func OrganizeIntoSeasons(series Series, episodes []Episode) Series {
 
 		season = organizedSeason
 	}
-
-	//get the episodes
-	fmt.Printf("num seasons: %d\n", len(series.Seasons))
-
-	for _, season := range series.Seasons {
-		fmt.Printf("season title: %s\n", series.Title)
-		fmt.Printf("season number: %d\n", season.SeasonNum)
-		for _, episode := range season.Episodes {
-			fmt.Printf("name: %s\n", episode.Title)
-		}
-	}
-
-	fmt.Printf("number of seasons: %d\n", len(series.Seasons))
 
 	//organize the episodes by season
 	return series
@@ -185,7 +169,7 @@ func savePreviewToDB(key string, data []string) {
 	}
 }
 
-func insertSeasonIntoDB(series Series) {
+func insertSeasonIntoDB(series Series, currentSeriesTitle string) {
 	for j := 0; j < len(series.Seasons); j++ {
 		for i := 0; i < len(series.Seasons[j].Episodes); i++ {
 			_, err := db.Database.Exec("insert into episodes (series, episode, season, title, subtitle, image, synopsis, path) values (?, ?, ?, ?, ?, ?, ?, ?)", currentSeriesTitle, i+1, series.Seasons[j].SeasonNum, series.Seasons[j].Episodes[i].Title, series.Seasons[j].Episodes[i].Subtitle, series.Seasons[j].Episodes[i].Image, series.Seasons[j].Episodes[i].Synopsis, series.Seasons[j].Episodes[i].Path)

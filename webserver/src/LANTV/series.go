@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 	content "webserver/src/Content"
 	core "webserver/src/Core"
 
@@ -49,6 +51,8 @@ func RetrieveSeriesFromDB(id string) (Series, error) {
 	series.ReleaseDate = data[2]
 	series.Runtime = data[3]
 	series.NumSeasons = data[4]
+	numSeasons, _ := strconv.Atoi(strings.Split(series.NumSeasons, " ")[0])
+	series.Seasons = make([]Season, (numSeasons))
 	series.Rating = data[5]
 	series.Ratings = data[6]
 	series.Genres = data[7]

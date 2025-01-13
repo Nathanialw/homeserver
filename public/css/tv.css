@@ -273,3 +273,23 @@
     padding: 1rem;
 }
 
+.main-links {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 2rem;
+    padding: 2rem;
+    overflow: scroll;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.main-links::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+
+.season-overlay {
+    background-color: rgba(0, 0, 0, 0.25);
+    z-index: 2;
+    cursor: pointer;
+}
+

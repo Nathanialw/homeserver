@@ -11,39 +11,25 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func SelectSeason_(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func GetSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) (Series, error) {
 	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 
 	series := p.ByName("seriesID")
 	currentSeason, _ := strconv.Atoi(p.ByName("seasonNum"))
-	// currentSeason, _ := strconv.Atoi(r.FormValue("seasonNum"))
 
 	fmt.Printf("Playing episode: SeriesID=%s, SeasonNum=%d, EpisodeNum=%d\n", series, currentSeason, 1)
 
 	//need to ensure the "movieID" actually exists so it can 404 if it doesn't
 	data, err := RetrieveSeriesFromDB(series)
-	data.Synopsis = data.Title + `<br>` + data.Synopsis
 
 	//organize the episodes by season
 	episodes, _ := RetrieveEpisodesFromDB(data.Title)
-	fmt.Printf("number of episodes: %d\n", len(episodes))
-
 	data = OrganizeIntoSeasons(data, episodes)
-	fmt.Printf("number of seasons: %d\n", len(data.Seasons))
 
-	//reset the active season/episode
-	for i := 0; i < len(data.Seasons); i++ {
-		for j := 0; j < len(data.Seasons[i].Episodes); j++ {
-			if i == currentSeason-1 && j == 0 {
-				data.Seasons[i].Episodes[j].Active = true
-			} else {
-				data.Seasons[i].Episodes[j].Active = false
-			}
-		}
-		if i == currentSeason-1 {
-			data.Seasons[i].Active = true
-		} else {
-			data.Seasons[i].Active = false
+	if len(data.Seasons) > 0 && currentSeason > 0 {
+		data.Seasons[currentSeason-1].Active = true
+		if len(data.Seasons[currentSeason-1].Episodes) > 0 {
+			data.Seasons[currentSeason-1].Episodes[0].Active = true
 		}
 	}
 
@@ -51,15 +37,7 @@ func SelectSeason_(w http.ResponseWriter, r *http.Request, p httprouter.Params) 
 	data.Add = ""
 	data.Review = content.FormatParagraph(data.Review)
 
-	SeriesData = Series{}
-	SeriesData = data
-
-	http.Redirect(w, r, "/tv/"+series, http.StatusSeeOther)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	return data, err
 }
 
 func AddSeason_(w http.ResponseWriter, r *http.Request, p httprouter.Params) {

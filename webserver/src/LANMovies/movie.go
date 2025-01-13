@@ -28,7 +28,7 @@ func RetrieveMovieFromDB(id string) (Movie, error) {
 	movie.Runtime = data[3]
 	movie.Rating = data[4]
 	movie.Ratings = data[5]
-	movie.Genres = strings.Split(data[6], ", ")
+	movie.GenresList = strings.Split(data[6], ", ")
 	movie.Image = data[7]
 	movie.NumImages = data[8]
 	movie.Review = data[9]

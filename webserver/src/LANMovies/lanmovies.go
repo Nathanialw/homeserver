@@ -18,7 +18,7 @@ type Movie struct {
 	Runtime     string
 	Rating      string
 	Ratings     string
-	Genres      []string
+	GenresList  []string
 	Image       string
 	NumImages   string
 	Review      string
@@ -91,7 +91,7 @@ func ShowMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	data.Review = content.FormatParagraph(data.Review)
 
-	content.GenerateHTML(w, data, "LANMovies", "movie")
+	content.GenerateHTML(w, data, "LANMovies", "movie", "aboutmedia")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

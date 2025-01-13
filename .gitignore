@@ -1,5 +1,4 @@
 .idea
-.gitignore
 webserver/app/main
 webserver/app/winmain.exe
 webserver/db/homeserver.sqlite3
@@ -7,6 +6,6 @@ webserver/db/movies.sqlite3
 webserver/db/tv.sqlite3
 webserver/scripts/.idea
 public/images/tv
-webserver/main.go
+webserver/app/main
 webserver/app/main
 webserver/app/main
