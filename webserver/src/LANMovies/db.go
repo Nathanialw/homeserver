@@ -22,7 +22,8 @@ func createMoviesDB() {
 			genres TEXT,
 			cover_image TEXT,
 			num_images INTEGER,
-			review TEXT
+			review TEXT,
+			path TEXT DEFAULT " "
 		)
 	`)
 
@@ -36,7 +37,7 @@ func createMoviesDB() {
 }
 
 func retreivePreviewFromDB(id string) (data []string, success bool, err error) {
-	rows, err := db.Database.Query("SELECT id, title, synopsis, release_date, runtime, rating, ratings, genres, cover_image, num_images, review FROM movies WHERE id = ?", id)
+	rows, err := db.Database.Query("SELECT id, title, synopsis, release_date, runtime, rating, ratings, genres, cover_image, num_images, review, path FROM movies WHERE id = ?", id)
 
 	if err != nil {
 		fmt.Printf("error retrieving movies: %s\n", err)
@@ -45,8 +46,8 @@ func retreivePreviewFromDB(id string) (data []string, success bool, err error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var id, title, synopsis, releaseDate, runtime, rating, ratings, genresJSON, coverImage, numImages, review string
-		if err := rows.Scan(&id, &title, &synopsis, &releaseDate, &runtime, &rating, &ratings, &genresJSON, &coverImage, &numImages, &review); err != nil {
+		var id, title, synopsis, releaseDate, runtime, rating, ratings, genresJSON, coverImage, numImages, review, path string
+		if err := rows.Scan(&id, &title, &synopsis, &releaseDate, &runtime, &rating, &ratings, &genresJSON, &coverImage, &numImages, &review, &path); err != nil {
 			fmt.Printf("error scanning row: %s\n", err)
 			return data, success, err
 		}
@@ -61,7 +62,7 @@ func retreivePreviewFromDB(id string) (data []string, success bool, err error) {
 
 		genresStr := fmt.Sprintf("%v", genres)
 
-		data = []string{title, synopsis, releaseDate, runtime, rating, ratings, genresStr, coverImage, numImages, review}
+		data = []string{title, synopsis, releaseDate, runtime, rating, ratings, genresStr, coverImage, numImages, review, path}
 		success = true
 	}
 
@@ -75,6 +76,13 @@ func retreivePreviewFromDB(id string) (data []string, success bool, err error) {
 }
 
 func savePreviewToDB(key string, data []string) {
+	//if id is in db
+	_, success, err := retreivePreviewFromDB(key)
+	if success {
+		fmt.Printf("movie already in db: %s not adding another\n%s\n", key, err)
+		return
+	}
+
 	// Convert genres to JSON string
 	genresJSON, err := json.Marshal(data[6])
 	if err != nil {
@@ -82,8 +90,8 @@ func savePreviewToDB(key string, data []string) {
 		return
 	}
 
-	_, err = db.Database.Exec("insert into movies (id, title, synopsis, release_date, runtime, rating, ratings, genres, cover_image, num_images, review) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-		key, data[0], data[1], data[2], data[3], data[4], data[5], string(genresJSON), data[7], data[8], data[9])
+	_, err = db.Database.Exec("insert into movies (id, title, synopsis, release_date, runtime, rating, ratings, genres, cover_image, num_images, review, path) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		key, data[0], data[1], data[2], data[3], data[4], data[5], string(genresJSON), data[7], data[8], data[9], " ")
 	if err != nil {
 		fmt.Printf("error adding movies: %s\n", err)
 	}

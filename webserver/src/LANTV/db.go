@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	core "webserver/src/Core"
 	db "webserver/src/DB"
 )
 
@@ -100,15 +99,15 @@ func retreivePreviewFromDB(id string) (data []string, success bool, err error) {
 	return data, success, err
 }
 
-func RetrieveEpisodesFromDB(title string) ([]core.Episode, error) {
-	var episodes []core.Episode
+func RetrieveEpisodesFromDB(title string) ([]Episode, error) {
+	var episodes []Episode
 	rows, err := db.Database.Query("select * from episodes where series = ?", title)
 	if err != nil {
 		fmt.Printf("error retrieving series: %s\n", err)
 		return episodes, err
 	}
 	for rows.Next() {
-		var episode core.Episode
+		var episode Episode
 		if err = rows.Scan(&episode.Uid, &episode.Series, &episode.EpisodeNum, &episode.Season, &episode.Title, &episode.Subtitle, &episode.Image, &episode.Synopsis, &episode.Path); err != nil {
 			fmt.Printf("error scanning series: %s\n", err)
 			return episodes, err
@@ -123,7 +122,7 @@ func RetrieveEpisodesFromDB(title string) ([]core.Episode, error) {
 	return episodes, nil
 }
 
-func OrganizeIntoSeasons(series core.Series, episodes []core.Episode) core.Series {
+func OrganizeIntoSeasons(series Series, episodes []Episode) Series {
 	// get number of seasons
 	numSeasons := 0
 	for _, episode := range episodes {
@@ -131,7 +130,7 @@ func OrganizeIntoSeasons(series core.Series, episodes []core.Episode) core.Serie
 			numSeasons = episode.Season
 		}
 		if len(series.Seasons) < episode.Season {
-			series.Seasons = append(series.Seasons, core.Season{})
+			series.Seasons = append(series.Seasons, Season{})
 			series.Seasons[episode.Season-1].SeasonNum = episode.Season
 			series.Seasons[episode.Season-1].Title = series.Title
 			if episode.Season == 1 {
@@ -186,7 +185,7 @@ func savePreviewToDB(key string, data []string) {
 	}
 }
 
-func insertSeasonIntoDB(series core.Series) {
+func insertSeasonIntoDB(series Series) {
 	for j := 0; j < len(series.Seasons); j++ {
 		for i := 0; i < len(series.Seasons[j].Episodes); i++ {
 			_, err := db.Database.Exec("insert into episodes (series, episode, season, title, subtitle, image, synopsis, path) values (?, ?, ?, ?, ?, ?, ?, ?)", currentSeriesTitle, i+1, series.Seasons[j].SeasonNum, series.Seasons[j].Episodes[i].Title, series.Seasons[j].Episodes[i].Subtitle, series.Seasons[j].Episodes[i].Image, series.Seasons[j].Episodes[i].Synopsis, series.Seasons[j].Episodes[i].Path)

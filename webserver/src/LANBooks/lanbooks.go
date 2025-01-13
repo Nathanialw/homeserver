@@ -7,7 +7,6 @@ import (
 	authenticate "webserver/src/Authenticate"
 	content "webserver/src/Content"
 	db "webserver/src/DB"
-	upload "webserver/src/Upload"
 	user "webserver/src/User"
 
 	"github.com/julienschmidt/httprouter"
@@ -196,9 +195,10 @@ func Authenticate(w http.ResponseWriter, r *http.Request) (bool, Book) {
 	// if !upload.UploadMedia(imageFile, folderName, imageHandler) {
 	// 	return false, movie
 	// }
-	if !upload.UploadMedia(videoFile, folderName, videoHandler) {
-		return false, book
-	}
+
+	// if !upload.UploadMedia(videoFile, folderName, videoHandler) {
+	// 	return false, book
+	// }
 
 	// authenticate.ValidVideo(folderName, videoHandler)
 

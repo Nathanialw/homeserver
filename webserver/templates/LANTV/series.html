@@ -51,94 +51,102 @@
           </section>
 
           <!-- video player  -->
-          <section class="player-container">
-              <article class="episode-list">
-                <ul>
-                  {{ range .Seasons }}
-                    {{ if .Active }}
-                      {{ range .Episodes }}
-                      <li class="episode-card">
-                        <button class="side-card {{ if eq .EpisodeNum 1 }}highlighted{{ end }}" onclick="playEpisode('{{ $.ID }}', '{{ .Season }}', '{{ .EpisodeNum }}')" id="{{ .Season }}-{{ .EpisodeNum }}">
-                          <!-- when you click on this it should play the episode -->
-                          <h5 class="episode-text">{{ .EpisodeNum }}. {{ .Title}}</h3>
-                        </button>
-                      </li>
-                      {{ end }}              
-                    {{ end }}              
-                  {{ end }}
-                </ul>
-              </article>
 
-              <div class="video-container">
-                  {{ range .Seasons }}
-                    {{ if .Active }}
-                      {{ range .Episodes }}
-                        {{ if eq .EpisodeNum 1 }}
-                          <video class="video-player" id="video-player" width="100%" poster="" preload="auto" controls autoplay> 
-                            <source src="{{ .Path }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                          </video>
+          <!-- if the selected season has episodes added -->
+          {{ if 1 }}
+           <section class="media-container">
+            <section class="player-container">
+                <article class="episode-list">
+                  <ul>
+                    {{ range .Seasons }}
+                      {{ if .Active }}
+                        {{ range .Episodes }}
+                        <li class="episode-card">
+                          <button class="side-card {{ if eq .EpisodeNum 1 }}highlighted{{ end }}" onclick="playEpisode('{{ $.ID }}', '{{ .Season }}', '{{ .EpisodeNum }}')" id="{{ .Season }}-{{ .EpisodeNum }}">
+                            <!-- when you click on this it should play the episode -->
+                            <h5 class="episode-text">{{ .EpisodeNum }}. {{ .Title}}</h3>
+                          </button>
+                        </li>
+                        {{ end }}              
+                      {{ end }}              
+                    {{ end }}
+                  </ul>
+                </article>
+
+                <div class="video-container">
+                    {{ range .Seasons }}
+                      {{ if .Active }}
+                        {{ range .Episodes }}
+                          {{ if eq .EpisodeNum 1 }}
+                            <video class="video-player" id="video-player" width="100%" poster="" preload="auto" controls autoplay> 
+                              <source src="{{ .Path }}" type="video/mp4">
+                              Your browser does not support the video tag.
+                            </video>
+                          {{end}}
                         {{end}}
                       {{end}}
-                    {{end}}
-                  {{end}}                
-              </div>
-          </section>
-
-          <!-- options -->
-          {{ range .Seasons }}
-            {{ if .Active }}
-              {{ range .Episodes }}
-                {{ if eq .EpisodeNum 1 }}
-            <section class="options">
-              <ul class="options options-buttons">
-                <li>
-                  <button class="btn">
-                    <h5>Prev</h6>
-                  </button>
-                  </li>
-                <li>
-                  <button class="btn">
-                    <h5>Next</h6>
-                  </button>
-                  </li>
-                <li>
-                  <h5>Dubs:</h5>
-                </li>
-                <li>
-                <button class="btn">
-                  <h5>English</h6>
-                </button>
-                </li>
-                <li>
-                  <button class="btn">
-                    <h5>Japanese</h6>
-                  </button>
-                </li>
-                <li>
-                  <h5>Subs:</h5>
-                </li>
-                <li>
-                  <button class="btn">
-                    <h5>None</h6>
-                  </button>
-                  </li>
-                <li>
-                <button class="btn">
-                  <h5>English</h6>
-                </button>
-                </li>
-                <li>
-                  <button class="btn">
-                    <h5>Japanese</h6>
-                  </button>
-                </li>
-              </ul>
+                    {{end}}                
+                </div>
             </section>
+
+            <!-- options -->
+            {{ range .Seasons }}
+              {{ if .Active }}
+                {{ range .Episodes }}
+                  {{ if eq .EpisodeNum 1 }}
+              <section class="options">
+                <ul class="options options-buttons">
+                  <li>
+                    <button class="btn">
+                      <h5>Prev</h6>
+                    </button>
+                    </li>
+                  <li>
+                    <button class="btn">
+                      <h5>Next</h6>
+                    </button>
+                    </li>
+                  <li>
+                    <h5>Dubs:</h5>
+                  </li>
+                  <li>
+                  <button class="btn">
+                    <h5>English</h6>
+                  </button>
+                  </li>
+                  <li>
+                    <button class="btn">
+                      <h5>Japanese</h6>
+                    </button>
+                  </li>
+                  <li>
+                    <h5>Subs:</h5>
+                  </li>
+                  <li>
+                    <button class="btn">
+                      <h5>None</h6>
+                    </button>
+                    </li>
+                  <li>
+                  <button class="btn">
+                    <h5>English</h6>
+                  </button>
+                  </li>
+                  <li>
+                    <button class="btn">
+                      <h5>Japanese</h6>
+                    </button>
+                  </li>
+                </ul>
+              </section>
+              {{end}}
+              {{end}}
             {{end}}
-            {{end}}
-          {{end}}
-        {{end}} 
+          {{end}} 
+        </section>
+        {{ else }}
+
+        {{ end }}
 
           <!--seaons select-->
           <ul class="main-links">
@@ -146,11 +154,8 @@
             {{ if gt (len .Seasons) 0 }}
               {{ range .Seasons }}
               <li>
-                <form action="/selectSeason" method="post">
-                  <input type="hidden" name="seriesID" value="{{ $.ID }}">
-                  <input type="hidden" name="seasonNum" value="{{ .SeasonNum }}">
-                  <input type="hidden" name="episodeNum" value="1">
-                  <button class="main-card">
+                <a href="/selectSeason/{{ $.ID }}/{{ .SeasonNum }}">
+                  <div class="main-card">
                     <!-- when you click on this it should populate the side bar with the selected season -->
                     <img src="{{ .Image }}" class="img card-img" />
                     
@@ -158,8 +163,8 @@
                       <h3>Season: {{ .SeasonNum }}</h3>
                       <div class="title-underline"></div>
                     </section>
-                  </button>
-                </form>
+                  </div>
+                </a>
               </li>			
               {{ end }}
             {{ end }}

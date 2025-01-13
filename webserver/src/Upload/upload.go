@@ -10,10 +10,10 @@ import (
 	"path/filepath"
 )
 
-func UploadMedia(file multipart.File, folderName string, handler *multipart.FileHeader) bool {
+func UploadMedia(file multipart.File, folderName string, handler *multipart.FileHeader) string {
 	if handler.Filename == "" {
 		fmt.Println("Image File name is empty")
-		return false
+		return " "
 	}
 
 	// Create the folder and subfolders
@@ -24,22 +24,25 @@ func UploadMedia(file multipart.File, folderName string, handler *multipart.File
 			log.Println(err)
 		}
 	}
+
 	// Create the file in the file system
 	systemPath := path + "/" + handler.Filename
+	fmt.Printf("systemPath: %s\n", systemPath)
+
 	dst, err := os.Create(systemPath)
 	if err != nil {
 		fmt.Printf("error creating the file: %s\n", err)
-		return false
+		return " "
 	}
 	defer dst.Close()
 	// Copy the uploaded file to the filesystem at the specified destination
 	_, err = io.Copy(dst, file)
 	if err != nil {
 		fmt.Printf("error copying the file: %s\n", err)
-		return false
+		return " "
 	}
 
-	return true
+	return systemPath
 }
 
 func RemoveMedia(folderName string) error {

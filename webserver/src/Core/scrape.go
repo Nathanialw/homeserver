@@ -115,7 +115,7 @@ func Create_Series(key string) Series {
 
 	series := Series{}
 	series.Title = results[0]
-	series.Subtitle = results[1]
+	// series.Subtitle = results[1]
 	series.Image = results[2]
 	// series.Description = results[3]
 	// series.Genres = results[4]

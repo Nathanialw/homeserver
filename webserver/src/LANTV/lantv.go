@@ -9,6 +9,54 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+type Episode struct {
+	Uid        int
+	Series     string
+	EpisodeNum int
+	Season     int
+	Title      string
+	Subtitle   string
+	Image      string
+	Synopsis   string
+	Path       string
+	Active     bool
+}
+
+type Season struct {
+	Uid       int
+	Title     string
+	Image     string
+	SeasonNum int
+	Synopsis  string
+	Path      string
+	Episodes  []Episode
+	Active    bool
+}
+
+type Series struct {
+	Uid         int
+	ID          string
+	Title       string
+	Subtitle    string
+	Writer      string
+	ReleaseDate string
+	Runtime     string
+	Rating      string
+	Genres      string
+	GenresList  []string
+	Ratings     string
+	NumImages   string
+	Review      string
+	Image       string
+	NumSeasons  string
+	Synopsis    string
+	Path        string
+	Seasons     []Season
+	Back        string
+	Add         string
+}
+
+var SeriesData Series
 var currentSeriesTitle string
 
 func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -47,12 +95,18 @@ func SubmitSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	SubmitSeason_(w, r, p)
 }
 
-func ShowSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func SelectSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
 	createSeriesDB()
 	createEpisodesDB()
 
+	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+	//show the default series page
+	series := p.ByName("seriesID")
+	fmt.Printf("Playing episode: SeriesID=%s, SeasonNum=%d, EpisodeNum=%d\n", series, 1, 1)
+
 	//need to mkae sure th "movieID" actually exists so it can 404 if it doesn't
-	data, err := RetrieveSeriesFromDB(p.ByName("seriesID"))
+	data, err := RetrieveSeriesFromDB(series)
 	fmt.Printf("title is %s\n", data.Title)
 
 	//if the series is not found, return a 404
@@ -72,15 +126,23 @@ func ShowSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 
 	data.Back = "/tv"
-	data.Add = "/addseason/" + p.ByName("seriesID")
+	data.Add = ""
 
 	data.Review = content.FormatParagraph(data.Review)
 
-	content.GenerateHTML(w, data, "LANTV", "series")
+	SeriesData = Series{}
+	SeriesData = data
+
+	http.Redirect(w, r, "/tv/"+series, http.StatusSeeOther)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func ShowSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	content.GenerateHTML(w, SeriesData, "LANTV", "series")
 }
 
 func SelectSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {

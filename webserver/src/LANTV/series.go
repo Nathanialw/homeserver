@@ -35,13 +35,13 @@ func PopulateSeries_(w http.ResponseWriter, r *http.Request, p httprouter.Params
 }
 
 //return a list of every episode in the series in the db
-func RetrieveSeriesFromDB(id string) (core.Series, error) {
+func RetrieveSeriesFromDB(id string) (Series, error) {
 	data, success, err := retreivePreviewFromDB(id)
 	if !success {
-		return core.Series{}, errors.New("series not found")
+		return Series{}, errors.New("series not found")
 	}
 
-	series := core.Series{}
+	series := Series{}
 
 	series.ID = id
 	series.Title = data[0]

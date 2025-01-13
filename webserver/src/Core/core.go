@@ -6,63 +6,26 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+	authenticate "webserver/src/Authenticate"
 	content "webserver/src/Content"
+	upload "webserver/src/Upload"
 	user "webserver/src/User"
 
 	"github.com/julienschmidt/httprouter"
 )
 
-type Episode struct {
-	Uid        int
-	Series     string
-	EpisodeNum int
-	Season     int
-	Title      string
-	Subtitle   string
-	Image      string
-	Synopsis   string
-	Path       string
-	Active     bool
-}
-
-type Season struct {
-	Uid       int
-	Title     string
-	Image     string
-	SeasonNum int
-	Synopsis  string
-	Path      string
-	Episodes  []Episode
-	Active    bool
-}
-
 type Series struct {
-	Uid         int
-	ID          string
-	Title       string
-	Subtitle    string
-	Writer      string
-	ReleaseDate string
-	Runtime     string
-	Rating      string
-	Genres      string
-	GenresList  []string
-	Ratings     string
-	NumImages   string
-	Review      string
-	Image       string
-	NumSeasons  string
-	Synopsis    string
-	Path        string
-	Seasons     []Season
-	Back        string
-	Add         string
+	ID    string
+	Title string
+	Image string
 }
 
 type List struct {
-	User         user.Session
-	NotEmpty     bool
-	Media        []Series
+	User     user.Session
+	NotEmpty bool
+	Media    []Series
+
+	// routing
 	Back         string
 	Add          string
 	Submit       string
@@ -103,12 +66,11 @@ func Add(w http.ResponseWriter, back string, module string, template string, sub
 	// user.Session.LoggedIn = LoginStatus(r)
 	// user.Session.Admin = AdminStatus(r)
 
-	data.PreviewRoute = previewRoute
-	data.Back = back
-	data.Route = route
-	data.Submit = submit
 	data.Back = back
 	data.Add = ""
+	data.Submit = submit
+	data.Route = route
+	data.PreviewRoute = previewRoute
 
 	content.GenerateHTML(w, data, module, template)
 }
@@ -138,6 +100,17 @@ func UpdateSearch(w http.ResponseWriter, r *http.Request, dbname string) {
 
 func SubmitSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
+}
+
+func SubmitFile(w http.ResponseWriter, r *http.Request, pathSuffix string) string {
+	var folderpath string = "/mnt/media" + pathSuffix
+
+	videoFile, videoHandler := authenticate.FormMedia("media", r)
+	//upload the file
+	path := upload.UploadMedia(videoFile, folderpath, videoHandler)
+	videoFile.Close()
+
+	return path
 }
 
 func Install() {

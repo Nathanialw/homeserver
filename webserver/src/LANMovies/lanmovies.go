@@ -3,35 +3,31 @@ package lanmovies
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	content "webserver/src/Content"
 	core "webserver/src/Core"
-	user "webserver/src/User"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 type Movie struct {
-	Uid      string
-	Title    string
-	Subtitle string
-	Director string
-	Image    string
-	Year     string
-	Length   string
-	Genre    string
-	Series   string
-	Synopsis string
-	Path     string
-	Back     string
-	Add      string
-}
+	ID          string
+	Title       string
+	Synopsis    string
+	ReleaseDate string
+	Runtime     string
+	Rating      string
+	Ratings     string
+	Genres      []string
+	Image       string
+	NumImages   string
+	Review      string
+	Path        string
 
-type MoviesList struct {
-	User     user.Session
-	NotEmpty bool
-	Movies   []Movie
-	Back     string
-	Add      string
+	Back string
+	Add  string
+
+	Director string
 }
 
 func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -57,10 +53,24 @@ func AddMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 func SubmitMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	seriesID := r.FormValue("imdbCode")
 	moduleType := "movies"
-	goTo := "/movie"
+	home := "/movie"
 	core.SetMediaAdded(seriesID, moduleType)
 
-	http.Redirect(w, r, goTo, http.StatusSeeOther)
+	http.Redirect(w, r, home, http.StatusSeeOther)
+}
+
+func SubmitMovieFile(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	refresh := strings.Split(r.URL.Path, "/")
+	id := refresh[2]
+
+	moduleType := "movies"
+	pathSuffix := "/movie/" + id
+
+	if Authenticate() {
+		path := core.SubmitFile(w, r, pathSuffix)
+		core.AddPathToDB(moduleType, path, id)
+	}
+	http.Redirect(w, r, pathSuffix, http.StatusSeeOther)
 }
 
 func ShowMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -77,7 +87,7 @@ func ShowMovie(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	}
 
 	data.Back = "/movie"
-	data.Add = "/addmovie/" + p.ByName("movieID")
+	data.Add = ""
 
 	data.Review = content.FormatParagraph(data.Review)
 

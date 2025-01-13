@@ -179,7 +179,7 @@ func FormMedia(media string, r *http.Request) (multipart.File, *multipart.FileHe
 		return file, handler
 	}
 
-	file, handler, err = r.FormFile(media) // "image" is the name of the file input field
+	file, handler, err = r.FormFile(media)
 	if err != nil {
 		fmt.Printf("error retrieving the file, setting empty: %s\n", err)
 	}

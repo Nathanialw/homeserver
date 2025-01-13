@@ -79,6 +79,7 @@ func main() {
 
 	r.GET("/movie", lanmovies.Home)
 	r.GET("/addmovie", lanmovies.AddMovie)
+	r.POST("/submitMovieFile/:movieID", lanmovies.SubmitMovieFile)
 	r.POST("/submitmovie", lanmovies.SubmitMovie)
 	r.GET("/movie/:movieID", lanmovies.ShowMovie)
 	r.POST("/updateMovieSearch", lanmovies.UpdateMoviesSearch)
@@ -89,8 +90,11 @@ func main() {
 	r.POST("/submitseries", lantv.SubmitSeries)
 	r.GET("/addseason/:seriesID", lantv.AddSeason)
 	r.POST("/submitseason", lantv.SubmitSeason)
-	r.GET("/tv/:seriesID", lantv.ShowSeries)
-	r.POST("/selectSeason", lantv.SelectSeason)
+
+	r.GET("/selectSeries/:seriesID", lantv.SelectSeries)            //populate defults
+	r.GET("/selectSeason/:seriesID/:seasonNum", lantv.SelectSeason) //populate season episodes
+	r.GET("/tv/:seriesID", lantv.ShowSeries)                        //redirect to show series
+
 	r.POST("/selectEpisode", lantv.SelectEpisode)
 	r.POST("/updateSeriesSearch", lantv.UpdateSeriesSearch)
 	r.POST("/populateSeries", lantv.PopulateSeries)

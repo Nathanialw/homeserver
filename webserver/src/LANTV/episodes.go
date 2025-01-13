@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	content "webserver/src/Content"
-	core "webserver/src/Core"
+	db "webserver/src/DB"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -24,7 +24,7 @@ func SelectEpisode_(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 
 	fmt.Printf("Playing episode: SeriesID=%s, SeasonNum=%d, EpisodeNum=%d\n", seriesTitle, currentSeason, episodeNum)
 
-	var episodes []core.Episode
+	var episodes []Episode
 
 	//need to ensure the "movieID" actually exists so it can 404 if it doesn't
 	data, err := RetrieveSeriesFromDB(seriesTitle)
@@ -48,4 +48,23 @@ func SelectEpisode_(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func getAllEpisodes(series string) (episodes []Episode, err error) {
+	rows, err := db.Database.Query("select title, subtitle, image from episodes where series = ?", series)
+	for rows.Next() {
+		ep := Episode{}
+		if err = rows.Scan(&ep.Title, &ep.Subtitle, &ep.Image); err != nil {
+			fmt.Printf("%s", err)
+			return
+		}
+		episodes = append(episodes, ep)
+		fmt.Printf("name: %s\n", ep.Title)
+	}
+	if rows != nil {
+		rows.Close()
+	}
+
+	fmt.Println("retrieving all")
+	return
 }
