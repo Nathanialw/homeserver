@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 	content "webserver/src/Content"
-	core "webserver/src/Core"
 	db "webserver/src/DB"
 
 	"github.com/julienschmidt/httprouter"
@@ -23,7 +22,7 @@ func GetSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) (Ser
 	data, err := RetrieveSeriesFromDB(series)
 
 	//organize the episodes by season
-	episodes, _ := RetrieveEpisodesFromDB(data.Title)
+	episodes, _ := RetrieveEpisodesFromDB(data.ID)
 	data = OrganizeIntoSeasons(data, episodes)
 
 	if len(data.Seasons) > 0 && currentSeason > 0 {
@@ -40,34 +39,19 @@ func GetSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) (Ser
 	return data, err
 }
 
-func AddSeason_(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
-
-	fmt.Printf("series title: %s\n", p.ByName("seriesID"))
-
-	var data core.List
-	// user.Session.LoggedIn = LoginStatus(r)
-	// user.Session.Admin = AdminStatus(r)
-	data.Back = "/tv/" + p.ByName("seriesID")
-	data.Add = ""
-
-	content.GenerateHTML(w, data, "LANTV", "addseason")
-}
-
 func SubmitSeason_(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	// fmt.Printf("message received from %s\n"+p.ByName("name"), r.RemoteAddr)
+	fmt.Printf("series id: %s\n", p.ByName("seriesID"))
 
-	// fmt.Printf("series title: %s\n", p.ByName("seriesID"))
+	id := p.ByName("seriesID")
+	num := p.ByName("seasonNum")
 
-	// success, series := authenticateSeason(w, r)
-	// if success {
-	// 	insertSeasonIntoDB(series)
-	// 	fmt.Print("added\n")
-	// } else {
-	// 	fmt.Print("not added\n")
-	// }
-
-	// http.Redirect(w, r, "/tv/"+p.ByName("seriesID"), http.StatusSeeOther)
+	success, series := authenticateSeason(w, r, id, num)
+	if success {
+		insertSeasonIntoDB(series)
+		fmt.Print("added\n")
+	} else {
+		fmt.Print("not added\n")
+	}
 }
 
 func getAllSeasons(series string, moduleType string) (seasons []Season, err error) {

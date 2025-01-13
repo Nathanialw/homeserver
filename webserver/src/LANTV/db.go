@@ -40,7 +40,7 @@ func createEpisodesDB() {
 	stmt, err := db.Database.Prepare(`
 		CREATE TABLE IF NOT EXISTS episodes (
 			uid INTEGER PRIMARY KEY AUTOINCREMENT, 
-			series TEXT, 
+			seriesID TEXT, 
 			episode TEXT, 
 			season TEXT, 
 			title TEXT, 
@@ -99,16 +99,16 @@ func retreivePreviewFromDB(id string) (data []string, success bool, err error) {
 	return data, success, err
 }
 
-func RetrieveEpisodesFromDB(title string) ([]Episode, error) {
+func RetrieveEpisodesFromDB(id string) ([]Episode, error) {
 	var episodes []Episode
-	rows, err := db.Database.Query("select * from episodes where series = ?", title)
+	rows, err := db.Database.Query("select * from episodes where seriesID = ?", id)
 	if err != nil {
 		fmt.Printf("error retrieving series: %s\n", err)
 		return episodes, err
 	}
 	for rows.Next() {
 		var episode Episode
-		if err = rows.Scan(&episode.Uid, &episode.Series, &episode.EpisodeNum, &episode.Season, &episode.Title, &episode.Subtitle, &episode.Image, &episode.Synopsis, &episode.Path); err != nil {
+		if err = rows.Scan(&episode.Uid, &episode.seriesID, &episode.EpisodeNum, &episode.Season, &episode.Title, &episode.Subtitle, &episode.Image, &episode.Synopsis, &episode.Path); err != nil {
 			fmt.Printf("error scanning series: %s\n", err)
 			return episodes, err
 		}
@@ -126,7 +126,7 @@ func OrganizeIntoSeasons(series Series, episodes []Episode) Series {
 	// get number of seasons
 
 	for i := range series.Seasons {
-		series.Seasons[i].Title = series.Title
+		series.Seasons[i].seriesID = series.ID
 		series.Seasons[i].Active = false
 		series.Seasons[i].SeasonNum = i + 1
 	}
@@ -169,10 +169,10 @@ func savePreviewToDB(key string, data []string) {
 	}
 }
 
-func insertSeasonIntoDB(series Series, currentSeriesTitle string) {
+func insertSeasonIntoDB(series Series) {
 	for j := 0; j < len(series.Seasons); j++ {
 		for i := 0; i < len(series.Seasons[j].Episodes); i++ {
-			_, err := db.Database.Exec("insert into episodes (series, episode, season, title, subtitle, image, synopsis, path) values (?, ?, ?, ?, ?, ?, ?, ?)", currentSeriesTitle, i+1, series.Seasons[j].SeasonNum, series.Seasons[j].Episodes[i].Title, series.Seasons[j].Episodes[i].Subtitle, series.Seasons[j].Episodes[i].Image, series.Seasons[j].Episodes[i].Synopsis, series.Seasons[j].Episodes[i].Path)
+			_, err := db.Database.Exec("insert into episodes (seriesID, episode, season, title, subtitle, image, synopsis, path) values (?, ?, ?, ?, ?, ?, ?, ?)", series.ID, i+1, series.Seasons[j].SeasonNum, series.Seasons[j].Episodes[i].Title, series.Seasons[j].Episodes[i].Subtitle, series.Seasons[j].Episodes[i].Image, series.Seasons[j].Episodes[i].Synopsis, series.Seasons[j].Episodes[i].Path)
 			if err != nil {
 				fmt.Printf("error adding series: %s\n", err)
 			}

@@ -1,6 +1,7 @@
 package lantv
 
 import (
+	"fmt"
 	"net/http"
 	content "webserver/src/Content"
 	core "webserver/src/Core"
@@ -10,7 +11,7 @@ import (
 
 type Episode struct {
 	Uid        int
-	Series     string
+	seriesID   string
 	EpisodeNum int
 	Season     int
 	Title      string
@@ -23,7 +24,7 @@ type Episode struct {
 
 type Season struct {
 	Uid       int
-	Title     string
+	seriesID  string
 	Image     string
 	SeasonNum int
 	Synopsis  string
@@ -33,27 +34,26 @@ type Season struct {
 }
 
 type Series struct {
-	Uid             int
-	ID              string
-	Title           string
-	Subtitle        string
-	Writer          string
-	ReleaseDate     string
-	Runtime         string
-	Rating          string
-	Genres          string
-	GenresList      []string
-	Ratings         string
-	NumImages       string
-	Review          string
-	Image           string
-	NumSeasons      string
-	NumSeasonsRange []int
-	Synopsis        string
-	Path            string
-	Seasons         []Season
-	Back            string
-	Add             string
+	Uid         int
+	ID          string
+	Title       string
+	Subtitle    string
+	Writer      string
+	ReleaseDate string
+	Runtime     string
+	Rating      string
+	Genres      string
+	GenresList  []string
+	Ratings     string
+	NumImages   string
+	Review      string
+	Image       string
+	NumSeasons  string
+	Synopsis    string
+	Path        string
+	Seasons     []Season
+	Back        string
+	Add         string
 }
 
 func Home(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -80,12 +80,7 @@ func SubmitSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	moduleType := "series"
 	goTo := "/tv"
 	core.SetMediaAdded(seriesID, moduleType)
-
 	http.Redirect(w, r, goTo, http.StatusSeeOther)
-}
-
-func AddSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	AddSeason_(w, r, p)
 }
 
 func SubmitSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -94,9 +89,7 @@ func SubmitSeason(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 func ShowSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	data, err := GetSeason(w, r, p)
-
 	content.GenerateHTML(w, data, "LANTV", "series", "aboutmedia")
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -117,4 +110,18 @@ func UpdateSeriesSearch(w http.ResponseWriter, r *http.Request, p httprouter.Par
 
 func PopulateSeries(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	PopulateSeries_(w, r, p)
+}
+
+func SubmitSeasonFolder(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	id := p.ByName("seriesID")
+	seasonNum := p.ByName("seasonNum")
+
+	route := "/tv/" + id + "/" + seasonNum
+	fmt.Printf("message received from %s, series: %s, season: %s, route: %s\n", r.RemoteAddr, id, seasonNum, route)
+
+	media := r.FormValue("media")
+	fmt.Printf("media: %s\n", media)
+
+	SubmitSeason_(w, r, p)
+	http.Redirect(w, r, route, http.StatusSeeOther)
 }

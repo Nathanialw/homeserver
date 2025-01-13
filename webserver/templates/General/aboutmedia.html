@@ -27,5 +27,16 @@
         </div>
       </span>
 
+        {{ if ne .Review " " }}
+        <!-- review section -->
+      <section class="review-container">
+        <div class="selected-series-review-container" onclick="toggleReview()">
+          <!-- Review content here -->
+          <p>{{ .Review }}</p>
+        </div>
+      </section>
+      {{ end }}
+    </section>
+
 {{ end }}
       

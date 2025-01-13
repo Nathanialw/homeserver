@@ -30,7 +30,7 @@ func SelectEpisode_(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 	data, err := RetrieveSeriesFromDB(seriesTitle)
 
 	//organize the episodes by season
-	episodes, _ = RetrieveEpisodesFromDB(data.Title)
+	episodes, _ = RetrieveEpisodesFromDB(data.ID)
 	fmt.Printf("number of episodes: %d\n", len(episodes))
 
 	data = OrganizeIntoSeasons(data, episodes)

@@ -55,7 +55,7 @@ func RetrieveSeriesFromDB(id string) (Series, error) {
 	series.Seasons = make([]Season, (numSeasons))
 	series.Rating = data[5]
 	series.Ratings = data[6]
-	series.Genres = data[7]
+	series.GenresList = strings.Split(data[7], ", ")
 	series.Image = data[8]
 	series.NumImages = data[9]
 	series.Review = data[10]

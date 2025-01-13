@@ -13,127 +13,105 @@
         <header class="nav-center" id="nav-bar">
             {{ template "navbar" . }}
         </header>
-          <article class="main-container">
+
+          <main class="main-container">
         
             {{ template "aboutmedia" . }}
 
               <!-- about series  -->
 
-        {{ if ne .Review " " }}
-          <!-- review section -->
-        <section class="review-container">
-          <div class="selected-series-review-container" onclick="toggleReview()">
-            <!-- Review content here -->
-            <p>{{ .Review }}</p>
-          </div>
-        </section>
-        {{ end }}
-    </section>
 
           <!-- video player  -->
 
           <!-- if the selected season has episodes added -->
-          {{ if 1 }}
+          {{ range .Seasons }}
+            {{ if .Active }}
+              
            <section class="media-container">
             <section class="player-container">
                 <article class="episode-list">
                   <ul>
-                    {{ range .Seasons }}
-                      {{ if .Active }}
-                        {{ range .Episodes }}
-                        <li class="episode-card">
-                          <button class="side-card {{ if eq .EpisodeNum 1 }}highlighted{{ end }}" onclick="playEpisode('{{ $.ID }}', '{{ .Season }}', '{{ .EpisodeNum }}')" id="{{ .Season }}-{{ .EpisodeNum }}">
-                            <!-- when you click on this it should play the episode -->
-                            <h5 class="episode-text">{{ .EpisodeNum }}. {{ .Title}}</h3>
-                          </button>
-                        </li>
-                        {{ end }}              
-                      {{ end }}              
+                    {{ range .Episodes }}
+                    <li class="episode-card">
+                      <button class="side-card {{ if eq .EpisodeNum 1 }}highlighted{{ end }}" onclick="playEpisode('{{ $.ID }}', '{{ .Season }}', '{{ .EpisodeNum }}')" id="{{ .Season }}-{{ .EpisodeNum }}">
+                        <!-- when you click on this it should play the episode -->
+                        <h5 class="episode-text">{{ .EpisodeNum }}. {{ .Title}}</h3>
+                      </button>
+                    </li>
                     {{ end }}
                   </ul>
                 </article>
-
                 <div class="video-container">
-                    {{ range .Seasons }}
-                      {{ if .Active }}
-                        {{ range .Episodes }}
-                          {{ if eq .EpisodeNum 1 }}
-                            <video class="video-player" id="video-player" width="100%" poster="" preload="auto" controls autoplay> 
-                              <source src="{{ .Path }}" type="video/mp4">
-                              Your browser does not support the video tag.
-                            </video>
-                          {{end}}
-                        {{end}}
-                      {{end}}
-                    {{end}}                
+                  {{ if gt (len .Episodes) 0 }}
+                    {{ range .Episodes }}
+                      {{ if eq .EpisodeNum 1 }}
+                      <video class="video-player" id="video-player" width="100%" poster="" preload="auto" controls autoplay> 
+                        <source src="{{ .Path }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                      </video>
+                      {{ end }}                             
+                    {{end}}   
+                  {{ else }}
+                    <!-- form to add a season -->
+                    <div class="video-player" id="video-player" >
+                      <form class="form" action="/submitSeasonFolder/{{ $.ID }}/{{ .SeasonNum }}" method="post" enctype="multipart/form-data">
+                        <label class="form-label" for="media">Drop a Folder Containing the Season Episodes:</label>
+                        <input class="form-input form-row" type="file" id="media" name="media"  multiple webkitdirectory mozdirectory required>
+                        <input class="btn btn-center" type="submit" value="Submit">
+                      </form>
+                    </div>
+                  {{end}}                                
                 </div>
             </section>
 
-            <!-- options -->
-            {{ range .Seasons }}
-              {{ if .Active }}
-                {{ range .Episodes }}
-                  {{ if eq .EpisodeNum 1 }}
-              <section class="options">
-                <ul class="options options-buttons">
-                  <li>
-                    <button class="btn">
-                      <h5>Prev</h6>
-                    </button>
-                    </li>
-                  <li>
-                    <button class="btn">
-                      <h5>Next</h6>
-                    </button>
-                    </li>
-                  <li>
-                    <h5>Dubs:</h5>
-                  </li>
-                  <li>
+            <section class="options">
+              <ul class="options options-buttons">
+                <li>
                   <button class="btn">
-                    <h5>English</h6>
+                    <h5>Prev</h6>
                   </button>
                   </li>
-                  <li>
-                    <button class="btn">
-                      <h5>Japanese</h6>
-                    </button>
-                  </li>
-                  <li>
-                    <h5>Subs:</h5>
-                  </li>
-                  <li>
-                    <button class="btn">
-                      <h5>None</h6>
-                    </button>
-                    </li>
-                  <li>
+                <li>
                   <button class="btn">
-                    <h5>English</h6>
+                    <h5>Next</h6>
                   </button>
                   </li>
-                  <li>
-                    <button class="btn">
-                      <h5>Japanese</h6>
-                    </button>
+                <li>
+                  <h5>Dubs:</h5>
+                </li>
+                <li>
+                <button class="btn">
+                  <h5>English</h6>
+                </button>
+                </li>
+                <li>
+                  <button class="btn">
+                    <h5>Japanese</h6>
+                  </button>
+                </li>
+                <li>
+                  <h5>Subs:</h5>
+                </li>
+                <li>
+                  <button class="btn">
+                    <h5>None</h6>
+                  </button>
                   </li>
-                </ul>
-              </section>
-              {{end}}
-              {{end}}
-            {{end}}
-          {{end}} 
+                <li>
+                <button class="btn">
+                  <h5>English</h6>
+                </button>
+                </li>
+                <li>
+                  <button class="btn">
+                    <h5>Japanese</h6>
+                  </button>
+                </li>
+              </ul>
+            </section>        
         </section>
-        {{ else }}
 
-        <!-- form to add a season -->
-        <form class="form" action="/submitMovieFile/{{ .ID }}" method="post" enctype="multipart/form-data">
-
-          <label class="form-label" for="media">Drop a Folder Containing the Season Episodes:</label>
-          <input class="form-input form-row" type="file" id="media" name="media" mozdirectory webkitdirectory required>
-
-          <input class="btn btn-center" type="submit" value="Submit">
-        </form>
+        {{ end }}
         {{ end }}
 
           <!--seaons select-->
@@ -169,7 +147,7 @@
             <p>This is where the selected season data will go.</p>
           </section>
 
-        </article>
+        </main>
 
         <footer id="footer">
             {{ template "footer" . }}

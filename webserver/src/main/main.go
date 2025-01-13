@@ -88,9 +88,8 @@ func main() {
 	r.GET("/tv", lantv.Home)
 	r.GET("/addseries", lantv.AddSeries)
 	r.POST("/submitseries", lantv.SubmitSeries)
-	r.GET("/addseason/:seriesID", lantv.AddSeason)
-	r.POST("/submitseason", lantv.SubmitSeason)
 	r.GET("/tv/:seriesID/:seasonNum", lantv.ShowSeries) //redirect to show series
+	r.POST("/submitSeasonFolder/:seriesID/:seasonNum", lantv.SubmitSeasonFolder)
 
 	r.POST("/selectEpisode", lantv.SelectEpisode)
 	r.POST("/updateSeriesSearch", lantv.UpdateSeriesSearch)
