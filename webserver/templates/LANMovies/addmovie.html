@@ -3,8 +3,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Add a Movie</title>
+    <title>Add a Series</title>
     {{ template "head" . }}    
+    <link rel="stylesheet" href="/css/tv.css">
+    <script src="/js/tv/search.js"></script>
+    <script src="/js/tv/series.js"></script>
   <body>
     <!-- navigation bar at the top -->
     <header class="nav-center" id="nav-bar">
@@ -13,67 +16,58 @@
 
     <main class="main-container-nobackground">
       <article>
-        <h3 class="title">Add a Movie</h3>
-        <div class="title-underline"></div>
 
         <!-- The only necessary fields are Title, Subtitle, Director to ensure it is a unique entry -->
-        <form class="form" action="/submitmovie" method="post" enctype="multipart/form-data">
-          <label class="form-label" for="media">Required:</label>
-          <label class="form-label" for="media">Drop a Movie:</label>
-          <input class="form-input form-row" type="file" id="media" name="media" required>
-          <br>
+        <form class="form" action="" method="post" enctype="multipart/form-data">
           <!-- required start -->
           <label class="form-label" for="title">Title:</label>
-          <input class="form-input form-row" type="text" id="title" name="title" required>
-          <br>
-          <label class="form-label" for="subtitle">Subtitle:</label>
-          <input class="form-input form-row" type="text" id="subtitle" name="subtitle">
-          <br>
-          <label class="form-label" for="author">Director:</label>
-          <input class="form-input form-row" type="text" id="director" name="director" required>
-          <!-- required end -->
-          <br>
-          <br>
-          <br>
-          <label class="form-label" for="media">Optional:</label>
-          <span class="form-adjacent">
-            <label class="form-label form-label-adjacent" for="year">Release Year:</label>
-            <span class="form-adjacent">
-              <input class="form-input form-row form-adjacent" type="number" min="1" max="6000" step="1" id="year" name="year" placeholder="2024">
-            </span>
-          </span>
-          <br>
-          <label class="form-label" for="image">Movie Cover:</label>
-          <input class="form-input form-row" type="file" id="image" name="image">
-          <label class="form-label" for="length">Length(minutes):</label>
-          <input class="form-input form-row" type="number" min="1" max="600" step="1" id="length" name="length">
-          <br>
-          <label class="form-label" for="image">Series:</label>
-          <span class="form-adjacent">
-            <select class="form-input form-row form-adjacent" id="series" name="series">
-              <option value="input"></option>
-              <option value="AD">AD</option>
-              <option value="BC">BC</option>
-            </select>
-            <input class="form-input form-row form-adjacent" type="text" id="series" name="series" placeholder="none">
-          </span>
-          <br>
-          <label class="form-label" for="genre">Genre:</label>
-          <span class="form-adjacent">
-            <select class="form-input form-row form-adjacent" id="genre" name="genre">
-              <option value="input"></option>
-              <option value="horror">horror</option>
-              <option value="fantasy">fantasy</option>
-            </select>
-            <input class="form-input form-row form-adjacent" type="text" id="series" name="series" placeholder="horror">
-          </span>
-          <br>
-          <label class="form-label" for="synopsis">Synopsis:</label>
-          <textarea class="form-input form-row form-textarea" id="synopsis" name="synopsis"></textarea>
-          <br>
-
-          <input class="btn btn-center" type="submit" value="Submit">
+          <input oninput="SearchInput('{{ .Route }}', '{{ .PreviewRoute }}', PreviewMovie)" class="form-input form-row" type="text" id="title" name="title" required>
+          <!-- hid this button -->
         </form>
+        
+        <!-- hidden form that sends the request on to the scraper-->
+        <form class="form" action="{{ .Submit }}" method="post" style="display: none;" enctype="multipart/form-data">
+          <input class="form-input form-row" type="text" id="imdbCode" name="imdbCode" required>
+          <button class="btn" type="submit" style="display: none;"></button>
+        </form>
+
+        <section class="selected-container selected-container">
+          <span class="selected-series selected-series"> 
+            <img class="select-img selected-series-image" src="images/bunnie_1.jpg selected-series-image" alt="">
+            <div class="selected-series-info">
+              <h3 class="selected-series-title title">Selected title</h3>
+              <div class="title-underline"></div>
+              <p class="selected-series-data selected-series-synopsis">Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum, sed minus ratione quis consectetur a expedita nostrum tenetur, temporibus autem recusandae. Tempore iusto numquam nam atque veritatis adipisci delectus eius!</p>
+              <span class="selected-series-line">                
+                <p class="selected-series-data selected-series-release">Release</p>
+                <p class="selected-series-data selected-series-runtime">Runtime</p>
+              </span>
+              <span class="selected-series-line">                
+                <p class="selected-series-data selected-series-ratings">Rating</p>
+                <p class="selected-series-data selected-series-rating">unrated</p>
+              </span>
+              <span class="selected-series-line selected-series-genres">
+                
+              </span>
+            </div>
+          </span>
+
+          <section class="review-container">
+            <div class="selected-series-review-container" onclick="toggleReview()">
+              <!-- Review content here -->
+              <p class="selected-series-review">review</p>
+            </div>
+          </section>
+          <button class="btn btn-center" id="hidden" onclick="document.querySelector('.btn').click()">Create</button>
+        </section>
+
+
+        <section class="search-container">
+          <ul class="search-results"></ul>
+        </section>
+
+        <!-- I want a button that send the form -->
+
       </article>  
     </main>
 

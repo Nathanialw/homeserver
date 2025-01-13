@@ -4,7 +4,9 @@
 <html lang="en">
   <head>
     <title>Movies</title>
-    {{ template "head" . }}    
+    {{ template "head" . }}  
+    <link rel="stylesheet" href="/css/tv.css">
+    <script src="/js/tv/series.js"></script>  
   </head>
 
     <body>
@@ -13,19 +15,50 @@
         </header>
         
         <article class="main-container">
+          <section>
+            <section class="selected-container selected-container show-selected">
+              <span class="selected-series selected-series"> 
+                <img class="select-img selected-series-image" src="{{ .Image }}" alt="">
+                <div class="selected-series-info">
+                  <h3 class="selected-series-title title"> {{ .Title }}</h3>
+                  <div class="title-underline"></div>
+                  <p class="selected-series-data selected-series-synopsis">{{ .Synopsis }}</p>
+                  <span class="selected-series-line">                
+                    <p class="selected-series-data selected-series-release">{{ .ReleaseDate }}</p>
+                    <p class="selected-series-data selected-series-runtime">{{ .Runtime }}</p>
+                    <p class="selected-series-data selected-series-seasons">{{ .NumSeasons }}</p>
+                  </span>
+                  <span class="selected-series-line">                
+                    <p class="selected-series-data selected-series-ratings">{{ .Ratings }}/10</p>
+                    <p class="selected-series-data selected-series-rating">{{ .Rating }}</p>
+                  </span>
+                  <span class="selected-series-line selected-series-genres">
+                    {{ range .GenresList }}
+                      <p class="selected-series-data selected-series-data">{{ . }}</p>
+                    {{ end }}
+                  </span>
+                </div>
+              </span>
+              
+               <!-- review section -->
+            <section class="review-container">
+              <div class="selected-series-review-container" onclick="toggleReview()">
+                <!-- Review content here -->
+                <p>{{ .Review }}</p>
+              </div>
+            </section>
+          </section>
+
+          <!-- video player  -->
+          <section class="player-container">
+            <div class="video-container">
+              <video class="video-player" id="video-player" width="100%" poster="{{ .Image }}" preload="auto" controls autoplay> 
+                <source src="{{ .Path }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </section>
           
-          <!--title-->
-          <h3 class="title title-header">{{ .Title }}</h3>
-          <div class="title-underline"></div>
-          <!--content-->
-          <video width="640" height="auto" poster="{{ .Image }}" preload="auto" controls style="margin: auto; display: flex;">
-            <source src="{{ .Path }}" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-          <p class="overview-text">{{ .Synopsis }}</p>
-          <form action="/removemovie" method="post" >
-            <button type="submit" name="delete" value="{{.Title}}_{{.Subtitle}}_{{.Director}}" class="btn btn-center" style="background-color: darkred;">Delete</button>
-          </form>
         </article>
 
         <footer id="footer">

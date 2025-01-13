@@ -6,7 +6,7 @@ import sys
 import json
 import Levenshtein
 
-db = sqlite3.connect('../db/imdb.sqlite3')
+db = sqlite3.connect('../db/'+sys.argv[1]+'.sqlite3')
 db.enable_load_extension(True)
 db.load_extension("../extensions/spellfix.so")
 cursor = db.cursor()
@@ -65,6 +65,10 @@ def search(query):
 
     return results
 
-results = search(sys.argv[1])
-# results = search("frieren beyond jorn")
-print(json.dumps(results))
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        sys.exit(1)
+
+    results = search(sys.argv[2])
+    # results = search("frieren beyond jorn")
+    print(json.dumps(results))

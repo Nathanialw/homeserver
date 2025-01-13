@@ -16,19 +16,17 @@
 
     <main class="main-container-nobackground">
       <article>
-        <h3 class="title">Add a Series</h3>
-        <div class="title-underline"></div>
 
         <!-- The only necessary fields are Title, Subtitle, Director to ensure it is a unique entry -->
         <form class="form" action="" method="post" enctype="multipart/form-data">
           <!-- required start -->
           <label class="form-label" for="title">Title:</label>
-          <input oninput="SearchInput()" class="form-input form-row" type="text" id="title" name="title" required>
+          <input oninput="SearchInput('{{ .Route }}', '{{ .PreviewRoute }}', PreviewSeries)" class="form-input form-row" type="text" id="title" name="title" required>
           <!-- hid this button -->
         </form>
         
         <!-- hidden form that sends the request on to the scraper-->
-        <form class="form" action="/submitseries" method="post" style="display: none;" enctype="multipart/form-data">
+        <form class="form" action="{{ .Submit }}" method="post" style="display: none;" enctype="multipart/form-data">
           <input class="form-input form-row" type="text" id="imdbCode" name="imdbCode" required>
           <button class="btn" type="submit" style="display: none;"></button>
         </form>
@@ -58,7 +56,7 @@
           <section class="review-container">
             <div class="selected-series-review-container" onclick="toggleReview()">
               <!-- Review content here -->
-              <p class="selected-series-review selected-series-data">review</p>
+              <p class="selected-series-review">review</p>
             </div>
           </section>
           <button class="btn btn-center" id="hidden" onclick="document.querySelector('.btn').click()">Create</button>
@@ -80,5 +78,6 @@
 
    </body>
 </html>
+
 
 {{ end }}

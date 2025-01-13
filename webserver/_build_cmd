@@ -1,4 +1,6 @@
 Linux:
-    go build -buildvcs=false -o app/main
+    //assuming you are in the main directory
+    go build -buildvcs=false -o ../../app/main 
+    
 Windows:
-    go build -buildvcs=false -o app/winmain.exe
+    go build -buildvcs=false -o ../../app/winmain.exe

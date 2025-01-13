@@ -22,9 +22,9 @@ function highlightSeries(listItem) {
 
 let selectedID = "";
 
-function SearchInput() {
+function SearchInput(route, previewRoute, Populate) {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/updateSeriesSearch", true);
+    xhr.open("POST", route, true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -48,7 +48,7 @@ function SearchInput() {
                     console.log("clicked");
                     highlightSeries(listItem);
                     SelectSeries(list[i][1]);
-                    PreviewSeries(list[i][1]);
+                    PreviewMedia(list[i][1], previewRoute, Populate);
                     selectedID = list[i][1];
                 })
             }            
@@ -61,76 +61,16 @@ function SearchInput() {
     xhr.send("query=" + query);
 }
 
-function PreviewSeries(id) {
-    //set as loading
-
-    //check to see if the resources already exist first
-
-        //check the db for the series
-        //...
-        //if it exists, populate the fields
-        //...
-        //return
-
+function PreviewMedia(id, route, Populate) {
     //if not, make a request to the server
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/populateSeries", true);
+    xhr.open("POST", route, true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
-            
-            console.log(response);
-            // //title
-            const title = document.querySelector(".selected-series-title");
-            title.textContent = response[0]
-            
-            // //synopsis
-            const synopsis = document.querySelector(".selected-series-synopsis");
-            synopsis.textContent = response[1]
-            
-            const release = document.querySelector(".selected-series-release");
-            release.textContent = response[2]
-
-            const runtime = document.querySelector(".selected-series-runtime");
-            runtime.textContent = response[3]
-            
-            const seasons = document.querySelector(".selected-series-seasons");
-            seasons.textContent = response[4]
-
-            const rating = document.querySelector(".selected-series-rating");
-            rating.textContent = response[5]
-            
-            const ratings = document.querySelector(".selected-series-ratings");
-            ratings.textContent = response[6] + "/10"
-
-            const genres = document.querySelector(".selected-series-genres");
-            while (genres.firstChild) {
-                genres.removeChild(genres.firstChild);
-            }
-
-            const genresList = response[7].split(",");
-            for (let i = 1; i < genresList.length; i++) {
-                let listItem = document.createElement("p");
-                listItem.classList.add("selected-series-data");
-                listItem.innerHTML = genresList[i];
-                genres.appendChild(listItem);
-            }
-
-            // //image path 1
-            const image0 = document.querySelector(".selected-series-image");
-            if (response[8] !== null && response[8] !== undefined && response[8] !== ' ') {
-                image0.src = response[8];
-            }    
-            else {
-                // select a random bunny image
-                image0.src = 'images/bunnie_1.jpg';
-            }
-      
-            console.log("num images", response[9]);
-
-            const review = document.querySelector(".selected-series-review");
-            review.innerHTML = response[10]
+            console.log("response", response);
+            Populate(response)
         }
     };
 
@@ -146,4 +86,70 @@ function SelectSeries(seriesID) {
     
     let code = document.getElementById("imdbCode");
     code.value = seriesID;
+}
+
+
+function AddPreviewElement(response, id, i) {
+    if (response[i] === null || response[i] === undefined || response[i] === ' ') {
+        return i + 1;
+    }
+    const title = document.querySelector(id);
+    title.textContent = response[i]
+    return i + 1;
+}
+
+function AddPreviewElements(response, i)  {
+    const genres = document.querySelector(".selected-series-genres");
+    while (genres.firstChild) {
+        genres.removeChild(genres.firstChild);
+    }
+
+    const genresList = response[i].split(",");
+    for (let j = 1; j < genresList.length; j++) {
+        let listItem = document.createElement("p");
+        listItem.classList.add("selected-series-data");
+        listItem.innerHTML = genresList[j];
+        genres.appendChild(listItem);
+    }
+    i++
+
+    // //image path 1
+    const image0 = document.querySelector(".selected-series-image");
+    if (response[i] !== null && response[i] !== undefined && response[i] !== ' ') {
+        image0.src = response[i];
+    }    
+    else {
+        // select a random bunny image
+        image0.src = 'images/bunnie_1.jpg';
+    }
+    i++
+
+    console.log("num images", response[i]);
+    i++
+
+    const review = document.querySelector(".selected-series-review");
+    review.innerHTML = response[i]
+}
+
+function PreviewSeries(response) {           
+    let i = 0; 
+    i = AddPreviewElement(response, ".selected-series-title", i)
+    i = AddPreviewElement(response, ".selected-series-synopsis", i)
+    i = AddPreviewElement(response, ".selected-series-release", i)
+    i = AddPreviewElement(response, ".selected-series-runtime", i)
+    i = AddPreviewElement(response, ".selected-series-seasons", i)
+    i = AddPreviewElement(response, ".selected-series-rating", i)
+    i = AddPreviewElement(response, ".selected-series-ratings", i)
+    AddPreviewElements(response, i)
+}
+
+function PreviewMovie(response) {            
+    let i = 0; 
+    i = AddPreviewElement(response, ".selected-series-title", i)
+    i = AddPreviewElement(response, ".selected-series-synopsis", i)
+    i = AddPreviewElement(response, ".selected-series-release", i)
+    i = AddPreviewElement(response, ".selected-series-runtime", i)
+    i = AddPreviewElement(response, ".selected-series-rating", i)
+    i = AddPreviewElement(response, ".selected-series-ratings", i)
+    AddPreviewElements(response, i)
 }

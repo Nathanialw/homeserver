@@ -19,9 +19,9 @@
           <!--content-->          
             <ul class="main-links">
               {{ if .NotEmpty}}
-                {{ range .Movies }}
+                {{ range .Media }}
                 <li>
-                  <a href="movie/{{.Title}}" class="main-card">
+                  <a href="movie/{{.ID}}" class="main-card">
                     <img
                       src="{{.Image}}"
                       class="img card-img"

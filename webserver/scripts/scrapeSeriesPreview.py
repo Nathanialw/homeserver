@@ -194,9 +194,8 @@ def scrape_series_preview(key):
     return results
 
 if __name__ == "__main__":
-    # if len(sys.argv) != 2:
-    #     print("Usage: python scrapeSeriesPreview.py <key>")
-    #     sys.exit(1)
+    if len(sys.argv) != 2:
+        sys.exit(1)
 
     key = sys.argv[1]
     # key = "tt22248376" #frieren
