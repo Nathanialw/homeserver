@@ -5,11 +5,11 @@ To run locally:
 Required libraries:
     
     sudo apt update
-    sudo apt install golang
+    sudo apt install golang-go
 
 To build and install:
 
-    git clone git@github.com:Nathanialw/homeserver.git
+    git clone https://github.com/Nathanialw/homeserver.git
     go build -buildvcs=false -o ../../app/main
     cd webserver/app
     ./main --install
