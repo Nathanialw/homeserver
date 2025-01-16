@@ -1,3 +1,4 @@
+.vscode
 .idea
 webserver/app/main
 webserver/app/winmain.exe
@@ -9,4 +10,3 @@ public/images/tv
 webserver/app/main
 webserver/app/main
 webserver/app/main
-.vscode

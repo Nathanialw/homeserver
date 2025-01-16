@@ -7,6 +7,45 @@ document.addEventListener('DOMContentLoaded', () => {
       evt.preventDefault();
       scrollContainer.scrollLeft += evt.deltaY;
     });
+
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadProgress = document.getElementById('uploadProgress');
+  
+    uploadForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+  
+      const formData = new FormData(uploadForm);
+      const action = uploadForm.getAttribute('action');
+  
+      uploadProgress.style.display = 'block';
+  
+      try {
+        const response = await fetch(action, {
+          method: 'POST',
+          body: formData,
+          onUploadProgress: (event) => {
+            if (event.lengthComputable) {
+              const percentComplete = (event.loaded / event.total) * 100;
+              uploadProgress.value = percentComplete;
+            }
+          }
+        });
+  
+        if (response.ok) {
+          alert('Upload successful!');
+          //remove the upload file element
+        } else {
+          alert('Upload failed.');
+          //display error message at the top of the form
+        }
+      } catch (error) {
+        console.error('Error uploading files:', error);
+        //display error message at the top of the form
+        alert('Upload failed.');
+      } finally {
+        uploadProgress.style.display = 'none';
+      }
+    });
   });
 
 function highlightEpisode(seasonNum, episodeNum) {
@@ -52,4 +91,3 @@ function toggleReview() {
 
     reviewElement.classList.toggle('expanded');
 }
-

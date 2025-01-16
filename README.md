@@ -1,11 +1,23 @@
-# homeserver
+Tested for lunix running Ubuntu
 
-The problem to be solved: Maintain a server of media in a remote location where you must leave back to civilisation to bring back media. 
-    a) prestore as much data on the server that we might need to use
-    b) transfer media from laptop to server with a little friction as possible
+To run locally:
 
-Movies:
-    I want to be able to just drop the movie file/folder and hit submit and it will fill in the fields automatically
+Required libraries:
+    
+    sudo apt update
+    sudo apt install golang
 
-    -Scrape movie data from the web, save it into database
-    -When adding a movie, search db for entry to fill out fields to display
+To build and install:
+
+    git clone git@github.com:Nathanialw/homeserver.git
+    go build -buildvcs=false -o ../../app/main
+    cd webserver/app
+    ./main --install
+
+Defualt runs localhost:10002:
+
+    ./main
+
+Will accept a port as an arguement:
+
+    ./main 4000 #runs on port 4000

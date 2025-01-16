@@ -67,6 +67,7 @@
 
 .video-player {
     display: flex;
+    flex-direction: column;
     margin: auto; 
     height: 100%;
     /* width: 100%; */

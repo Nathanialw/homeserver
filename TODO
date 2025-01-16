@@ -10,3 +10,25 @@ LANTV
     -look up the series in the database of tv
     -when you click submit, scrape imdb to fill the fields
     -when you add a season, scrape imdb to fill the fields
+
+
+
+-create the home page for books
+-add scraping fot season data
+-add scraping fot episode data
+-add a manual add season button as the end of th carousel
+-make the video buttons work
+-set the addition images on the page
+
+
+    ./main 4000 #runs on port 4000
+
+The problem to be solved: Maintain a server of media in a remote location where you must leave back to civilisation to bring back media. 
+    a) prestore as much data on the server that we might need to use
+    b) transfer media from laptop to server with a little friction as possible
+
+Movies:
+    I want to be able to just drop the movie file/folder and hit submit and it will fill in the fields automatically
+
+    1 Scrape movie data from the web, save it into database
+    2 When adding a movie, search db for entry to fill out fields to display

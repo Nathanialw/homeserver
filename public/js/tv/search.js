@@ -149,6 +149,7 @@ function PreviewMovie(response) {
     i = AddPreviewElement(response, ".selected-series-synopsis", i)
     i = AddPreviewElement(response, ".selected-series-release", i)
     i = AddPreviewElement(response, ".selected-series-runtime", i)
+    i++
     i = AddPreviewElement(response, ".selected-series-rating", i)
     i = AddPreviewElement(response, ".selected-series-ratings", i)
     AddPreviewElements(response, i)
