@@ -7,11 +7,11 @@ Required libraries:
     sudo apt update
     sudo apt install golang-go
     sudo apt install python3-pip
-    sudo apt install xdg-install
+    sudo apt install xdg-utils
 
 To build and install:
 
-    git clone git@github.com:Nathanialw/homeserver.git
+    git clone https://github.com/Nathanialw/homeserver.git
     chmod +x build.sh
     ./build.sh
 
