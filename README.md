@@ -5,19 +5,21 @@ To run locally:
 Required libraries:
     
     sudo apt update
-    sudo apt install golang
+    sudo apt install golang-go
+    sudo apt install python3-pip
+    sudo apt install xdg-install
 
 To build and install:
 
     git clone git@github.com:Nathanialw/homeserver.git
-    go build -buildvcs=false -o ../../app/main
-    cd webserver/app
-    ./main --install
+    chmod +x build.sh
+    ./build.sh
 
-Defualt runs localhost:10002:
+if xdg-open fails to find a default browser, assuming you are using the default port, you can manually navigate to:
 
-    ./main
+    http://localhost:10002
 
-Will accept a port as an arguement:
+Will accept a port as an argument:
 
+    cd homserserver/webserver/app
     ./main 4000 #runs on port 4000
