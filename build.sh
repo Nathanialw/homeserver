@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd homeserver/webserver/src/main
+cd webserver/src/main
 go build -buildvcs=false -o ../../app/main
 cd ../../app
 

@@ -12,6 +12,7 @@ Required libraries:
 To build and install:
 
     git clone https://github.com/Nathanialw/homeserver.git
+    cd homeserver
     chmod +x build.sh
     ./build.sh
 
